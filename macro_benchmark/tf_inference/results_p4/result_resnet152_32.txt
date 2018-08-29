@@ -1,0 +1,37 @@
+TensorFlow:  1.10.0
+This script: nvcnn.py v1.6
+Cmd line args:
+  --model=resnet152
+  --batch_size=32
+  --num_gpus=1
+  --num_batches=500
+  --display_every=100
+  --log_dir=./log_resnet152_32
+  --eval
+Num images:  Synthetic
+Input type:  Variable
+Model:       resnet152
+Batch size:  32 global
+             32.0 per device
+Devices:     ['/gpu:0']
+Data format: NCHW
+Data type:   fp32
+Have NCCL:   True
+Using NCCL:  True
+Using XLA:   False
+Building evaluation graph
+Creating session
+Restored session from checkpoint ./log_resnet152_32/checkpoint-200
+Pre-filling input pipeline
+Evaluating
+  Step   Top1   Top5   Img/Sec
+     1   0.0%   0.0%    13.5
+   100   0.0%   0.0%   117.2
+   200   0.0%   0.0%   117.1
+   300   0.0%   0.0%   117.2
+   400   0.0%   0.0%   117.0
+   500   0.0%   0.0%   117.2
+----------------------------------------------------------------
+Validation Top-1: 0.169 % +/- 0.03 (jitter = 0.0)
+Validation Top-5: 0.544 % +/- 0.06 (jitter = 0.0)
+----------------------------------------------------------------
