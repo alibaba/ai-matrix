@@ -51,19 +51,20 @@ def main():
     df.to_csv('results.csv', encoding ='utf-8')
     if args.compare is not None:
         if args.compare == 'P4':
-            df_p4 = pd.read_csv('./results_p4/results.csv')
-            df['fp32 speedup'] = df['fp32'] / df_p4['fp32'] 
-            df['fp16 speedup'] = df['fp16'] / df_p4['fp16'] 
-            df['int8 speedup'] = df['int8'] / df_p4['int8']
+            df_card = pd.read_csv('./results_p4/results.csv')
+            df['fp32 speedup'] = df['fp32'] / df_card['fp32'] 
+            df['fp16 speedup'] = df['fp16'] / df_card['fp16'] 
+            df['int8 speedup'] = df['int8'] / df_card['int8']
         if args.compare == 'V100':
-            df_p4 = pd.read_csv('./results_v100/results.csv')
-            df['fp32 speedup'] = df['fp32'] / df_p4['fp32'] 
-            df['fp16 speedup'] = df['fp16'] / df_p4['fp16'] 
+            df_card = pd.read_csv('./results_v100/results.csv')
+            df['fp32 speedup'] = df['fp32'] / df_card['fp32'] 
+            df['fp16 speedup'] = df['fp16'] / df_card['fp16'] 
     
     print(df)
-    print('Total speedup on all the models of fp32 ', df['fp32 speedup'].mean())
-    print('Total speedup on all the models of fp16 ', df['fp16 speedup'].mean())
-    print('Total speedup on all the models of int8 ', df['int8 speedup'].mean())
+    if args.compare is not None:
+        print('Total speedup on all the models of fp32 ', df['fp32 speedup'].mean())
+        print('Total speedup on all the models of fp16 ', df['fp16 speedup'].mean())
+        print('Total speedup on all the models of int8 ', df['int8 speedup'].mean())
 
 if __name__ == '__main__':
     main()
