@@ -159,6 +159,6 @@ The models are integrated into part 2). You can use the same command with the mo
 
 ## Suggestions
 We are still keep working hard to developing our benchmark suites. We are welcome to any suggestions, contributions and improvements from anyone. Please do not hesitate to contact us if you want to involve. Thanks.
-You could submit questions on Github or contact us through wz.ww@alibaba-inc.com
+You could submit questions on Github or contact us through aimatrix@list.alibaba-inc.com
 
   
