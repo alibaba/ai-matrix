@@ -2,9 +2,9 @@
 
 The AI Matrix benchmark suite consists of four categories of tests to address different workload characteristics. Not only it includes widely used models from both academia and industry, we also incorporate a few innovative and widely deployed Alibaba internal AI algorithms. Detailed mission statement can be found [**here**](http://aimatrix.ai/#!/docs/goals.md?lang=en-us). At current stage this benchmark suite is primarily focused on inference and we are committed to regularly freshing and expanding the suite.
 
-The README is focused on usage of this benchmark suites.
+The README is focused on usage of this benchmark suite.
  
-It includes the CNN and RNN models. The purpose of this benchmark suite to test performance of complete models with focus on inference. The models weights are obtained by trained on synthetic data with a few hundreds iterations with initial random numbers (it is enough for performance testing purpose). They will be tested in two frameworks: caffe and tensorflow. Caffe models and weights are input to TensorRT and the results are based on TensorRT optimized graph. Tensorflow inference is tested in Tensorflow framework with pretrained results to generate checkpoint files and these files can be used in inference test later.  
+It includes the CNN and RNN models. The purpose of this benchmark suite to test performance of complete models with focus on inference. The models weights are obtained by trained on synthetic data with a few hundreds iterations with initial random numbers (it is enough for performance testing purpose). They will be tested in two frameworks: caffe and tensorflow. Caffe models and weights are input to TensorRT and the results are based on TensorRT optimized graph. Tensorflow inference is tested in Tensorflow framework with pretrained checkpoint files.  
 Our model database tracks the academia and industry model development all the time. New models could be added if they are satisfied with our selection standards.  The CNN models included in our benchmarks are  
 1) googlenet  
 2) vgg16  
@@ -42,7 +42,7 @@ python cal_stat.py --num_type 2 --compare V100
 If it is not intended to test on GPU, please use original **caffe test** (without TensorRT) command to run these models. 
  
 ## 2. Tensorflow inference
-In this part, similar CNN models can be tested under tensorflow framework. To run the inference tests, you need to run a few hundreds iterations of training tests to generate some checkpoint files. Then you could use our script to run the inference tests.  Please replace the models with _models_ available. It will run batch size = 16, 32 ,64. Feel free to change the batch size as you need.
+In this part, similar CNN models can be tested under tensorflow framework. To run the inference tests, you need to run a few hundreds iterations of training to generate some checkpoint files. Then you could use our script to run the inference tests.  Please replace the models with _models_ available. It will run batch size = 16, 32 ,64. Feel free to change the batch size as you need.
 
 To run fp32 inference:
 ```
