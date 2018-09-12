@@ -1709,11 +1709,11 @@ def main():
         growth_rate = 32
         nlayer = int(model_name[len('densenet'):]) # valid nlayer=121,169,201
         model_func = lambda net, images: inference_densenet(net, images, growth_rate, nlayer)
-    elif model_name == 'synNet':
+    elif model_name == 'statsNet':
         height, width = 224, 224
         model_func = inference_synthetic_net
 
-    elif model_name == 'synNet-3c':
+    elif model_name == 'statsNet-3c':
         height, width = 224, 224
         model_func = inference_synthetic_net_3c
 

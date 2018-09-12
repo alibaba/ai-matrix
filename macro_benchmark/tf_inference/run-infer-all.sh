@@ -1,5 +1,5 @@
 #!/bin/bash
-models='alexnet googlenet vgg16 resnet50 resnet152 densenet121 synNet'
+models='alexnet googlenet vgg16 resnet50 resnet152 densenet121 statsNet'
 batchs='16 32 64'
 
 mkdir results
