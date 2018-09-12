@@ -155,7 +155,7 @@ python infer.py
 
 ## 8. StatsNet --- Synthetic models
 There are two models here. One is based on synthesize of 3 classic models which are alexnet, vgg16 and googlenet. The other model is based on *some* application running on Alibaba platform. 
-The models are integrated into part 2). You can use the same command with the model name of synNet-3c or synNet.
+The models are integrated into part 2). You can use the same command with the model name of statsNet-3c or statsNet.
 
 ## Suggestions
 We keep working hard to developing our benchmark suites. Any suggestions, contributions and improvements are welcome. Please do not hesitate to contact us if you want to involve. Thanks!
