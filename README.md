@@ -31,11 +31,11 @@ cd macro_benchmark/caffe_inference
 Then run the command below to get the scale score based on Nvidia card you'd like to compare. ***num_type***=3  will compare all 3 data types while =2 will compare fp32 and fp16.  
 
 ```
-python cal_stat.py --num_type 3 --compare P4  
+python cal_stat.py --num_dt 3 --compare P4  
 ```
 or
 ```
-python cal_stat.py --num_type 2 --compare V100
+python cal_stat.py --num_dt 2 --compare V100
 ```
  
 
