@@ -3,7 +3,7 @@
 hardware: CPU+GPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH  + Nvidia V100
 software: TF1.10 +CUDA9+cudnn7.1  
 
-| 模型            | Batch size | Img/sec (FP32) +- std |
+| Model           | Batch size | Img/sec (FP32) +- std |
 |-----------------|----------|----------------|
 | alexnet         | 16         | 5947 =- 24           |
 | ​                | 32         | 7800 +- 38           |
@@ -30,7 +30,7 @@ software: TF1.10 +CUDA9+cudnn7.1
 hardware: CPU+GPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH  + Nvidia P4
 software: TF1.10 +CUDA9+cudnn7.1  
 
-| 模型            | Batch size | Img/sec (FP32) +- std|
+| Model           | Batch size | Img/sec (FP32) +- std|
 |-----------------|----------|----------------|
 | alexnet         | 16         | 1826 +- 6           |
 | ​                | 32         | 2283 +- 5           |
