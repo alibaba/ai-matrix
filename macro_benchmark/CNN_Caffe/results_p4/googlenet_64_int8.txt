@@ -1,0 +1,20 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/googlenet_deploy.prototxt
+output: prob
+batch: 64
+device: 1
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/googlenet_iter_500.caffemodel
+int8
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 20.1874 ms.
+Average over 10 runs is 20.1743 ms.
+Average over 10 runs is 20.2155 ms.
+Average over 10 runs is 20.1211 ms.
+Average over 10 runs is 20.1386 ms.
+Average over 10 runs is 20.1347 ms.
+Average over 10 runs is 20.1322 ms.
+Average over 10 runs is 20.119 ms.
+Average over 10 runs is 20.1289 ms.
+Average over 10 runs is 20.1383 ms.

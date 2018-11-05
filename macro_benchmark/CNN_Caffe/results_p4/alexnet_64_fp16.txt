@@ -1,0 +1,21 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/alexnet_deploy.prototxt
+output: prob
+batch: 64
+device: 1
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/alexnet_iter_500.caffemodel
+half2
+Input "data": 3x227x227
+Output "prob": 1000x1x1
+Half2 support requested on hardware without native FP16 support, performance will be negatively affected.
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 22.4838 ms.
+Average over 10 runs is 23.1142 ms.
+Average over 10 runs is 23.072 ms.
+Average over 10 runs is 22.7435 ms.
+Average over 10 runs is 22.8118 ms.
+Average over 10 runs is 22.77 ms.
+Average over 10 runs is 22.8891 ms.
+Average over 10 runs is 22.6756 ms.
+Average over 10 runs is 22.9303 ms.
+Average over 10 runs is 22.7382 ms.
