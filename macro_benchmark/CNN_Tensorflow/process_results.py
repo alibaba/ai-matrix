@@ -32,18 +32,23 @@ def process_infer():
             fname = "./results_infer/result_" + md + '_' + b + '.txt'
             with open(fname, "r") as ins:
                 arr = np.array([])
+                flag = False
                 for line in ins:
-                    if ( line.split(' ')[0]== '' and len(line.split())==4 and is_number(line.split(' ')[-1])):
+                    if not line.strip():
+                        continue             
+                    if (line.split(' ')[0]== '' and len(line.split())==4 and is_number(line.split(' ')[-1])):
                         val = line.split()[-1]
                         val = float(val)
                         arr = np.append(arr, val)
+                        flag = True
+                if flag == False:
+                    arr = np.append(arr, 0.0000001)
                 arr = arr[1:] #remove the 1st perf number which is still in warm up period
                 row_table1.append(np.mean(arr))
                 if (is_number(line.split()[-1])):
                     row_table0.append(line.split()[-1])
                 else:
                     print("Missing result, check if test is finished!")
-                    exit()
         table0.append(row_table0)
         table1.append(row_table1)
 
@@ -84,16 +89,21 @@ def process_train():
         for b in bs:
             fname = "./results_train/result_" + md + '_' + b + '.txt'
             with open(fname, "r") as ins:
+                flag = False
                 for line in ins:
+                    if not line.strip():
+                        continue             
                     if ( line.split()[0]== 'Images/sec:' and  is_number(line.split()[1] )):
                         val = line.split()[1]
                         val = float(val)
+                        flag = True
+                if flag == False:
+                    val = 0.0000001
                 row_table1.append(val)
                 if (is_number(line.split()[-1])):
                     row_table0.append(line.split()[-1])
                 else:
                     print("Missing result, check if test is finished!")
-                    exit()
         table0.append(row_table0)
         table1.append(row_table1)
     

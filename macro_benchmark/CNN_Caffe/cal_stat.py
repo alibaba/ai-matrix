@@ -6,7 +6,7 @@ import argparse
 def update( num_dt ):
     df = pd.DataFrame(columns = ['model','batch','fp32','fp32 std','fp16','fp16 std','int8','int8 std'])
     row = 0
-    models = ['alexnet','googlenet','vgg16','resnet50','resnet152', 'densenet121']
+    models = ['googlenet','resnet50','resnet152', 'densenet121']
     bs = ['16', '32', '64']
     if num_dt == 2:
         dt = ['fp32','fp16']

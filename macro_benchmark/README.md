@@ -40,6 +40,12 @@ to run inference. Note that for CNN_Tensorflow and DeepInterest, inference needs
 ## Run a Single Benchmark
 The instructions to run a single benchmark can be found in the README.md file in each test directory.
 
+## Run Training on Multiple Accelerators
+To run training on multiple accelerators, please set NUM_ACCELERATORS environment variable in your terminal before running the run.sh or run-train.sh scripts, e.g.,
+```
+export NUM_ACCELERATORS=8
+```
+
 ## Results
 Besides running training and inference, the run scripts also automatically generate the benchmark results. The results are dumped in macro_benchmark/results. There are two csv files for each test, one for training and one for inference. All results are summarized in two excel files, results_train.xlsx for training results and results_infer.xlsx for inference results.
 

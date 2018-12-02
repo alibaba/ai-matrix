@@ -11,21 +11,14 @@ BLAS_LIBRARY?=cublas
 BIN_DIR?=bin
 MKDIR=mkdir -p
 #target
-.PHONY=all sgemm dgemm allgemm
-all: sgemm dgemm allgemm
+.PHONY=all allgemm
+all: allgemm
 
 
 allgemm:
 	$(MKDIR) $(BIN_DIR) 
 	$(CUDA_PATH)/bin/$(NVCC) allgemm.cu -o $(BIN_DIR)/allgemm -I $(CUDA_PATH)/include -L $(BLAS_PATH) -l$(BLAS_LIBRARY) -L $(CUDA_LIB64) -lcurand -std=c++11
 
-sgemm:
-	$(MKDIR) $(BIN_DIR) 
-	$(CUDA_PATH)/bin/$(NVCC) sgemm.cu -o $(BIN_DIR)/sgemm -I $(CUDA_PATH)/include -L $(BLAS_PATH) -l$(BLAS_LIBRARY) -L $(CUDA_LIB64) -lcurand -std=c++11
-
-dgemm:
-	$(MKDIR) $(BIN_DIR) 
-	$(CUDA_PATH)/bin/$(NVCC) dgemm.cu -o $(BIN_DIR)/dgemm -I $(CUDA_PATH)/include -L $(BLAS_PATH) -l$(BLAS_LIBRARY) -L $(CUDA_LIB64) -lcurand -arch=$(ARCH) -std=c++11
 
 #clean
 clean:

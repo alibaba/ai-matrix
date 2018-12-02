@@ -392,7 +392,7 @@ def main(_):
         elapsed = elapsed - start
         print('Time spent : %.3f seconds.' % elapsed)
         print('Time spent per step: %.3f seconds.' % (elapsed / FLAGS.max_number_of_steps))
-        total_images = FLAGS.max_number_of_steps * FLAGS.batch_size
+        total_images = FLAGS.max_number_of_steps * FLAGS.batch_size * FLAGS.num_clones
         print('Total number of images: ', total_images)
         print('Approximate accelerator performance in Images/second: %.3f' % (total_images/elapsed))
 

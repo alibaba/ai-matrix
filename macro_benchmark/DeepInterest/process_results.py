@@ -29,15 +29,25 @@ def process_infer():
     for b in bs:
         fname = "./results/result_infer_" + b + ".txt"
         with open(fname, "r") as ins:
+            flag1 = False
+            flag0 = False
             for line in ins:
+                if not line.strip():
+                    continue
                 if ( line.split()[0]== 'Approximate' and line.split()[1]== 'accelerator' and line.split()[2]== 'time' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)
                     row_table1.append(val)
+                    flag1 = True
                 if ( line.split()[0]== 'System' and line.split()[1]== 'performance' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)
                     row_table0.append(val)
+                    flag0 = True
+        if flag0 == False:
+            row_table0.append(0.0000001)
+        if flag1 == False:
+            row_table1.append(0.0000001)
     table0.append(row_table0)
     table1.append(row_table1)
 
@@ -76,15 +86,23 @@ def process_train():
     for b in bs:
         fname = "./results/result_train_" + b + ".txt"
         with open(fname, "r") as ins:
+            flag1 = False
+            flag0 = False
             for line in ins:
                 if ( line.split()[0]== 'Approximate' and line.split()[1]== 'accelerator' and line.split()[2]== 'time' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)
                     row_table1.append(val)
+                    flag1 = True
                 if ( line.split()[0]== 'System' and line.split()[1]== 'performance' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)
                     row_table0.append(val)
+                    flag0 = True
+        if flag0 == False:
+            row_table0.append(0.0000001)
+        if flag1 == False:
+            row_table1.append(0.0000001)
     table0.append(row_table0)
     table1.append(row_table1)
     

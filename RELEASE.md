@@ -1,3 +1,10 @@
+# Release 1.0.2 
+
+## Major Features and Improvements  
+* Add the trained checkpoint file for googlenet, resnet50, resnet152, densenet121  
+* Add multi-card training in for CNN-Tensorflow, SSD, MaskRCNN, NMT  
+
+
 # Release 1.0.1
 
 ## Major Features and Improvements

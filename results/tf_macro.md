@@ -1,9 +1,68 @@
 ### Tensorflow CNN  
+hardware: CPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH
+software: TF1.10
+No CPU optimization used
+
+| 模型            | Batch size | Img/sec (FP32) +- std |
+|-----------------|----------|----------------|
+| alexnet         | 16         | 18.0        |
+| ​                | 32         | 18.7            |
+| ​                | 64         | 18.9           |
+| googlenet       | 16         | 10.4           |
+| ​                | 32         | 10.4           |
+| ​                | 64         | 10.3           |
+| vgg16           | 16         | 1.0         |
+| ​                | 32         | 1.0            |
+| ​                | 64         | 1.0            |
+| resnet50        | 16         | 1.7         |
+| ​                | 32         | 1.7           |
+| ​                | 64         | 1.7          |
+| resnet152       | 16         | 0.7         |
+| ​                | 32         | 0.7            |
+| ​                | 64         | 0.7           |
+| densenet121_k32 | 16         | 1.4         |
+| ​                | 32         | 1.4          |
+| ​                | 64         | 1.4           |
+| synNet           | 16         |            |
+| ​                | 32         |            |
+| ​                | 64         |            |
+
+hardware: CPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH
+software: TF1.10
+Intel MKL-DNN optimization is used, parameters are as follows:
+KMP_BLOCKTIME=0
+KMP_AFFINITY=granularity=fine,verbose,compact,1,0
+KMP_SETTINGS=1
+OMP_NUM_THREADS=64
+
+| 模型            | Batch size | Img/sec (FP32) +- std |
+|-----------------|----------|----------------|
+| alexnet         | 16         | 74.7        |
+| ​                | 32         | 76.7            |
+| ​                | 64         | 77.5           |
+| googlenet       | 16         | 36.7           |
+| ​                | 32         | 37.0           |
+| ​                | 64         | 71.5           |
+| vgg16           | 16         | 20.2         |
+| ​                | 32         | 24.7            |
+| ​                | 64         | 27.9            |
+| resnet50        | 16         | 34.5         |
+| ​                | 32         | 35.9           |
+| ​                | 64         | 37.2          |
+| resnet152       | 16         | 19.4         |
+| ​                | 32         | 20.1            |
+| ​                | 64         | 18.5           |
+| densenet121_k32 | 16         | 44.6         |
+| ​                | 32         | 33.4          |
+| ​                | 64         | 53.0           |
+| synNet           | 16         |            |
+| ​                | 32         |            |
+| ​                | 64         |            |
 
 hardware: CPU+GPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH  + Nvidia V100
 software: TF1.10 +CUDA9+cudnn7.1  
 
-| Model           | Batch size | Img/sec (FP32) +- std |
+| 模型            | Batch size | Img/sec (FP32) +- std |
 |-----------------|----------|----------------|
 | alexnet         | 16         | 5947 =- 24           |
 | ​                | 32         | 7800 +- 38           |
@@ -30,7 +89,7 @@ software: TF1.10 +CUDA9+cudnn7.1
 hardware: CPU+GPU =  Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GH  + Nvidia P4
 software: TF1.10 +CUDA9+cudnn7.1  
 
-| Model           | Batch size | Img/sec (FP32) +- std|
+| 模型            | Batch size | Img/sec (FP32) +- std|
 |-----------------|----------|----------------|
 | alexnet         | 16         | 1826 +- 6           |
 | ​                | 32         | 2283 +- 5           |

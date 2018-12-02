@@ -390,8 +390,10 @@ def evaluate_coco(model, dataset, coco, eval_type="bbox", limit=0, image_ids=Non
 
     print("Prediction time: {}. Average {}/image".format(
         t_prediction, t_prediction / len(image_ids)))
+    print("Total number of images: ", len(image_ids))
     print("Total time: ", time.time() - t_start)
     print("Approximate accelerator time in seconds: %.3f" % keras_time)
+    print("Approximate accelerator performance in images/s: %.3f" % (len(image_ids)/keras_time))
 
 
 ############################################################
@@ -431,6 +433,10 @@ if __name__ == '__main__':
                         metavar="<True|False>",
                         help='Automatically download and unzip MS-COCO files (default=False)',
                         type=bool)
+    parser.add_argument('--num_accelerators', required=False,
+                        default=1,
+                        metavar="<number of accelerators>",
+                        help='Number of accelerators used to train (default=1)')
     args = parser.parse_args()
     print("Command: ", args.command)
     print("Model: ", args.model)
@@ -441,7 +447,9 @@ if __name__ == '__main__':
 
     # Configurations
     if args.command == "train":
-        config = CocoConfig()
+        class TrainingConfig(CocoConfig):
+            GPU_COUNT = int(args.num_accelerators)
+        config = TrainingConfig()
     else:
         class InferenceConfig(CocoConfig):
             # Set batch size to 1 since we'll be running inference on
@@ -520,12 +528,18 @@ if __name__ == '__main__':
         print("Fine tune all layers")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE / 10,
-                    epochs=1,
+                    epochs=3,
                     layers='all',
                     augmentation=augmentation)
 
         t_end = time.time()
-        print("Approximate accelerator time in seconds: ", t_end - t_start)
+        total_time = t_end - t_start
+        total_images = 3 * float(config.STEPS_PER_EPOCH) * float(config.BATCH_SIZE)
+        system_performance = float(total_images)/float(total_time)
+        print("Total number of images trained: ", total_images)
+        print("Approximate accelerator time in seconds: %.3f" % total_time)
+        print("Approximate accelerator performance in images/s: %.3f" % system_performance)
+
 
     elif args.command == "evaluate":
         # Validation dataset

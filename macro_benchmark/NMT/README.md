@@ -1249,6 +1249,12 @@ to run training and use
 ```
 to run inference.
 
+## Run Training on Multiple Accelerators
+To run training on multiple accelerators, please set NUM_ACCELERATORS environment variable in your terminal before running the run.sh or train.sh scripts, e.g.,
+```
+export NUM_ACCELERATORS=8
+```
+
 ## Results
 Besides running training and inference, the run scripts also automatically generate the benchmark results. The results are dumped in results directory. results_train.csv and results_infer.csv summarize the results of all batch sizes.
 
