@@ -14,4 +14,3 @@ cd macro_benchmark/DeepSpeech
 ./0_download.sh
 ./1_run.sh
 ```
-CUDA 8 needed. CUDA 9 is not supported yet.  

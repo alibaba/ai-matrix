@@ -79,12 +79,180 @@ int main(int argc, char* argv[]) {
     start = std::atoi(argv[1]);
     end = std::atoi(argv[2]);
     
- 
-    std::cout << "[TensorCore FP16 Time and TFLOPS Result]" << std::endl;
+    
+    std::cout << "[TensorCore INT8(INT32 accumulation) Time and TOPS Result]" << std::endl;
+    std::cout << std::setw(7) << "m" << std::setw(7) << "n" << std::setw(7) << "k";
+    std::cout << std::setw(15) << "Time (msec)" << std::setw(15) << "TOPS";
+    std::cout << std::endl;
+    float s_max_tflops = 0;
+    // for tensorcore test
+    for (int i=start; i<=end; i+= 1024){
+        m = n = k = i;
+  
+        int8_t *a_fp16;
+        int8_t *b_fp16;
+        int *c_cublas;
+        int *c_host_cublas;
+        //const int  value = 1;
+
+   
+        cublasHandle_t cublasHandle;
+
+        cudaEvent_t startcublas;
+        cudaEvent_t stopcublas;
+
+        cudaErrCheck(cudaEventCreate(&startcublas));
+        cudaErrCheck(cudaEventCreate(&stopcublas));
+        cublasErrCheck(cublasCreate(&cublasHandle));
+        // Use tensor cores
+        cublasErrCheck(cublasSetMathMode(cublasHandle, CUBLAS_TENSOR_OP_MATH));
+
+        cudaErrCheck(cudaMalloc((void**)&a_fp16, m * k * sizeof(int8_t)));
+        cudaErrCheck(cudaMalloc((void**)&b_fp16, k * m * sizeof(int8_t)));
+        cudaErrCheck(cudaMalloc((void**)&c_cublas, m * n * sizeof(int)));
+        c_host_cublas = (int*)malloc(m * n * sizeof(int));
+
+        //TODO curand doesn't currently support fp16 so we generate in fp32 and convert to fp16.
+        //assignHalfValue <<< (m * k + 255) / 256, 256 >>> (a_fp16, m*k, value);
+        //assignHalfValue <<< (k * n + 255) / 256, 256 >>> (b_fp16, k*n, value);
+        //assignHalfValue <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, 0.0f);
+
+        int alpha = 1;
+        int beta = 0;
+        int numRepeats = 50;
+        // Warp up
+        cublasErrCheck(cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
+            m, n, k, 
+            &alpha,
+            a_fp16, CUDA_R_8I, m,
+            b_fp16, CUDA_R_8I, k,
+            &beta, 
+            c_cublas, CUDA_R_32I, m,
+            CUDA_R_32I, CUBLAS_GEMM_DFALT_TENSOR_OP));
+
+        // Now using cuBLAS
+        cudaErrCheck(cudaEventRecord(startcublas));
+        for (int iteration = 0; iteration < numRepeats; ++iteration) {
+        cublasErrCheck(cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
+                    m, n, k, 
+                    &alpha,
+                    a_fp16, CUDA_R_8I, m,
+                    b_fp16, CUDA_R_8I, k,
+                    &beta, 
+                    c_cublas, CUDA_R_32I, m,
+                    CUDA_R_32I, CUBLAS_GEMM_DFALT_TENSOR_OP));
+        }
+        cudaErrCheck(cudaEventRecord(stopcublas));
+        cudaErrCheck(cudaEventSynchronize(stopcublas));
+        // TODO: Correctness check
+        //cudaErrCheck(cudaMemcpy(c_host_cublas, c_cublas, m * n * sizeof(float), cudaMemcpyDeviceToHost));
+       //correctnessCheck(m, n, k, c_host_cublas, value);
+        // Check time
+        float cublasTime;	
+        cudaErrCheck(cudaEventElapsedTime(&cublasTime, startcublas, stopcublas)); 
+        cublasTime /= numRepeats;
+        printTime(cublasTime, m, n, k, s_max_tflops);
+        
+        cudaErrCheck(cudaEventDestroy(startcublas));             
+        cudaErrCheck(cudaEventDestroy(stopcublas));
+        cudaErrCheck(cudaFree(a_fp16));
+        cudaErrCheck(cudaFree(b_fp16));
+        cudaErrCheck(cudaFree(c_cublas));
+        free(c_host_cublas);
+    }
+    std::cout << "[Peak TOPS]" << std::endl << std::setprecision(4) << s_max_tflops << std::endl;
+    cudaErrCheck(cudaDeviceReset());
+    
+
+    std::cout << "[TensorCore FP16(FP16 accumulation) Time and TFLOPS Result]" << std::endl;
     std::cout << std::setw(7) << "m" << std::setw(7) << "n" << std::setw(7) << "k";
     std::cout << std::setw(15) << "Time (msec)" << std::setw(15) << "TFLOPS";
     std::cout << std::endl;
-    float s_max_tflops = 0;
+    s_max_tflops = 0;
+    // for tensorcore test
+    for (int i=start; i<=end; i+= 1024){
+        m = n = k = i;
+  
+        half *a_fp16;
+        half *b_fp16;
+        half *c_cublas;
+        float *c_host_cublas;
+        const float  value = 1.0f;
+
+   
+        cublasHandle_t cublasHandle;
+
+        cudaEvent_t startcublas;
+        cudaEvent_t stopcublas;
+
+        cudaErrCheck(cudaEventCreate(&startcublas));
+        cudaErrCheck(cudaEventCreate(&stopcublas));
+        cublasErrCheck(cublasCreate(&cublasHandle));
+        // Use tensor cores
+        cublasErrCheck(cublasSetMathMode(cublasHandle, CUBLAS_TENSOR_OP_MATH));
+
+        cudaErrCheck(cudaMalloc((void**)&a_fp16, m * k * sizeof(half)));
+        cudaErrCheck(cudaMalloc((void**)&b_fp16, k * m * sizeof(half)));
+        cudaErrCheck(cudaMalloc((void**)&c_cublas, m * n * sizeof(half)));
+        c_host_cublas = (float*)malloc(m * n * sizeof(float));
+
+        // curand doesn't currently support fp16 so we generate in fp32 and convert to fp16.
+        assignHalfValue <<< (m * k + 255) / 256, 256 >>> (a_fp16, m*k, value);
+        assignHalfValue <<< (k * n + 255) / 256, 256 >>> (b_fp16, k*n, value);
+        assignHalfValue <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, 0.0f);
+
+        float alpha = 1.0f;
+        float beta = 0.0f;
+        int numRepeats = 50;
+        // Warp up
+        cublasErrCheck(cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
+            m, n, k, 
+            &alpha,
+            a_fp16, CUDA_R_16F, m,
+            b_fp16, CUDA_R_16F, k,
+            &beta, 
+            c_cublas, CUDA_R_16F, m,
+            CUDA_R_16F, CUBLAS_GEMM_DFALT_TENSOR_OP));
+
+        // Now using cuBLAS
+        cudaErrCheck(cudaEventRecord(startcublas));
+        for (int iteration = 0; iteration < numRepeats; ++iteration) {
+        cublasErrCheck(cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
+                    m, n, k, 
+                    &alpha,
+                    a_fp16, CUDA_R_16F, m,
+                    b_fp16, CUDA_R_16F, k,
+                    &beta, 
+                    c_cublas, CUDA_R_16F, m,
+                    CUDA_R_16F, CUBLAS_GEMM_DFALT_TENSOR_OP));
+        }
+        cudaErrCheck(cudaEventRecord(stopcublas));
+        cudaErrCheck(cudaEventSynchronize(stopcublas));
+        // TODO: Correctness check
+        //cudaErrCheck(cudaMemcpy(c_host_cublas, c_cublas, m * n * sizeof(float), cudaMemcpyDeviceToHost));
+       //correctnessCheck(m, n, k, c_host_cublas, value);
+        // Check time
+        float cublasTime;	
+        cudaErrCheck(cudaEventElapsedTime(&cublasTime, startcublas, stopcublas)); 
+        cublasTime /= numRepeats;
+        printTime(cublasTime, m, n, k, s_max_tflops);
+        
+        cudaErrCheck(cudaEventDestroy(startcublas));             
+        cudaErrCheck(cudaEventDestroy(stopcublas));
+        cudaErrCheck(cudaFree(a_fp16));
+        cudaErrCheck(cudaFree(b_fp16));
+        cudaErrCheck(cudaFree(c_cublas));
+        free(c_host_cublas);
+    }
+    std::cout << "[Peak TFLOPS]" << std::endl << std::setprecision(4) << s_max_tflops << std::endl;
+    cudaErrCheck(cudaDeviceReset());
+    
+ 
+    std::cout << "[TensorCore FP16(FP32 accumulation) Time and TFLOPS Result]" << std::endl;
+    std::cout << std::setw(7) << "m" << std::setw(7) << "n" << std::setw(7) << "k";
+    std::cout << std::setw(15) << "Time (msec)" << std::setw(15) << "TFLOPS";
+    std::cout << std::endl;
+    s_max_tflops = 0;
     // for tensorcore test
     for (int i=start; i<=end; i+= 1024){
         m = n = k = i;

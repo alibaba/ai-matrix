@@ -21,4 +21,23 @@ python cal_stat.py --num_type 2 --compare V100
 ```
  
 
-If it is not intended to test on GPU, please use original **caffe test** (without TensorRT) command to run these models. 
+If it is not intended to test on GPU, please use original **caffe test** (without TensorRT) command to run these models.
+
+
+# Model sources
+|              | Validation Top1 | Validation Top5 |
+|--------------|-----------------|-----------------|
+| Googlenet-bn |                 |                 |
+| Googlenet    |                 |                 |
+| Resnet50     |                 |                 |
+| Resnet152    |                 |                 |
+| Densenet121  |                 |                 |
+| SqueezeNet   |                 |                 |
+
+
+# Special Thanks to the authors and organizations below:
+Googlenet_bn: https://github.com/lim0606/caffe-googlenet-bn  
+Googlenet_bvlc: https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet  
+Resnet:https://github.com/KaimingHe/deep-residual-networks  
+Squeezenet: https://github.com/DeepScale/SqueezeNet/tree/master/SqueezeNet_v1.1  
+Densenet121: https://github.com/shicai/DenseNet-Caffe  

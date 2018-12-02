@@ -1,5 +1,8 @@
 #!/bin/bash
 
+NUM_ACCELERATORS=${NUM_ACCELERATORS:-1}
+echo "NUM_ACCELERATORS=${NUM_ACCELERATORS}"
+
 if [ -d results ]; then
     mv results results_$(date +%Y%m%d%H%M%S)
 fi
@@ -16,6 +19,7 @@ do
     start=`date +%s%N`
     python -m nmt.nmt \
         --attention=scaled_luong \
+        --attention_architecture=gnmt \
         --src=vi --tgt=en \
         --vocab_prefix=dataset/en_vi/vocab  \
         --train_prefix=dataset/en_vi/train \
@@ -24,11 +28,12 @@ do
         --out_dir=nmt_attention_model \
         --num_train_steps=5000 \
         --steps_per_stats=100 \
-        --num_layers=2 \
+        --num_layers=8 \
         --num_units=128 \
         --dropout=0.2 \
         --metrics=bleu \
         --batch_size=$batch \
+        --num_gpus=$NUM_ACCELERATORS \
         |& tee ./results/result_train_${batch}.txt
     end=`date +%s%N`
     total_time=`bc <<< "scale = 3; ($end-$start)/1000000000"`

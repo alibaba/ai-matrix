@@ -44,5 +44,11 @@ To run a single model for inference, use
 ```
 MODEL_NAME is any of alexnet, densenet121, googlenet, resnet152, resnet50, synNet, and vgg16.
 
+## Run Training on Multiple Accelerators
+To run training on multiple accelerators, please set NUM_ACCELERATORS environment variable in your terminal before running the run.sh or train-all.sh scripts, e.g.,
+```
+export NUM_ACCELERATORS=8
+```
+
 ## Results
 Besides running training and inference, the run scripts also automatically generate the benchmark results. The results are dumped in results_train and results_infer directories. results.csv in each directory tables the results of all models.

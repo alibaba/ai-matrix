@@ -7,6 +7,9 @@ CHECKPOINT_PATH="./checkpoints/ssd_300_vgg.ckpt"
 batchs='8 16 32'
 num_of_steps=1000
 
+NUM_ACCELERATORS=${NUM_ACCELERATORS:-1}
+echo "NUM_ACCELERATORS=${NUM_ACCELERATORS}"
+
 if [ -d results ]; then
     mv results results_$(date +%Y%m%d%H%M%S)
 fi
@@ -34,10 +37,11 @@ do
         --learning_rate=0.001 \
         --batch_size=$batch \
         --max_number_of_steps=$num_of_steps \
+        --num_clones=$NUM_ACCELERATORS \
         |& tee ./results/result_train_${batch}.txt
     end=`date +%s%N`
     total_time=$(((end-start)/1000000))
-    total_images=$(($batch*$num_of_steps))
+    total_images=$(($batch*$num_of_steps*$NUM_ACCELERATORS))
     system_performance=$((1000*$total_images/$total_time))
     echo "Total images is: $total_images" >> ./results/result_train_${batch}.txt
     echo "Total running time in miliseconds is: $total_time" >> ./results/result_train_${batch}.txt

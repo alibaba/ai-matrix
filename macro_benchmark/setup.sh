@@ -13,3 +13,5 @@ cd Mask_RCNN
 cd ..
 
 pip3 install xlsxwriter
+apt install bc
+yum install bc
