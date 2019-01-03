@@ -1,3 +1,12 @@
+# Release 1.0.3  
+  
+## Major Features and Improvements   
+* Add new models: NCF for recommendation class, DSSD for object detection class  
+* Nvidia docker has license issue on distribution, users have to download by themselves. Add script to install some dependencies  
+* Add md5 checksum for some big files to help us spot the download issues  
+* Add multi-card training for DIN model  
+* Add accuracy test cases in Caffe CNN models. Inference engine from different vendor could compare not only performance number but also accuracy loss  
+  
 # Release 1.0.2 
 
 ## Major Features and Improvements  
