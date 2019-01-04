@@ -1,0 +1,11 @@
+System performance, unit is seconds,
+System performance measures the performance of the entire system, including both CPU work and GPU work. The benchmark is timed right before and after the script is ran.,
+batch 64,batch 128,batch 256,
+12.224,12.032,12.211,
+
+
+
+Approximate accelerator performance, unit is seconds,
+Approximate accelerator performance aims at measuring only the performance of the accelerator. The benchmark does its best to exclude CPU work from performance measurement and approximates the accelerator performance.,
+batch 64,batch 128,batch 256,
+4.264,3.587,3.502,
