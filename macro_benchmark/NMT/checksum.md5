@@ -1,0 +1,8 @@
+5b6300f46160ab5a7a995546d2eeb9e6  dataset/en_vi/train.en
+858e884484885af5775068140ae85dab  dataset/en_vi/train.vi
+c14a0955ed8b8d6929fdabf4606e3875  dataset/en_vi/tst2012.en
+dddf990faa149e980b11a36fca4a8898  dataset/en_vi/tst2012.vi
+c41c43cb6d3b122c093ee89608ba62bd  dataset/en_vi/tst2013.en
+a3185b00264620297901b647a4cacf38  dataset/en_vi/tst2013.vi
+98b5011e1f579936277a273fd7f4e9b4  dataset/en_vi/vocab.en
+e8b05f8c26008a798073c619236712b4  dataset/en_vi/vocab.vi
