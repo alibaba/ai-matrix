@@ -1,0 +1,21 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/densenet121_deploy.prototxt
+output: prob
+batch: 64
+device: 1
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/densenet121.caffemodel
+half2
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+Half2 support requested on hardware without native FP16 support, performance will be negatively affected.
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 175.304 ms.
+Average over 10 runs is 175.284 ms.
+Average over 10 runs is 175.25 ms.
+Average over 10 runs is 175.257 ms.
+Average over 10 runs is 175.227 ms.
+Average over 10 runs is 175.258 ms.
+Average over 10 runs is 175.253 ms.
+Average over 10 runs is 175.22 ms.
+Average over 10 runs is 175.237 ms.
+Average over 10 runs is 175.224 ms.
