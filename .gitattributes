@@ -1,2 +1,7 @@
 *.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
 *.caffemodel filter=lfs diff=lfs merge=lfs -text
+macro_benchmark/SSD/checkpoints/ssd_300_vgg.ckpt.zip filter=lfs diff=lfs merge=lfs -text
+macro_benchmark/DeepSpeech/DeepSpeech/native_client/libdeepspeech.so filter=lfs diff=lfs merge=lfs -text
+macro_benchmark/DeepSpeech/models/output_graph.pb filter=lfs diff=lfs merge=lfs -text
+macro_benchmark/NCF/Data/train_data.npy filter=lfs diff=lfs merge=lfs -text
+macro_benchmark/DeepSpeech/models/lm.binary filter=lfs diff=lfs merge=lfs -text
