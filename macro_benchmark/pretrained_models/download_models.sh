@@ -11,3 +11,6 @@ cd ..
 
 cd DeepInterest
 unzip checkpoint.zip
+
+cd NCF
+tar -xzvf ckpt_512.tgz
