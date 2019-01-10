@@ -4,7 +4,7 @@ import xlsxwriter
 import argparse
 
 def create_excel(results_dir):
-	models = ["cnn", "deepinterest", "maskrcnn", "nmt", "ssd", "dssd", "ncf"]
+	models = ["cnn", "deepinterest", "maskrcnn", "nmt", "ssd", "dssd", "ncf", "dien"]
 
 	wb = xlsxwriter.Workbook(results_dir + "/results_train.xlsx")
 	for model in models:

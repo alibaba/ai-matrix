@@ -1,0 +1,19 @@
+deploy: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1_deploy.prototxt
+output: prob
+batch: 64
+device: 1
+model: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1.caffemodel
+Input "data": 3x227x227
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 8.14016 ms (percentile time is 8.22496).
+Average over 10 runs is 8.10701 ms (percentile time is 8.15526).
+Average over 10 runs is 8.09166 ms (percentile time is 8.12403).
+Average over 10 runs is 8.07729 ms (percentile time is 8.11344).
+Average over 10 runs is 8.07006 ms (percentile time is 8.09587).
+Average over 10 runs is 8.06121 ms (percentile time is 8.07523).
+Average over 10 runs is 8.05209 ms (percentile time is 8.07094).
+Average over 10 runs is 8.04654 ms (percentile time is 8.05603).
+Average over 10 runs is 8.053 ms (percentile time is 8.08266).
+Average over 10 runs is 8.04573 ms (percentile time is 8.0607).

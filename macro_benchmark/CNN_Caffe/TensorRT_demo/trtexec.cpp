@@ -776,6 +776,9 @@ static ICudaEngine* createEngine()
 
 void ImgPreprocessAspectCut(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, bool scale){
     // first crop the image according to their h-w-ratio
+    int resize_h = dimensions.d[1];
+    int resize_w = dimensions.d[2];
+    assert(resize_h == resize_w);
     int w = SrcImage.cols;
     int h = SrcImage.rows;
     int off, startX, startY, height, width;
@@ -796,7 +799,7 @@ void ImgPreprocessAspectCut(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, b
     cv::Mat ROI(SrcImage, cvRect(startX,startY,width,height));
     ROI.copyTo(tmpAspect);
     // resize to 224x224
-    cv::resize(tmpAspect, tmp, cv::Size(224, 224));
+    cv::resize(tmpAspect, tmp, cv::Size(resize_h, resize_w));
 
     cv::Mat imgFloat;
     tmp.convertTo(imgFloat, CV_32FC3);
@@ -821,18 +824,20 @@ void ImgPreprocessAspectCut(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, b
 void ImgPreprocessCenterCrop(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, bool scale){
     // get image from default image preprocessing scrip on Caffe website.
     // default resize to 256x256, then center crop to 224x224
-
+    int resize_h = dimensions.d[1];
+    int resize_w = dimensions.d[2];
+    assert(resize_h == resize_w);
     int w = SrcImage.cols;
     int h = SrcImage.rows;
-    int off = (256-224)/2;
+    int off = (256-resize_h)/2;
     cv::Mat tmp, tmp256;
     if(w != 256 || h != 256){
         cv::resize( SrcImage, tmp256, cv::Size(256, 256));
-        cv::Mat ROI(tmp256, cvRect(off,off,224,224));
+        cv::Mat ROI(tmp256, cvRect(off,off,resize_h,resize_w));
         ROI.copyTo(tmp);
     }
     else{
-        cv::Mat ROI(SrcImage, cvRect(off,off,224,224));
+        cv::Mat ROI(SrcImage, cvRect(off,off,resize_h,resize_w));
         ROI.copyTo(tmp);
     }
      
@@ -907,7 +912,7 @@ int main(int argc, char** argv)
     while (std::getline(fileList, fileLine))
     {
         total_image++;
-	    MemSet(imgRow,eltCount);
+	MemSet(imgRow,eltCount);
     	std::string imgFile;
 
         std::cout << "Read file path=" << fileLine<<std::endl;

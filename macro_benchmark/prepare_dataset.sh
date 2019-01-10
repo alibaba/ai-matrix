@@ -19,3 +19,7 @@ cd ..
 cd DSSD
 ./prepare_dataset.sh
 cd ..
+
+cd DIEN
+./prepare_dataset.sh
+cd ..

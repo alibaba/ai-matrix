@@ -73,6 +73,13 @@ cd NCF
 ./infer.sh
 cd ..
 
+echo "##########################################"
+echo "### Running DIEN                       ###"
+echo "##########################################"
+cd DIEN
+./infer.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

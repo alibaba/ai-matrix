@@ -52,6 +52,12 @@ cd NCF
 ./train.sh
 cd ..
 
+echo "##########################################"
+echo "### Running DIEN                       ###"
+echo "##########################################"
+cd DIEN
+./train.sh
+cd ..
 
 ./process_results.sh
 
