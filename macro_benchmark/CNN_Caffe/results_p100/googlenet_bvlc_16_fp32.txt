@@ -1,0 +1,19 @@
+deploy: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.prototxt
+output: prob
+batch: 16
+device: 1
+model: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.caffemodel
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 8.63109 ms (percentile time is 8.67546).
+Average over 10 runs is 8.64281 ms (percentile time is 8.66986).
+Average over 10 runs is 8.38496 ms (percentile time is 8.62995).
+Average over 10 runs is 8.0617 ms (percentile time is 8.11891).
+Average over 10 runs is 7.94663 ms (percentile time is 7.97552).
+Average over 10 runs is 7.95625 ms (percentile time is 7.97389).
+Average over 10 runs is 7.92988 ms (percentile time is 7.95875).
+Average over 10 runs is 7.93545 ms (percentile time is 7.99536).
+Average over 10 runs is 7.92727 ms (percentile time is 7.94438).
+Average over 10 runs is 7.926 ms (percentile time is 7.93994).

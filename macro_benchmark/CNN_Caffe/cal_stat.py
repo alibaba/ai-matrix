@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 import os
 import argparse
-
+import csv
+import sys
+float_formatter = lambda x: "%.2f" % x
 def update( num_dt ):
     df = pd.DataFrame(columns = ['model','batch','fp32','fp32 std','fp16','fp16 std','int8','int8 std'])
     row = 0
-    models = ['googlenet','resnet50','resnet152', 'densenet121']
+    models = ['googlenet_bvlc','resnet50','resnet152', 'densenet121', 'squeezenetv1.1']
     bs = ['16', '32', '64']
     if num_dt == 2:
         dt = ['fp32','fp16']
@@ -28,8 +30,8 @@ def update( num_dt ):
                             arr = np.append(arr, val)
                             #print(arr)
                     speed = float(bs[i]) * 1000 / arr
-                    speed_arr.append(np.mean(speed))               
-                    speed_arr.append(np.std(speed))               
+                    speed_arr.append(float_formatter(np.mean(speed)))               
+                    speed_arr.append(float_formatter(np.std(speed)))               
                
             if num_dt == 2:
                 df.loc[row] =  [md, bs[i]] + speed_arr + [0,0]
@@ -48,7 +50,7 @@ def main():
 
     args = parser.parse_args()
     df = update(args.num_dt)
-    df.to_csv('results.csv', encoding ='utf-8')
+    df.to_csv('CNN_Caffe_results.csv', encoding ='utf-8')
     if args.compare is not None:
         if args.compare == 'P4':
             df_card = pd.read_csv('./results_p4/results.csv')
@@ -68,6 +70,22 @@ def main():
     if args.compare == 'V100':
         print('Total speedup on all the models of fp32 ', df['fp32 speedup'].mean())
         print('Total speedup on all the models of fp16 ', df['fp16 speedup'].mean())
+
+    # convert to xlsx format
+    import xlsxwriter
+
+# if we read f.csv we will write f.xlsx
+    wb = xlsxwriter.Workbook("CNN_Caffe_results.xlsx")
+    ws = wb.add_worksheet("performance")    # your worksheet title here
+    with open('CNN_Caffe_results.csv','r') as csvfile:
+        table = csv.reader(csvfile)
+        i = 0
+        # write each row from the csv file as text into the excel file
+        # this may be adjusted to use 'excel types' explicitly (see xlsxwriter doc)
+        for row in table:
+            ws.write_row(i, 0, row)
+            i += 1
+    wb.close()
 
 if __name__ == '__main__':
     main()

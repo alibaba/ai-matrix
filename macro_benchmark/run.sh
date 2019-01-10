@@ -45,6 +45,13 @@ cd DSSD
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running DIEN                       ###"
+echo "##########################################"
+cd DIEN
+./run.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

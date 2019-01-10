@@ -1,0 +1,20 @@
+deploy: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/ResNet-50-deploy.prototxt
+output: prob
+batch: 16
+device: 1
+model: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/ResNet-50-model.caffemodel
+fp16
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 9.57203 ms (percentile time is 9.62243).
+Average over 10 runs is 9.01407 ms (percentile time is 9.61062).
+Average over 10 runs is 8.80334 ms (percentile time is 8.92522).
+Average over 10 runs is 8.76659 ms (percentile time is 8.78989).
+Average over 10 runs is 8.74281 ms (percentile time is 8.78656).
+Average over 10 runs is 8.72816 ms (percentile time is 8.75987).
+Average over 10 runs is 8.72158 ms (percentile time is 8.75091).
+Average over 10 runs is 8.71806 ms (percentile time is 8.73699).
+Average over 10 runs is 8.72111 ms (percentile time is 8.75043).
+Average over 10 runs is 8.71408 ms (percentile time is 8.74474).
