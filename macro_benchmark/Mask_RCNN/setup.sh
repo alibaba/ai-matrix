@@ -8,7 +8,7 @@ pip3 install scikit-image==0.13.1
 pip3 install cython
 apt update && apt install -y libsm6 libxext6
 apt-get install -y libxrender-dev
-yum install libXext libSM libXrender
+apt-get install -y libxext-dev libsm-dev libxrender-dev
 cd coco/PythonAPI
 make
 make install
