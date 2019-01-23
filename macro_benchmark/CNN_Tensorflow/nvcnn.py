@@ -750,48 +750,57 @@ class FeedForwardTrainer(object):
             sess.run(self.enqueue_ops[:i+1])
 
 class FeedForwardEvaluator(object):
-    def __init__(self, preprocessor, eval_func, use_placeholder):
+    def __init__(self, preprocessor, eval_func, use_placeholder, use_trt):
         self.eval_func          = eval_func
         self.image_preprocessor = preprocessor
-        self.use_placeholder    = use_placeholder
+        self.use_placeholder = use_placeholder
+        self.use_trt    =  use_trt
     def evaluation_step(self, total_batch_size, devices):
         preload_ops = [] # CPU pre-load
         gpucopy_ops = [] # H2D transfer
         tower_top1s = []
         tower_top5s = []
-        if type(self.image_preprocessor) is not DummyPreprocessor:
+        if type(self.image_preprocessor) is not DummyPreprocessor and not self.use_trt:
             with tf.device('/cpu:0'):
                 dev_images, dev_labels = self.image_preprocessor.device_minibatches(
                     total_batch_size)
         # Each device has its own copy of the model, referred to as a tower
         for device_num, device in enumerate(devices):
-            if type(self.image_preprocessor) is not DummyPreprocessor:
+            if type(self.image_preprocessor) is not DummyPreprocessor and not self.use_trt:
+                print('====Tensorflow inference with real input====')  
                 images, labels = dev_images[device_num], dev_labels[device_num]
                 with tf.device('/cpu:0'):
                     # Stage images on the host
                     preload_op, (images, labels) = stage([images, labels])
-                    preload_ops.append(preload_op)
-            if type(self.image_preprocessor) is not DummyPreprocessor:
+                    preload_ops.append(preload_op)         
+            if type(self.image_preprocessor) is not DummyPreprocessor and not self.use_trt:
                 with tf.device(device):
                     # Copy images from host to device
                     gpucopy_op, (images, labels) = stage([images, labels])
                     gpucopy_ops.append(gpucopy_op)
-            elif not self.use_placeholder:
-                input_shape = [self.image_preprocessor.batch, 
-                                   self.image_preprocessor.height,
-                                   self.image_preprocessor.width,
-                                   3]
-                images = tf.truncated_normal(
-                        input_shape,
-                        dtype=tf.float32,
-                        stddev=1.e-1,
-                        name='synthetic_images')
-                labels = tf.random_uniform(
-                        [self.image_preprocessor.batch],
-                        minval=0,
-                        maxval=self.image_preprocessor.nclass-1,
-                        dtype=tf.int32,
-                        name='synthetic_labels')
+           
+            elif type(self.image_preprocessor) is DummyPreprocessor and not self.use_trt: 
+                print('====Tensorflow inference with synthetic input====')  
+                if self.use_placeholder:
+                    images = tf.placeholder(tf.float32, [self.image_preprocessor.batch,
+                            self.image_preprocessor.height, self.image_preprocessor.width, 3], name='Images')
+                    labels = tf.placeholder(tf.int32, [  self.image_preprocessor.batch], name='Labels')
+                else:
+                    input_shape = [self.image_preprocessor.batch, 
+                                    self.image_preprocessor.height,
+                                    self.image_preprocessor.width,
+                                    3]
+                    images = tf.truncated_normal(
+                            input_shape,
+                            dtype=tf.float32,
+                            stddev=1.e-1,
+                            name='synthetic_images')
+                    labels = tf.random_uniform(
+                            [self.image_preprocessor.batch],
+                            minval=0,
+                            maxval=self.image_preprocessor.nclass-1,
+                            dtype=tf.int32,
+                            name='synthetic_labels')
             else:
                 images = tf.placeholder(tf.float32, [self.image_preprocessor.batch,
                             self.image_preprocessor.height, self.image_preprocessor.width, 3], name='Images')
@@ -904,7 +913,6 @@ def inference_densenet(net, input_layer, growth_rate, nlayers, data_format):
         channel_index = 3
     size = x.get_shape().as_list()[channel_index]
     x = tf.reduce_mean(x, [2,3], keepdims=False, name='spatial_mean')
-    print("shape========",x.get_shape())
     return x
 
 def inference_overfeat(net, input_layer):
@@ -1560,16 +1568,13 @@ def run_evaluation(nstep, sess, top1_op, top5_op, enqueue_ops, logit, total_batc
         top5_mean, top5_uncertainty, top5_madstd))
     print('-' * 64)
 
-def get_num_records(tf_record_pattern):
-    def count_records(tf_record_filename):
-        count = 0
-        for _ in tf.python_io.tf_record_iterator(tf_record_filename):
-            count += 1
-        return count
-    filenames = sorted(tf.gfile.Glob(tf_record_pattern))
-    nfile = len(filenames)
-    return (count_records(filenames[0])*(nfile-1) +
-            count_records(filenames[-1]))
+def get_num_records(data_dir):
+    validation_files = tf.gfile.Glob(os.path.join(data_dir, 'validation*'))
+    num_records = 0
+    for fn in validation_files:
+        for record in tf.python_io.tf_record_iterator(fn):
+            num_records += 1
+    return num_records
 
 def add_bool_argument(cmdline, shortname, longname=None, default=False, help=None):
     if longname is None:
@@ -1586,6 +1591,231 @@ def add_bool_argument(cmdline, shortname, longname=None, default=False, help=Non
     return cmdline
 
 
+def tensorRTInference(logit, sess, total_batch_size, nstep, config
+        , precision,model_name, data_dir):
+    synthetic_input = data_dir is None
+    if synthetic_input:
+        print('====TRT inference with synthetic data====') 
+    else:
+        print('====TRT inference with real data====')
+     # freeze graph
+    with tf.Graph().as_default() as tf_graph:   
+            tf_output = tf.identity(logit, name='logits')
+            tf_output_classes = tf.argmax(tf_output, axis=1, name='classes')
+            frozen_graph = tf.graph_util.convert_variables_to_constants(
+                sess,
+                sess.graph_def,
+                output_node_names=['logits', 'classes']
+            )
+    num_nodes={}
+    num_nodes['native_tf'] = len(frozen_graph.node)
+    print('num of nodes=', num_nodes['native_tf'])
+
+    # save the frozen graph (TRT optimized)
+    prebuilt_graph_path = "graphs/frozen_graph_%s_%s_%d.pb" % (model_name, precision, total_batch_size)
+    os.makedirs(os.path.dirname(prebuilt_graph_path), exist_ok=True)
+    with tf.gfile.GFile(prebuilt_graph_path, "wb") as f:
+        f.write(frozen_graph.SerializeToString()) 
+
+     # Convert to TensorRT graph
+    import tensorflow.contrib.tensorrt as trt
+    times={}
+   
+    start_time = time.time()
+    frozen_graph = trt.create_inference_graph(
+            input_graph_def=frozen_graph,
+            outputs=['logits', 'classes'],
+            max_batch_size=total_batch_size,
+            max_workspace_size_bytes=4096 << 20,
+            precision_mode=precision,
+            minimum_segment_size=7,
+            is_dynamic_op=False
+    )
+    times['trt_conversion'] = time.time() - start_time 
+    num_nodes['tftrt_total'] = len(frozen_graph.node)
+    num_nodes['trt_only'] = len([1 for n in frozen_graph.node if str(n.op)=='TRTEngineOp'])
+
+    if precision == 'int8':
+        calib_graph = frozen_graph
+        # INT8 calibration step
+        print('Calibrating INT8...')
+        start_time = time.time()
+        run(calib_graph, model, calib_data_dir, batch_size,
+                num_calib_inputs // batch_size, 0, False)
+        times['trt_calibration'] = time.time() - start_time
+
+        start_time = time.time()
+        frozen_graph = trt.calib_graph_to_infer_graph(calib_graph)
+        times['trt_int8_conversion'] = time.time() - start_time
+
+        del calib_graph
+        print('INT8 graph created.')
+    # save the frozen graph (TRT optimized)
+    prebuilt_graph_path = "graphs_trt/frozen_graph_%s_%s_%d.pb" % (model_name, precision, total_batch_size)
+    os.makedirs(os.path.dirname(prebuilt_graph_path), exist_ok=True)
+    start_time = time.time()
+    with tf.gfile.GFile(prebuilt_graph_path, "wb") as f:
+        f.write(frozen_graph.SerializeToString())
+    times['saving_frozen_graph'] = time.time() - start_time
+
+
+    def _deserialize_image_record(record):
+        feature_map = {
+            'image/encoded':          tf.FixedLenFeature([ ], tf.string, ''),
+            'image/class/label':      tf.FixedLenFeature([1], tf.int64,  -1),
+            'image/class/text':       tf.FixedLenFeature([ ], tf.string, ''),
+            'image/object/bbox/xmin': tf.VarLenFeature(dtype=tf.float32),
+            'image/object/bbox/ymin': tf.VarLenFeature(dtype=tf.float32),
+            'image/object/bbox/xmax': tf.VarLenFeature(dtype=tf.float32),
+            'image/object/bbox/ymax': tf.VarLenFeature(dtype=tf.float32)
+        }
+        with tf.name_scope('deserialize_image_record'):
+            obj = tf.parse_single_example(record, feature_map)
+            imgdata = obj['image/encoded']
+            label   = tf.cast(obj['image/class/label'], tf.int32)
+            bbox    = tf.stack([obj['image/object/bbox/%s'%x].values
+                                for x in ['ymin', 'xmin', 'ymax', 'xmax']])
+            bbox = tf.transpose(tf.expand_dims(bbox, 0), [0,2,1])
+            text    = obj['image/class/text']
+            return imgdata, label, bbox, text
+    
+    def get_preprocess_fn():
+        """Creates a function to parse and process a TFRecord using the model's parameters
+
+        model: string, the model name (see NETS table)
+        mode: string, whether the model is for classification or detection
+        returns: function, the preprocessing function for a record
+        """
+        def process(record):
+            # Parse TFRecord
+            imgdata, label, bbox, text = _deserialize_image_record(record)
+            label -= 1 # Change to 0-based (don't use background class)
+            try:    image = tf.image.decode_jpeg(imgdata, channels=3, fancy_upscaling=False, dct_method='INTEGER_FAST')
+            except: image = tf.image.decode_png(imgdata, channels=3)
+            # Use model's preprocessing function
+            #netdef = get_netdef(model)
+            #image = netdef.preprocess(image, netdef.input_height, netdef.input_width, is_training=False)
+            image = tf.image.central_crop(image, 224./256.)
+        
+            image = tf.image.resize_images(
+                image,
+                [224, 224],
+                tf.image.ResizeMethod.BILINEAR,
+                align_corners=False)
+            image.set_shape([224, 224, 3])
+            
+
+            return image, label
+        return process
+
+    def model_fn(features, labels, mode):
+        logits_out, classes_out = tf.import_graph_def(frozen_graph,
+            input_map={'Images': features},
+            return_elements=['logits:0', 'classes:0'],
+            name='')
+        
+        loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits_out)
+        accuracy = tf.metrics.accuracy(labels=labels, predictions=classes_out, name='acc_op')
+
+        labels = tf.squeeze(labels)
+        accuracy2 = tf.metrics.mean(tf.nn.in_top_k(predictions=logits_out, targets=labels, k=5))
+        if mode == tf.estimator.ModeKeys.EVAL:
+            return tf.estimator.EstimatorSpec(
+                mode,
+                loss=loss,
+                eval_metric_ops={'top1': accuracy, 'top5': accuracy2})
+     # Create the dataset
+    if not synthetic_input:
+        preprocess_fn = get_preprocess_fn()
+        validation_files = tf.gfile.Glob(os.path.join(data_dir, 'validation*'))
+    
+    def get_tfrecords_count(files):
+        num_records = 0
+        for fn in files:
+            for record in tf.python_io.tf_record_iterator(fn):
+                num_records += 1
+        return num_records
+
+    def eval_input_fn():
+        if synthetic_input: # placeholder means we use random inputs
+            input_width, input_height = [224, 224]#TODO
+            features = np.random.normal(
+                        loc=112, scale=70,
+                        size=(total_batch_size, input_height, input_width, 3)).astype(np.float32)
+            features = np.clip(features, 0.0, 255.0)
+            features = tf.identity(tf.constant(features))
+            labels = np.random.randint(
+                        low=0,
+                        high=1000,
+                        size=total_batch_size,
+                        dtype=np.int32)
+            
+            labels = tf.identity(tf.constant(labels))
+        else:
+            dataset = tf.data.TFRecordDataset(validation_files)
+            dataset = dataset.apply(tf.contrib.data.map_and_batch(map_func=preprocess_fn
+                , batch_size=total_batch_size, num_parallel_calls=8))
+            dataset = dataset.prefetch(buffer_size=tf.contrib.data.AUTOTUNE)
+            dataset = dataset.repeat(count=1)
+            iterator = dataset.make_one_shot_iterator()
+            features, labels = iterator.get_next()
+        return features, labels
+
+       
+    # Evaluate model
+    class LoggerHook(tf.train.SessionRunHook):
+        """Logs runtime of each iteration"""
+        def __init__(self, batch_size, num_records, display_every):
+            self.iter_times = []
+            self.display_every = display_every
+            self.num_steps = (num_records + batch_size - 1) / batch_size
+            self.batch_size = batch_size
+        def begin(self):
+            self.start_time = time.time()
+
+        def after_run(self, run_context, run_values):
+            current_time = time.time()
+            duration = current_time - self.start_time
+            self.start_time = current_time
+            self.iter_times.append(duration)
+            current_step = len(self.iter_times)
+            if current_step % self.display_every == 0:
+                print("    step %d/%d, iter_time(ms)=%.4f, images/sec=%d" % (
+                    current_step, self.num_steps, duration * 1000,
+                    self.batch_size / self.iter_times[-1]))
+    if synthetic_input:
+        num_records = 50000
+    else:
+        num_records=get_tfrecords_count(validation_files)
+    logger = LoggerHook(
+        display_every=100,
+        batch_size=total_batch_size,
+        num_records= num_records )
+     
+    
+    tf_config = tf.ConfigProto()
+    tf_config.gpu_options.allow_growth = True
+    estimator = tf.estimator.Estimator(
+        model_fn=model_fn,
+        config=tf.estimator.RunConfig(session_config=config))
+    results = estimator.evaluate(eval_input_fn, steps=nstep, hooks=[logger])
+    
+    # Gather additional results
+    #iter_times = np.array(logger.iter_times[FLAGS.num_warmup_iterations:])
+    iter_times = np.array(logger.iter_times[:])
+    results['total_time'] = np.sum(iter_times)
+    results['images_per_sec'] = np.mean(total_batch_size / iter_times)
+    results['99th_percentile'] = np.percentile(iter_times, q=99, interpolation='lower') * 1000
+    results['latency_mean'] = np.mean(iter_times) * 1000
+     
+    # Display results
+   
+    print('    top1: %.2f' % (results['top1'] * 100))
+    print('    top5: %.2f' % (results['top5'] * 100))
+    print('    images/sec: %d' % results['images_per_sec'])
+    print('    99th_percentile(ms): %.1f' % results['99th_percentile'])
+    print('    total_time(s): %.1f' % results['total_time'])
+    print('    latency_mean(ms): %.1f' % results['latency_mean'])
 
 
 
@@ -1609,6 +1839,8 @@ def main():
                          help="""Size of each minibatch.""")
     cmdline.add_argument('--num_batches', default=50, type=int,
                          help="""Number of batches to run.""")
+    cmdline.add_argument('--num_warmup_iterations', default=50, type=int,
+                         help="""Number of warp up batches to run.""")
     cmdline.add_argument('--num_epochs', default=None, type=int,
                          help="""Number of epochs to run
                          (overrides --num_batches).""")
@@ -1642,6 +1874,11 @@ def main():
                       of float32.""")
     add_bool_argument(cmdline, '--use_placeholder',
                       help="""Use tf.placeholder as input tensor type.""")
+    add_bool_argument(cmdline, '--use_trt',
+                      help="""Use tensorRT for inference.""")
+    cmdline.add_argument('--trt_precision', default=None,
+                         help="""trt precision, fp32, fp16, int8""")
+
     global FLAGS
     FLAGS, unknown_args = cmdline.parse_known_args()
     if len(unknown_args) > 0:
@@ -1674,7 +1911,7 @@ def main():
     print('\n'.join(['  '+arg for arg in sys.argv[1:]]))
 
     if FLAGS.data_dir is not None and FLAGS.data_dir != '':
-        nrecord = get_num_records(os.path.join(FLAGS.data_dir, '%s-*' % subset))
+        nrecord = get_num_records(FLAGS.data_dir)
     else:
         nrecord = FLAGS.num_batches * total_batch_size
 
@@ -1773,7 +2010,7 @@ def main():
     else:
         raise ValueError("Invalid model type: %s" % model_name)
 
-    if FLAGS.data_dir is None:
+    if FLAGS.data_dir is None or FLAGS.use_trt:
         preprocessor = DummyPreprocessor(height, width, total_batch_size//len(devices), nclass)
     else:
         preprocessor = ImagePreprocessor(height, width, subset)
@@ -1813,19 +2050,19 @@ def main():
                 tf.cast(tf.nn.in_top_k(logits, labels, 5), tf.float32))
         return top1, top5, logits
 
-    use_placeholder = FLAGS.use_placeholder
+
     if FLAGS.eval:
        # if FLAGS.data_dir is None:
        #     raise ValueError("eval requires data_dir to be specified")
         #if FLAGS.fp16:
         #    raise ValueError("eval cannot be run with in fp16")
-        evaluator = FeedForwardEvaluator(preprocessor, eval_func, use_placeholder)
+        evaluator = FeedForwardEvaluator(preprocessor, eval_func, FLAGS.use_placeholder,FLAGS.use_trt)
         print("Building evaluation graph")
         top1_op, top5_op, enqueue_ops, logit = evaluator.evaluation_step(
             total_batch_size, devices)
     else:
         nstep_per_epoch = nrecord // total_batch_size
-        trainer = FeedForwardTrainer(preprocessor, loss_func, use_placeholder,  nstep_per_epoch)
+        trainer = FeedForwardTrainer(preprocessor, loss_func, FLAGS.use_placeholder,  nstep_per_epoch)
         print("Building training graph")
         total_loss, learning_rate, train_ops = trainer.training_step(
             total_batch_size, devices)
@@ -1853,7 +2090,6 @@ def main():
         # save to graph
         my_graph = tf.get_default_graph()
         tf.train.write_graph(my_graph, './','saved_model.pb', as_text=False)
-        
         ckpt = tf.train.get_checkpoint_state(log_dir)
         checkpoint_file = os.path.join(log_dir, "checkpoint")
         if ckpt and ckpt.model_checkpoint_path:
@@ -1862,7 +2098,21 @@ def main():
             print("Restored session from checkpoint " + ckpt.model_checkpoint_path)
         else:
             if not os.path.exists(log_dir):
-                s.mkdir(log_dir)
+                os.mkdir(log_dir)
+
+    if FLAGS.eval and FLAGS.use_trt:
+        if FLAGS.trt_precision == 'fp32':
+            precision = 'fp32'
+        elif FLAGS.trt_precision == 'fp16':
+            precision = 'fp16'
+        else:
+            precision = 'int8'
+         
+        # inference starts
+        tensorRTInference(logit, sess, total_batch_size, nstep, config
+            ,precision,model_name, FLAGS.data_dir)
+        return
+
 
     if FLAGS.eval:
         if not restored:
@@ -1871,7 +2121,7 @@ def main():
             print("Pre-filling input pipeline")
             evaluator.prefill_pipeline(sess)
             nstep = nrecord // total_batch_size
-            run_evaluation(nstep, sess, top1_op, top5_op, enqueue_ops, logit, total_batch_size, use_placeholder, preprocessor)
+            run_evaluation(nstep, sess, top1_op, top5_op, enqueue_ops, logit, total_batch_size, FLAGS.use_placeholder, preprocessor)
             return
 
     if not restored:

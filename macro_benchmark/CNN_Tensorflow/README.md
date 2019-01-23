@@ -1,6 +1,6 @@
 # CNN Tensorflow
 
-The CNN test contains the following image recognition models: alexnet, densenet121, googlenet, resnet152, resnet50, synNet, and vgg16. synNet is a synthetic CNN model generated using AI Matrix's synthetic framework.
+The CNN test contains the following image recognition models: densenet121, googlenet, resnet152, resnet50, synNet. synNet is a synthetic CNN model generated using AI Matrix's synthetic framework.
 
 ## System Requirements
 Before running the benchmarks, please install tensorflow on your system. Please use tensorflow version 1.10. If you intend to run these benchmarks on NVIDIA GPU, please install cuda 9. Before you start to run the benchmarks, make sure that tensorflow and cuda are ready to use. You are responsible for setting these up properly in your environment.
@@ -42,7 +42,7 @@ To run a single model for inference, use
 ```
 ./infer.sh MODEL_NAME
 ```
-MODEL_NAME is any of alexnet, densenet121, googlenet, resnet152, resnet50, synNet, and vgg16.
+MODEL_NAME is any of densenet121, googlenet, resnet152, resnet50, synNet.
 
 ## Run Training on Multiple Accelerators
 To run training on multiple accelerators, please set NUM_ACCELERATORS environment variable in your terminal before running the run.sh or train-all.sh scripts, e.g.,
@@ -50,5 +50,14 @@ To run training on multiple accelerators, please set NUM_ACCELERATORS environmen
 export NUM_ACCELERATORS=8
 ```
 
-## Results
+## Results  
 Besides running training and inference, the run scripts also automatically generate the benchmark results. The results are dumped in results_train and results_infer directories. results.csv in each directory tables the results of all models.
+
+## Inference with TensorRT (real data)  
+python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --data_dir=/PATH/TO/TFRECORD  --num_epochs=1 --use_trt --trt_precision=PRECISION 
+  
+## Inference with TensorRT (synthetic data)  
+python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --num_epochs=1 --use_trt --trt_precision=PRECISION
+  
+## Prerequisite of inference  
+Please download the imagenet validation data and inference model weights first. The download script is located in ai-matrix/macro_benchmark/pretrained_models  
