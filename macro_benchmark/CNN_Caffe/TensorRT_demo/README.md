@@ -2,10 +2,10 @@ Please follow a few steps below:
 1. download the tensorRT docker from Nvidia NGC. (The opencv compile may not work with higher CUDA like 10.0)  
 docker pull nvcr.io/nvidia/tensorrt:18.08-py3
 
-2. download the validation dataset and start the build of opencv and tensorrt demo 
+2. download the validation dataset and start the build of opencv and tensorrt demo   
 git clone https://github.com/aimatrix-alibaba/imagenet-validation.git
-cd imagenet-validation  
-bash uncompress.sh 
+cd imagenet-validation    
+bash uncompress.sh  
 cd ..
 build.sh 
   
