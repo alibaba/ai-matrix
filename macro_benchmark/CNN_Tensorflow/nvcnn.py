@@ -1592,31 +1592,42 @@ def add_bool_argument(cmdline, shortname, longname=None, default=False, help=Non
 
 
 def tensorRTInference(logit, sess, total_batch_size, nstep, config
-        , precision,model_name, data_dir):
+        , precision,model_name, data_dir, cache_path):
     synthetic_input = data_dir is None
     if synthetic_input:
         print('====TRT inference with synthetic data====') 
     else:
         print('====TRT inference with real data====')
-     # freeze graph
-    with tf.Graph().as_default() as tf_graph:   
-            tf_output = tf.identity(logit, name='logits')
-            tf_output_classes = tf.argmax(tf_output, axis=1, name='classes')
-            frozen_graph = tf.graph_util.convert_variables_to_constants(
-                sess,
-                sess.graph_def,
-                output_node_names=['logits', 'classes']
-            )
+    
+    
+     # Load from pb file if frozen graph was already created and saved in cache_path
+    if len(cache_path):
+        # Graph must match the model, TRT mode, precision, and batch size
+        prebuilt_graph_path = cache_path+"/frozen_graph_%s_fp32_32.pb" % (model_name)
+        if os.path.isfile(prebuilt_graph_path):
+            print('Loading cached frozen graph from \'%s\'' % prebuilt_graph_path)          
+            with tf.gfile.GFile(prebuilt_graph_path, "rb") as f:
+                frozen_graph = tf.GraphDef()
+                frozen_graph.ParseFromString(f.read())
+    else:
+        # freeze graph
+        with tf.Graph().as_default() as tf_graph:   
+                tf_output = tf.identity(logit, name='logits')
+                tf_output_classes = tf.argmax(tf_output, axis=1, name='classes')
+                frozen_graph = tf.graph_util.convert_variables_to_constants(
+                    sess,
+                    sess.graph_def,
+                    output_node_names=['logits', 'classes']
+                )
+        # save the frozen graph default graphs folder (graph without trt optimization)
+        prebuilt_graph_path = "graphs/frozen_graph_%s_%s_%d.pb" % (model_name, precision, total_batch_size)
+        os.makedirs(os.path.dirname(prebuilt_graph_path), exist_ok=True)
+        with tf.gfile.GFile(prebuilt_graph_path, "wb") as f:
+            f.write(frozen_graph.SerializeToString()) 
+
     num_nodes={}
     num_nodes['native_tf'] = len(frozen_graph.node)
     print('num of nodes=', num_nodes['native_tf'])
-
-    # save the frozen graph (TRT optimized)
-    prebuilt_graph_path = "graphs/frozen_graph_%s_%s_%d.pb" % (model_name, precision, total_batch_size)
-    os.makedirs(os.path.dirname(prebuilt_graph_path), exist_ok=True)
-    with tf.gfile.GFile(prebuilt_graph_path, "wb") as f:
-        f.write(frozen_graph.SerializeToString()) 
-
      # Convert to TensorRT graph
     import tensorflow.contrib.tensorrt as trt
     times={}
@@ -1679,32 +1690,65 @@ def tensorRTInference(logit, sess, total_batch_size, nstep, config
             text    = obj['image/class/text']
             return imgdata, label, bbox, text
     
-    def get_preprocess_fn():
+    def get_preprocess_fn(model_name):
         """Creates a function to parse and process a TFRecord using the model's parameters
 
         model: string, the model name (see NETS table)
         mode: string, whether the model is for classification or detection
         returns: function, the preprocessing function for a record
         """
+        def _mean_image_subtraction(image, means):
+            """Subtracts the given means from each image channel.
+
+            For example:
+                means = [123.68, 116.779, 103.939]
+                image = _mean_image_subtraction(image, means)
+
+            Note that the rank of `image` must be known.
+
+            Args:
+                image: a tensor of size [height, width, C].
+                means: a C-vector of values to subtract from each channel.
+
+            Returns:
+                the centered image.
+
+            Raises:
+                ValueError: If the rank of `image` is unknown, if `image` has a rank other
+                than three or if the number of channels in `image` doesn't match the
+                number of values in `means`.
+            """
+            if image.get_shape().ndims != 3:
+                raise ValueError('Input must be of size [height, width, C>0]')
+            num_channels = image.get_shape().as_list()[-1]
+            if len(means) != num_channels:
+                raise ValueError('len(means) must match the number of channels')
+
+            channels = tf.split(axis=2, num_or_size_splits=num_channels, value=image)
+            for i in range(num_channels):
+                channels[i] -= means[i]
+            return tf.concat(axis=2, values=channels)
+
         def process(record):
             # Parse TFRecord
             imgdata, label, bbox, text = _deserialize_image_record(record)
             label -= 1 # Change to 0-based (don't use background class)
             try:    image = tf.image.decode_jpeg(imgdata, channels=3, fancy_upscaling=False, dct_method='INTEGER_FAST')
             except: image = tf.image.decode_png(imgdata, channels=3)
-            # Use model's preprocessing function
-            #netdef = get_netdef(model)
-            #image = netdef.preprocess(image, netdef.input_height, netdef.input_width, is_training=False)
-            image = tf.image.central_crop(image, 224./256.)
-        
             image = tf.image.resize_images(
                 image,
-                [224, 224],
+                [256, 256],
                 tf.image.ResizeMethod.BILINEAR,
                 align_corners=False)
+            image = tf.image.central_crop(image, 224./256.)
             image.set_shape([224, 224, 3])
-            
-
+            image = tf.to_float(image)
+            if model_name == 'densenet121':
+                _R_MEAN = 123.68
+                _G_MEAN = 116.78
+                _B_MEAN = 103.94
+                image = _mean_image_subtraction(image, [_R_MEAN, _G_MEAN, _B_MEAN])
+                image = image*0.017 # scaling factor
             return image, label
         return process
 
@@ -1726,7 +1770,7 @@ def tensorRTInference(logit, sess, total_batch_size, nstep, config
                 eval_metric_ops={'top1': accuracy, 'top5': accuracy2})
      # Create the dataset
     if not synthetic_input:
-        preprocess_fn = get_preprocess_fn()
+        preprocess_fn = get_preprocess_fn(model_name)
         validation_files = tf.gfile.Glob(os.path.join(data_dir, 'validation*'))
     
     def get_tfrecords_count(files):
@@ -1876,6 +1920,8 @@ def main():
                       help="""Use tf.placeholder as input tensor type.""")
     add_bool_argument(cmdline, '--use_trt',
                       help="""Use tensorRT for inference.""")
+    cmdline.add_argument('--cache_path', default=None,
+                         help="""Path to frozen model before trt optimization""")
     cmdline.add_argument('--trt_precision', default=None,
                          help="""trt precision, fp32, fp16, int8""")
 
@@ -1996,7 +2042,7 @@ def main():
         height, width = 299, 299
         model_func = inference_inception_resnet_v2
         FLAGS.learning_rate = 0.045
-    elif model_name.startswith('densenet'):
+    elif model_name.startswith('densenet'): #TODO: trt inference borrow model from outside, we need to fix it later
         height, width = 224, 224
         growth_rate = 32
         nlayer = int(model_name[len('densenet'):]) # valid nlayer=121,169,201
@@ -2035,7 +2081,7 @@ def main():
                 if l2_loss.dtype != tf.float32:
                     l2_loss = tf.cast(l2_loss, tf.float32)
                 loss += FLAGS.weight_decay * l2_loss
-        return loss, logits
+        return loss, logits 
     def eval_func(images, labels, var_scope):
         net = GPUNetworkBuilder(
             False, dtype=model_dtype, use_xla=FLAGS.xla, data_format=FLAGS.data_format)
@@ -2088,8 +2134,8 @@ def main():
     restored = False
     if saver is not None:
         # save to graph
-        my_graph = tf.get_default_graph()
-        tf.train.write_graph(my_graph, './','saved_model.pb', as_text=False)
+        #my_graph = tf.get_default_graph()
+        #tf.train.write_graph(my_graph, './','saved_model.pb', as_text=False)
         ckpt = tf.train.get_checkpoint_state(log_dir)
         checkpoint_file = os.path.join(log_dir, "checkpoint")
         if ckpt and ckpt.model_checkpoint_path:
@@ -2109,8 +2155,11 @@ def main():
             precision = 'int8'
          
         # inference starts
+        if len(FLAGS.cache_path):
+            assert len(FLAGS.log_dir) == 0, "we do not need checkpoint model"
+    
         tensorRTInference(logit, sess, total_batch_size, nstep, config
-            ,precision,model_name, FLAGS.data_dir)
+            ,precision,model_name, FLAGS.data_dir, FLAGS.cache_path)
         return
 
 
