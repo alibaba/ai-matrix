@@ -53,11 +53,14 @@ export NUM_ACCELERATORS=8
 ## Results  
 Besides running training and inference, the run scripts also automatically generate the benchmark results. The results are dumped in results_train and results_infer directories. results.csv in each directory tables the results of all models.
 
-## Inference with TensorRT (real data)  
+## Inference with TensorRT (real data), checkpoint model  
 python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --data_dir=/PATH/TO/TFRECORD  --num_epochs=1 --use_trt --trt_precision=PRECISION 
   
-## Inference with TensorRT (synthetic data)  
+## Inference with TensorRT (synthetic data), checkpoint model 
 python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --num_epochs=1 --use_trt --trt_precision=PRECISION
+
+## Inference with TensorRT (synthetic data), frozen model  
+python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --num_epochs=1 --use_trt --trt_precision=PRECISION --cache --cache_path=/PATH/TO/FROZEN_MODEL
   
 ## Prerequisite of inference  
 Please download the imagenet validation data and inference model weights first. The download script is located in ai-matrix/macro_benchmark/pretrained_models  
