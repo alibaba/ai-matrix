@@ -3,7 +3,7 @@ Please follow a few steps below:
 docker pull nvcr.io/nvidia/tensorrt:18.08-py3
 
 2. download the validation dataset and start the build of opencv and tensorrt demo   
-git clone https://github.com/aimatrix-alibaba/imagenet-validation.git 。
+git clone https://github.com/aimatrix-alibaba/imagenet-validation.git    
 cd imagenet-validation    
 bash uncompress.sh  
 cd ..
