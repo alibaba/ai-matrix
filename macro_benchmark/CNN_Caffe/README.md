@@ -1,7 +1,7 @@
 # CNN Caffe
-
+## Performance test  
 In this part performs the inference on CNN classic models.   
-First, download TensorRT and place it under caffe_inference folder.   
+First, download TensorRT or Download tensorRT docker image from Nvidia NGC.
 
 Second, follow the script below to run this test in nvidia tensorRT. 
 Use the command below to run inference of all the models. ***TensorRT\_folder*** is where is folder name of downloaded tensorRT. ***data\_type*** can be fp32, fp16 or int8.   
@@ -19,20 +19,13 @@ or
 ```
 python cal_stat.py --num_type 2 --compare V100
 ```
- 
-
-If it is not intended to test on GPU, please use original **caffe test** (without TensorRT) command to run these models.
-
-
-# Model sources
-|              | Validation Top1 | Validation Top5 |
-|--------------|-----------------|-----------------|
-| Googlenet-bn |                 |                 |
-| Googlenet    |                 |                 |
-| Resnet50     |                 |                 |
-| Resnet152    |                 |                 |
-| Densenet121  |                 |                 |
-| SqueezeNet   |                 |                 |
+Third, the performance number is recorded in aimatrix/result folder  
+  
+  
+# Accuracy test
+Please refer the TensorRT_demo for accuracy test. The test is based on trtexec.cpp 
+and being added the preprocessing step in the code. Please refer the README inside
+ that folder for accuracy number.
 
 
 # Special Thanks to the authors and organizations below:
