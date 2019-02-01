@@ -22,7 +22,9 @@ LD_LIBRARY_PATH=./Model/opencv-3.4.0/build/lib/:$LD_LIBRARY_PATH ./bin/trtexec -
 Please check ***infer-all-trt.sh*** for details.  
  
 
-# Model accuracy test (numbers will differ from reference as different preprocessing method used)
+# Model accuracy test   
+*numbers will differ from reference as different preprocessing method used*
+
 |   fp32       | Validation Top1 | Validation Top5 | 
 |--------------|-----------------|-----------------|
 | Googlenet    |68.91            |89.15            |                    
@@ -50,4 +52,4 @@ Please check ***infer-all-trt.sh*** for details.
 | Densenet121    | 0.017 | (B,G,R)=(103.94,116.78,123.68) | resize to 256x256 then crop to 224x224 |
 | Squeezenetv1.1 | 1     | (B,G,R)=(103.94,116.78,123.68) | resize to 256x256 then crop to 224x224 |
 
-** P100 + tensorRT 18.08 py3 docker image **  
+** based on P100 + tensorRT 18.08 py3 docker image **  
