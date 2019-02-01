@@ -3,7 +3,7 @@ Please follow a few steps below:
 docker pull nvcr.io/nvidia/tensorrt:18.08-py3
 
 2. download the validation dataset and start the build of opencv and tensorrt demo 
-git clone https://github.com/aimatrix-alibaba/imagenet-validation.git
+git clone https://github.com/aimatrix-alibaba/imagenet-validation.git  
 cd imagenet-validation  
 bash uncompress.sh 
 cd ..
@@ -52,4 +52,4 @@ Please check ***infer-all-trt.sh*** for details.
 | Densenet121    | 0.017 | (B,G,R)=(103.94,116.78,123.68) | resize to 256x256 then crop to 224x224 |
 | Squeezenetv1.1 | 1     | (B,G,R)=(103.94,116.78,123.68) | resize to 256x256 then crop to 224x224 |
 
-** based on P100 + tensorRT 18.08 py3 docker image **  
+**based on P100 + tensorRT 18.08 py3 docker image**  
