@@ -773,6 +773,53 @@ static ICudaEngine* createEngine()
     std::cerr << "Deploy file not specified" << std::endl;
     return nullptr;
 }
+void ImgPreprocessAspectVGG(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, bool scale){
+    // first crop the image according to their h-w-ratio
+    int resize_h = dimensions.d[1];
+    int resize_w = dimensions.d[2];
+    assert(resize_h == resize_w);
+    int w = SrcImage.cols;
+    int h = SrcImage.rows;
+    int off, startX, startY, height, width,resize_aspect_h, resize_aspect_w;
+    // resize to 256xN or Nx256 whichever smallest side is 256
+    if ( h < w){
+        resize_aspect_h = 256;
+        resize_aspect_w = 256.0/h * w;
+    }else{
+        resize_aspect_w = 256;
+        resize_aspect_h = 256.0/w * h;
+    }
+    cv::Mat tmp, tmpAspect;
+    cv::resize(SrcImage, tmpAspect, cv::Size(resize_aspect_w, resize_aspect_h));
+    std::cout << "rh="<<resize_aspect_h<<",rw="<<resize_aspect_w;
+    std::cout << "rh="<<h<<",rw="<<w;
+    // crop center of 224x224
+    startX = (resize_aspect_w - resize_w)/2;
+    startY = (resize_aspect_h - resize_h)/2;
+    std::cout << "rh="<<resize_h<<",rw="<<resize_w;
+    std::cout << "rh="<<startX<<",rw="<<startY;
+    cv::Mat ROI(tmpAspect, cvRect(startX,startY,resize_w,resize_h));
+    ROI.copyTo(tmp);
+    std::cout << "rh=====";
+    cv::Mat imgFloat;
+    tmp.convertTo(imgFloat, CV_32FC3);
+        
+    // minus mean and multiply by scale
+    imgFloat = imgFloat - (cv::Scalar(103.94,116.78,123.68));
+    if (scale){
+        imgFloat = imgFloat.mul(cv::Scalar(0.017,0.017,0.017));
+    }
+        
+    float a = imgFloat.at<cv::Vec3f>(0,0)[1];
+    for(int c =0; c < dimensions.d[0];c++){
+        for(int h =0;h<dimensions.d[1];h++){	 
+            for(int w=0; w< dimensions.d[2];w++){
+                float a = imgFloat.at<cv::Vec3f>(h,w)[c];
+                imgRow[ c*dimensions.d[1]*dimensions.d[2]+ h*dimensions.d[2] + w ]= a;		
+            }
+        }
+    }
+}
 
 void ImgPreprocessAspectCut(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, bool scale){
     // first crop the image according to their h-w-ratio
@@ -799,8 +846,41 @@ void ImgPreprocessAspectCut(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, b
     cv::Mat ROI(SrcImage, cvRect(startX,startY,width,height));
     ROI.copyTo(tmpAspect);
     // resize to 224x224
-    cv::resize(tmpAspect, tmp, cv::Size(resize_h, resize_w));
+    cv::resize(tmpAspect, tmp, cv::Size(resize_w, resize_h));
 
+    cv::Mat imgFloat;
+    tmp.convertTo(imgFloat, CV_32FC3);
+        
+    // minus mean and multiply by scale
+    imgFloat = imgFloat - (cv::Scalar(103.94,116.78,123.68));
+    if (scale){
+        imgFloat = imgFloat.mul(cv::Scalar(0.017,0.017,0.017));
+    }
+        
+    float a = imgFloat.at<cv::Vec3f>(0,0)[1];
+    for(int c =0; c < dimensions.d[0];c++){
+        for(int h =0;h<dimensions.d[1];h++){	 
+            for(int w=0; w< dimensions.d[2];w++){
+                float a = imgFloat.at<cv::Vec3f>(h,w)[c];
+                imgRow[ c*dimensions.d[1]*dimensions.d[2]+ h*dimensions.d[2] + w ]= a;		
+            }
+        }
+    }
+}
+void ImgPreprocessCenterCropDirect(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, bool scale){
+    // get image from default image preprocessing scrip on Caffe website.
+    // default resize to 256x256, then center crop to 224x224
+    int resize_h = dimensions.d[1];
+    int resize_w = dimensions.d[2];
+    assert(resize_h == resize_w);
+    int w = SrcImage.cols;
+    int h = SrcImage.rows;
+   
+    cv::Mat tmp, tmp256;
+   
+    cv::resize( SrcImage, tmp, cv::Size(224, 224));
+    
+     
     cv::Mat imgFloat;
     tmp.convertTo(imgFloat, CV_32FC3);
         
@@ -831,21 +911,23 @@ void ImgPreprocessCenterCrop(cv::Mat SrcImage, float* imgRow, Dims3 dimensions, 
     int h = SrcImage.rows;
     int off = (256-resize_h)/2;
     cv::Mat tmp, tmp256;
-    if(w != 256 || h != 256){
+    
+    if(w!=256 || h!=256){
         cv::resize( SrcImage, tmp256, cv::Size(256, 256));
-        cv::Mat ROI(tmp256, cvRect(off,off,resize_h,resize_w));
-        ROI.copyTo(tmp);
+        cv::Mat ROI(tmp256, cvRect(off,off,resize_w,resize_h));
+        ROI.copyTo(tmp);  
     }
     else{
-        cv::Mat ROI(SrcImage, cvRect(off,off,resize_h,resize_w));
+        cv::Mat ROI(SrcImage, cvRect(off,off,resize_w,resize_h));
         ROI.copyTo(tmp);
     }
+    
      
     cv::Mat imgFloat;
     tmp.convertTo(imgFloat, CV_32FC3);
         
     // minus mean and multiply by scale
-    imgFloat = imgFloat - (cv::Scalar(103.94,116.78,123.68));
+    imgFloat = imgFloat - (cv::Scalar(103.94,116.78,123.68));  //B,G,R
     if (scale){
         imgFloat = imgFloat.mul(cv::Scalar(0.017,0.017,0.017));
     }
@@ -912,7 +994,7 @@ int main(int argc, char** argv)
     while (std::getline(fileList, fileLine))
     {
         total_image++;
-	MemSet(imgRow,eltCount);
+	    MemSet(imgRow,eltCount);
     	std::string imgFile;
 
         std::cout << "Read file path=" << fileLine<<std::endl;
@@ -934,8 +1016,10 @@ int main(int argc, char** argv)
         printf("Dim0: %d Dim1:%d Dim2:%d \n", dimensions.d[0],dimensions.d[1],dimensions.d[2]);
 
         // preprocess the image
-        ImgPreprocessCenterCrop(SrcImage, imgRow, dimensions, gParams.scale);
-    
+        ImgPreprocessCenterCrop(SrcImage, imgRow, dimensions, gParams.scale); // 1st method we choose
+        //ImgPreprocessAspectVGG(SrcImage, imgRow, dimensions, gParams.scale);
+        // ImgPreprocessCenterCropDirect(SrcImage, imgRow, dimensions, gParams.scale);
+
         std::vector<int> res_vector;
         res_vector.clear();
         // inference process for each image

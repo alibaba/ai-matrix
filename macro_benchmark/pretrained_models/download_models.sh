@@ -1,7 +1,7 @@
 #!/bin/bash
 git clone https://github.com/aimatrix-alibaba/aimatrix-pretrained-weights.git
 
-cd CNN_Tensorflow
+cd aimatrix-pretrained-weights/CNN_Tensorflow
 tar -xzvf imagenet_validation_TF.tgz
 tar -xzvf log_googlenetv1.tgz
 tar -xzvf log_resnet50.tgz
