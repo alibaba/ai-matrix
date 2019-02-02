@@ -64,3 +64,30 @@ python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=
   
 ## Prerequisite of inference  
 Please download the imagenet validation data and inference model weights first. The download script is located in ai-matrix/macro_benchmark/pretrained_models  
+
+# Model accuracy test   
+*numbers will differ from reference as different preprocessing method used*
+
+|   fp32       | Validation Top1 | Validation Top5 | 
+|--------------|-----------------|-----------------|
+| Googlenet    |70.01            |89.29            |                    
+| Resnet50     |74.38            |91.97            |                       
+| Resnet152    |75.93            |93.00            |                    
+| Densenet121  |73.29            |91.45            |
+
+|   fp16       | Validation Top1 | Validation Top5 |                    
+|--------------|-----------------|-----------------|
+| Googlenet    |69.97            |89.31            |                    
+| Resnet50     |74.38            |91.97            |                
+| Resnet152    |75.94            |93.01            |                
+| Densenet121  |73.29            |91.46            |        
+  
+| Model          | scale | minus mean                     | crop                                   |
+|----------------|-------|--------------------------------|----------------------------------------|
+| Googlenet      | 1     | (B,G,R)=(0,0,0) | resize to 256x256 then crop to 224x224 |
+| Resent50       | 1     | (B,G,R)=(0,0,0) | resize to 256x256 then crop to 224x224 |
+| Resnet152      | 1     | (B,G,R)=(0,0,0) | resize to 256x256 then crop to 224x224 |
+| Densenet121    | 0.017 | (B,G,R)=(103.94,116.78,123.68) | resize to 256x256 then crop to 224x224 |
+
+
+**based on P100 + tensorflow 18.10 py3 docker image**  
