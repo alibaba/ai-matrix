@@ -89,5 +89,5 @@ Please download the imagenet validation data and inference model weights first. 
 | Resnet152      | 1     | (R,G,B)=(0,0,0) | resize to 256x256 then crop to 224x224 |
 | Densenet121    | 0.017 | (R,G,B)=(123.68,116.78,103.94) | resize to 256x256 then crop to 224x224 |
 
-The input image to the model are RGB channel sequence with classification of 1000 classes.
-**based on P100 + tensorflow 18.10 py3 docker image**  
+The input image to the model are RGB channel sequence with classification of 1000 classes.  
+**Based on P100 + tensorflow 18.10 py3 docker image**  
