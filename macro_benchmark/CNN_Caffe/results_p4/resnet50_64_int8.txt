@@ -1,0 +1,20 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/resnet50_deploy.prototxt
+output: prob
+batch: 64
+device: 1
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/resnet50_iter_500.caffemodel
+int8
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 35.99 ms.
+Average over 10 runs is 35.935 ms.
+Average over 10 runs is 35.9676 ms.
+Average over 10 runs is 35.9305 ms.
+Average over 10 runs is 36.2045 ms.
+Average over 10 runs is 36.3984 ms.
+Average over 10 runs is 36.4708 ms.
+Average over 10 runs is 36.3404 ms.
+Average over 10 runs is 36.1294 ms.
+Average over 10 runs is 36.1689 ms.

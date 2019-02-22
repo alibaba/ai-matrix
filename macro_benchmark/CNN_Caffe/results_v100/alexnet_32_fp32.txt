@@ -1,0 +1,19 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/alexnet_deploy.prototxt
+output: prob
+batch: 32
+device: 0
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/alexnet_iter_500.caffemodel
+Input "data": 3x227x227
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 5.08363 ms.
+Average over 10 runs is 5.10396 ms.
+Average over 10 runs is 5.06822 ms.
+Average over 10 runs is 5.08945 ms.
+Average over 10 runs is 5.09081 ms.
+Average over 10 runs is 5.10284 ms.
+Average over 10 runs is 5.08735 ms.
+Average over 10 runs is 5.09321 ms.
+Average over 10 runs is 5.08784 ms.
+Average over 10 runs is 5.09311 ms.

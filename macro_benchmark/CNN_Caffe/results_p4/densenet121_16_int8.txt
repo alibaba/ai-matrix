@@ -1,0 +1,20 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/densenet121_deploy.prototxt
+output: prob
+batch: 16
+device: 1
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/densenet121.caffemodel
+int8
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 31.2247 ms.
+Average over 10 runs is 31.1957 ms.
+Average over 10 runs is 31.1933 ms.
+Average over 10 runs is 31.194 ms.
+Average over 10 runs is 31.1947 ms.
+Average over 10 runs is 31.1977 ms.
+Average over 10 runs is 31.1983 ms.
+Average over 10 runs is 31.1895 ms.
+Average over 10 runs is 31.195 ms.
+Average over 10 runs is 31.1976 ms.
