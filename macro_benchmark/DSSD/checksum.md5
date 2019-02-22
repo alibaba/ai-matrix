@@ -1,5 +1,0 @@
-b6e924de25625d8de591ea690078ad9f  VOC0712/VOCtest_06-Nov-2007.tar
-c52e279531787c972589f7e41ab4ae64  VOC0712/VOCtrainval_06-Nov-2007.tar
-6cd6e144f989b92b3379bac3b3de84fd  VOC0712/VOCtrainval_11-May-2012.tar
-3ec3d1a5d432ef54cb2d1afc9f83403a  models/ResNet-101/ResNet-101-deploy.prototxt
-3f8ccc93329ddc280b91efae09f71973  models/ResNet-101/ResNet-101-model.caffemodel
