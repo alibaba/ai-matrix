@@ -1,0 +1,6 @@
+0a379cfc70b0e71301e0f377548639bd  coco_dataset/annotations_trainval2014.zip
+395a089042d356d97017bf416e4e99fb  coco_dataset/instances_minival2014.json.zip
+f72ed643338e184978e8228948972e84  coco_dataset/instances_valminusminival2014.json.zip
+0da8c0bd3d6becc4dcb32757491aca88  coco_dataset/train2014.zip
+a3d79f5ed8d289b7a7554ce06a5782b3  coco_dataset/val2014.zip
+e98aaff6f99e307b5e2a8a3ff741a518  mask_rcnn_coco.h5
