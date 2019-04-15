@@ -1,4 +1,4 @@
-# Deep Interest Evolution Network for Click-Through Rate Prediction
+#  Deep Interest Evolution Network for Click-Through Rate Prediction
 https://arxiv.org/abs/1809.03672
 ## prepare data
 ### method 1
@@ -12,7 +12,7 @@ Because getting and processing the data is time consuming，so we had processed 
 tar -jxvf data.tar.gz
 mv data/* .
 tar -jxvf data1.tar.gz
-mv data1/* .
+mv data1/* .Deep
 tar -jxvf data2.tar.gz
 mv data2/* .
 ```
