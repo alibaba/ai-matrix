@@ -1,0 +1,20 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/vgg16_deploy.prototxt
+output: prob
+batch: 64
+device: 0
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/vgg16_iter_500.caffemodel
+half2
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 25.4948 ms.
+Average over 10 runs is 25.4953 ms.
+Average over 10 runs is 25.5369 ms.
+Average over 10 runs is 25.5417 ms.
+Average over 10 runs is 25.5 ms.
+Average over 10 runs is 25.5063 ms.
+Average over 10 runs is 25.4975 ms.
+Average over 10 runs is 25.4967 ms.
+Average over 10 runs is 25.4983 ms.
+Average over 10 runs is 25.4994 ms.

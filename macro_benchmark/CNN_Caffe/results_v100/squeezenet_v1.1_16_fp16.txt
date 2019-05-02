@@ -1,0 +1,20 @@
+deploy: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/squeezenet_v1.1_deploy.prototxt
+output: prob
+batch: 16
+device: 0
+model: /home/weiwei/AIMatrix/macro_benchmark/caffe_inference/squeezenet_v1.1.caffemodel
+half2
+Input "data": 3x227x227
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 0.998941 ms.
+Average over 10 runs is 0.997491 ms.
+Average over 10 runs is 0.994992 ms.
+Average over 10 runs is 0.994931 ms.
+Average over 10 runs is 0.996109 ms.
+Average over 10 runs is 0.996064 ms.
+Average over 10 runs is 0.997168 ms.
+Average over 10 runs is 0.99665 ms.
+Average over 10 runs is 0.996406 ms.
+Average over 10 runs is 0.994931 ms.
