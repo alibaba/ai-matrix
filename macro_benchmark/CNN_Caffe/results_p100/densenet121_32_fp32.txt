@@ -1,0 +1,19 @@
+deploy: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/densenet121_deploy.prototxt
+output: prob
+batch: 32
+device: 1
+model: /data/weiwei/AIMatrix/AIMatrix/macro_benchmark/CNN_Caffe/densenet121.caffemodel
+Input "data": 3x224x224
+Output "prob": 1000x1x1
+name=data, bindingIndex=0, buffers.size()=2
+name=prob, bindingIndex=1, buffers.size()=2
+Average over 10 runs is 43.7591 ms (percentile time is 43.8674).
+Average over 10 runs is 43.7262 ms (percentile time is 43.7639).
+Average over 10 runs is 43.7423 ms (percentile time is 43.7663).
+Average over 10 runs is 43.7322 ms (percentile time is 43.7891).
+Average over 10 runs is 43.7485 ms (percentile time is 43.7844).
+Average over 10 runs is 43.7348 ms (percentile time is 43.7815).
+Average over 10 runs is 43.748 ms (percentile time is 43.7791).
+Average over 10 runs is 43.7567 ms (percentile time is 43.798).
+Average over 10 runs is 43.7466 ms (percentile time is 43.7811).
+Average over 10 runs is 43.7551 ms (percentile time is 43.7792).
