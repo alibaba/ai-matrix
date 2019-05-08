@@ -10,6 +10,12 @@ import stat
 import subprocess
 import sys
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--batch_size", type=int, default=32, help="training batch size")
+parser.add_argument("--num_accelerators", type=int, default=1, help="number of accelerators used for training")
+args = parser.parse_args()
+
 # Add extra layers on top of a "base" network (e.g. VGGNet or Inception).
 def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
     use_relu = True
@@ -77,9 +83,9 @@ caffe_root = os.getcwd()
 run_soon = True
 
 # The database file for training data. Created by data/VOC0712/create_data.sh
-train_data = "examples/VOC0712/VOC0712_trainval_lmdb"
+train_data = "data/VOCdevkit/VOC0712/lmdb/VOC0712_trainval_lmdb"
 # The database file for testing data. Created by data/VOC0712/create_data.sh
-test_data = "examples/VOC0712/VOC0712_test_lmdb"
+test_data = "data/VOCdevkit/VOC0712/lmdb/VOC0712_test_lmdb"
 # Specify the batch sampler.
 resize_width = 300
 resize_height = 300
@@ -237,7 +243,7 @@ model_name = "VGG_VOC0712_{}".format(job_name)
 # Directory which stores the model .prototxt file.
 save_dir = "models/VGGNet/VOC0712/{}_score".format(job_name)
 # Directory which stores the snapshot of trained models.
-snapshot_dir = "models/VGGNet/VOC0712/{}".format(job_name)
+snapshot_dir = "models/VGGNet/VOC0712_pretrained/{}".format(job_name)
 # Directory which stores the job script and log file.
 job_dir = "jobs/VGGNet/VOC0712/{}_score".format(job_name)
 # Directory which stores the detection results.
@@ -321,7 +327,7 @@ max_ratio = 90
 step = int(math.floor((max_ratio - min_ratio) / (len(mbox_source_layers) - 2)))
 min_sizes = []
 max_sizes = []
-for ratio in xrange(min_ratio, max_ratio + 1, step):
+for ratio in range(min_ratio, max_ratio + 1, step):
   min_sizes.append(min_dim * ratio / 100.)
   max_sizes.append(min_dim * (ratio + step) / 100.)
 min_sizes = [min_dim * 10 / 100.] + min_sizes
@@ -341,6 +347,9 @@ clip = False
 # Solver parameters.
 # Defining which GPUs to use.
 gpus = "0"
+for i in range(args.num_accelerators):
+    if i != 0:
+        gpus = gpus + "," + str(i)
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 
@@ -368,7 +377,7 @@ elif normalization_mode == P.Loss.FULL:
 
 # Evaluate on whole test set.
 num_test_image = 4952
-test_batch_size = 8
+test_batch_size = args.batch_size
 # Ideally test_batch_size should be divisible by num_test_image,
 # otherwise mAP will be slightly off the true value.
 test_iter = int(math.ceil(float(num_test_image) / test_batch_size))
