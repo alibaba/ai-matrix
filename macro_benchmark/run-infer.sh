@@ -53,9 +53,9 @@ cd NMT
 cd ..
 
 echo "##########################################"
-echo "### Running SSD                        ###"
+echo "### Running SSD_Caffe                  ###"
 echo "##########################################"
-cd SSD
+cd SSD_Caffe
 ./infer.sh
 cd ..
 

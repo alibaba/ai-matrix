@@ -29,9 +29,9 @@ cd NMT
 cd ..
 
 echo "##########################################"
-echo "###        SSD                         ###"
+echo "###        SSD_Caffe                   ###"
 echo "##########################################"
-cd SSD
+cd SSD_Caffe
 ./prepare_dataset.sh
 cd ..
 
