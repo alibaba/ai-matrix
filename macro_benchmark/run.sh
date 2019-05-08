@@ -31,10 +31,17 @@ cd NMT
 ./run.sh
 cd ..
 
+# echo "##########################################"
+# echo "### Running SSD_Tensorflow             ###"
+# echo "##########################################"
+# cd SSD_Tensorflow
+# ./run.sh
+# cd ..
+
 echo "##########################################"
-echo "### Running SSD                        ###"
+echo "### Running SSD_Caffe                  ###"
 echo "##########################################"
-cd SSD
+cd SSD_Caffe
 ./run.sh
 cd ..
 

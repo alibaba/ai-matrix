@@ -57,17 +57,17 @@ else
 	echo "NMT/results/results_infer.csv does not exist, check if test is ran successfully"
 fi
 
-### SSD ###
-if [ -f SSD/results/results_train.csv ]; then
-	cp SSD/results/results_train.csv results/results_ssd_train.csv
+### SSD_Caffe ###
+if [ -f SSD_Caffe/results/results_train.csv ]; then
+	cp SSD_Caffe/results/results_train.csv results/results_ssd_train.csv
 else
-	echo "SSD/results/results_train.csv does not exist, check if test is ran successfully"
+	echo "SSD_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
 fi
 
-if [ -f SSD/results/results_infer.csv ]; then
-	cp SSD/results/results_infer.csv results/results_ssd_infer.csv
+if [ -f SSD_Caffe/results/results_infer.csv ]; then
+	cp SSD_Caffe/results/results_infer.csv results/results_ssd_infer.csv
 else
-	echo "SSD/results/results_infer.csv does not exist, check if test is ran successfully"
+	echo "SSD_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
 fi
 
 ### DSSD ###
