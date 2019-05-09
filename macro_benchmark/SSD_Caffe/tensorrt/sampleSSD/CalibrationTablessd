@@ -1,0 +1,104 @@
+TRT-5102-EntropyCalibration2
+data: 3f9839e4
+(Unnamed Layer* 0) [Convolution]_output: 4085ba9b
+conv1_1: 40871efc
+(Unnamed Layer* 2) [Convolution]_output: 4176e10f
+conv1_2: 417eddbc
+pool1: 417eddbc
+(Unnamed Layer* 5) [Convolution]_output: 41d04d01
+conv2_1: 418c7e46
+(Unnamed Layer* 7) [Convolution]_output: 41ddfc0d
+conv2_2: 41ddd71a
+pool2: 41ddd71a
+(Unnamed Layer* 10) [Convolution]_output: 42012bfc
+conv3_1: 41e26c10
+(Unnamed Layer* 12) [Convolution]_output: 420033e9
+conv3_2: 41c89bfa
+(Unnamed Layer* 14) [Convolution]_output: 41c16b5b
+conv3_3: 41a737ad
+pool3: 41a737ad
+(Unnamed Layer* 17) [Convolution]_output: 417c15cf
+conv4_1: 413718d4
+(Unnamed Layer* 19) [Convolution]_output: 410c30f7
+conv4_2: 40b6ce4e
+(Unnamed Layer* 21) [Convolution]_output: 40818569
+conv4_3: 405449ca
+pool4: 405449ca
+(Unnamed Layer* 24) [Convolution]_output: 4011fce6
+conv5_1: 4007f2f2
+(Unnamed Layer* 26) [Convolution]_output: 3fa573e0
+conv5_2: 3f835099
+(Unnamed Layer* 28) [Convolution]_output: 3f60914b
+conv5_3: 3f2bba66
+pool5: 3f2bba66
+(Unnamed Layer* 31) [Convolution]_output: 3e8fdf68
+fc6: 3e4b3297
+(Unnamed Layer* 33) [Convolution]_output: 3d69e471
+fc7: 3d32a259
+(Unnamed Layer* 35) [Convolution]_output: 3d17eb0e
+conv6_1: 3d17eb0e
+(Unnamed Layer* 37) [Convolution]_output: 3d47227d
+conv6_2: 3d47227d
+(Unnamed Layer* 39) [Convolution]_output: 3d8e0bf1
+conv7_1: 3d959106
+(Unnamed Layer* 41) [Convolution]_output: 3da97775
+conv7_2: 3de6d7fa
+(Unnamed Layer* 43) [Convolution]_output: 3dcea774
+conv8_1: 3dce5574
+(Unnamed Layer* 45) [Convolution]_output: 3dcdc300
+conv8_2: 3dcdc300
+(Unnamed Layer* 47) [Convolution]_output: 3ddcf8be
+conv9_1: 3de0109b
+(Unnamed Layer* 49) [Convolution]_output: 3e5efe1c
+conv9_2: 3e5579a3
+conv4_3_norm: 3da5175e
+conv4_3_norm_mbox_loc: 3dc6f0ea
+conv4_3_norm_mbox_loc_perm: 3dc6f0ea
+conv4_3_norm_mbox_loc_flat: 3dbb3991
+conv4_3_norm_mbox_conf: 3dd0f4fb
+conv4_3_norm_mbox_conf_perm: 3dd0f4fb
+conv4_3_norm_mbox_conf_flat: 3e2f9ec7
+conv4_3_norm_mbox_priorbox: 3a4feb9c
+fc7_mbox_loc: 3d1744b7
+fc7_mbox_loc_perm: 3d1744b7
+fc7_mbox_loc_flat: 3dbb3991
+fc7_mbox_conf: 3e38645f
+fc7_mbox_conf_perm: 3e38645f
+fc7_mbox_conf_flat: 3e2f9ec7
+fc7_mbox_priorbox: 3a4feb9c
+conv6_2_mbox_loc: 3d16da04
+conv6_2_mbox_loc_perm: 3d16da04
+conv6_2_mbox_loc_flat: 3dbb3991
+conv6_2_mbox_conf: 3e46a17a
+conv6_2_mbox_conf_perm: 3e46a17a
+conv6_2_mbox_conf_flat: 3e2f9ec7
+conv6_2_mbox_priorbox: 3a4feb9c
+conv7_2_mbox_loc: 3d1c322c
+conv7_2_mbox_loc_perm: 3d1c322c
+conv7_2_mbox_loc_flat: 3dbb3991
+conv7_2_mbox_conf: 3e4e8630
+conv7_2_mbox_conf_perm: 3e4e8630
+conv7_2_mbox_conf_flat: 3e2f9ec7
+conv7_2_mbox_priorbox: 3a4feb9c
+conv8_2_mbox_loc: 3d09e9e1
+conv8_2_mbox_loc_perm: 3d09e9e1
+conv8_2_mbox_loc_flat: 3dbb3991
+conv8_2_mbox_conf: 3e3feb51
+conv8_2_mbox_conf_perm: 3e3feb51
+conv8_2_mbox_conf_flat: 3e2f9ec7
+conv8_2_mbox_priorbox: 3a4feb9c
+conv9_2_mbox_loc: 3cf27cd5
+conv9_2_mbox_loc_perm: 3cf27cd5
+conv9_2_mbox_loc_flat: 3dbb3991
+conv9_2_mbox_conf: 3e319573
+conv9_2_mbox_conf_perm: 3e319573
+conv9_2_mbox_conf_flat: 3e2f9ec7
+conv9_2_mbox_priorbox: 3a4feb9c
+mbox_loc: 3dbb3991
+mbox_conf: 3e2f9ec7
+mbox_priorbox: 3a4feb9c
+mbox_conf_reshape: 3e2f9ec7
+mbox_conf_softmax: 3c0111c4
+mbox_conf_flatten: 3c0111c4
+detection_out: 3d91468d
+keep_count: 2
