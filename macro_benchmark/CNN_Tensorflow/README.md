@@ -30,7 +30,7 @@ The run.sh script runs both training and inference together. If you want to run 
 ```
 to run training and use
 ```
-./infer-all.sh
+./infer-all-synthetic-input.sh
 ```
 to run inference. Note that inference needs the checkpoints dumped by training as input, thus, to run inference training must be ran first.
 
@@ -61,6 +61,11 @@ python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=
 
 ## Inference with TensorRT (synthetic data), frozen model  
 python nvcnn.py --model=MODEL  --batch_size=SIZE  --num_gpus=1  --display_every=100  --log_dir=/PATH/TO/CHECKPOINT  --eval  --num_epochs=1 --use_trt --trt_precision=PRECISION --cache --cache_path=/PATH/TO/FROZEN_MODEL
+
+## Inferece with TensorRT on different format  
+./infer-all-trt-synthetic-input-fp32.sh  
+./infer-all-trt-synthetic-input-fp16.sh  
+./infer-all-trt-synthetic-input-int8.sh  
   
 ## Prerequisite of inference  
 Please download the imagenet validation data and inference model weights first. The download script is located in ai-matrix/macro_benchmark/pretrained_models  
