@@ -26,7 +26,7 @@ def process_infer_trt(pc):
     bs = ['16', '32', '64']
     #pc = ['fp32', 'fp16']
    
-    folder_path = "./results_infer/" 
+    folder_path = "./results_infer_" + pc + "/"
     for md in models:
         row_table0 = [md]
         row_table1 = [md]
