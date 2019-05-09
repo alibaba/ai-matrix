@@ -26,7 +26,7 @@ def process_infer_trt(pc):
     bs = ['16', '32', '64']
     #pc = ['fp32', 'fp16']
    
-    folder_path = "./results_infer_trt-p100-0219/" 
+    folder_path = "./results_infer_trt_" + pc +"/" 
     for md in models:
         row_table0 = [md]
         row_table1 = [md]
@@ -41,6 +41,11 @@ def process_infer_trt(pc):
                         val = line.split()[-1]
                         val = float(val)
                 row_table1.append(val)
+                if (is_number(line.split()[-1])):
+                    row_table0.append(line.split()[-1])
+                else:
+                    print("Missing result, check if test is finished!")
+        table0.append(row_table0)
         table1.append(row_table1)
 
     # write results to file
@@ -93,7 +98,7 @@ def process_infer():
                 if flag == False:
                     arr = np.append(arr, 0.0000001)
                 arr = arr[1:] #remove the 1st perf number which is still in warm up period
-                row_table1.append(np.mean(arr))
+                row_table1.append(format(np.mean(arr), '.2f'))
                 if (is_number(line.split()[-1])):
                     row_table0.append(line.split()[-1])
                 else:
