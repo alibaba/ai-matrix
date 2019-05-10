@@ -14,11 +14,12 @@ if [ ! -d "VOC0712" ]; then
     tar -xvf VOCtrainval_11-May-2012.tar
 
     cd ..
-    ./data/VOC0712/create_list.sh
-    ./data/VOC0712/create_data.sh
 else
     echo "VOC0712 already exists"
 fi
+
+./data/VOC0712/create_list.sh
+./data/VOC0712/create_data.sh
 
 echo "Running md5 checksum on downloaded dataset ..."
 if md5sum -c checksum.md5; then
