@@ -1,6 +1,12 @@
 #!/bin/bash
 
-./nmt/scripts/download_iwslt15.sh dataset/en_vi
+if [ ! -d "dataset" ]; then
+	mkdir dataset
+fi
+
+cd dataset
+../nmt/scripts/wmt16_en_de.sh
+cd ..
 
 echo "Running md5 checksum on downloaded dataset ..."
 if md5sum -c checksum.md5; then
