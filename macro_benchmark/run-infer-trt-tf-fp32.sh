@@ -4,19 +4,12 @@ start=`date +%s%N`
 start_date=`date`
 
 echo "##########################################"
-echo "### Running CNN_Caffe                  ###"
+echo "### Running CNN_Tensorflow             ###"
 echo "##########################################"
-cd CNN_Caffe
-./run_test_tensorRT-5-docker-fp32.sh
+cd CNN_Tensorflow
+./infer-all-trt-synthetic-input-fp32.sh
 cd ..
 
-
-echo "##########################################"
-echo "### Running SSD_Caffe                  ###"
-echo "##########################################"
-cd SSD_Caffe/tensorrt/sampleSSD
-./infer-fp32.sh
-cd ../../..
 
 end=`date +%s%N`
 end_date=`date`
