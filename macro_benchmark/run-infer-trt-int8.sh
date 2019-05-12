@@ -7,7 +7,7 @@ echo "##########################################"
 echo "### Running CNN_Caffe                  ###"
 echo "##########################################"
 cd CNN_Caffe
-./run_test_tensorRT-5-docker-fp32.sh
+./run_test_tensorRT-5-docker-int8.sh
 cd ..
 
 
@@ -15,7 +15,7 @@ echo "##########################################"
 echo "### Running SSD_Caffe                  ###"
 echo "##########################################"
 cd SSD_Caffe/tensorrt/sampleSSD
-./infer-fp32.sh
+./infer-int8.sh
 cd ../../..
 
 end=`date +%s%N`
