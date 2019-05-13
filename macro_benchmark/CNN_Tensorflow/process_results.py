@@ -33,6 +33,7 @@ def process_infer_trt(pc):
         for b in bs:
             fname = folder_path + "result_" + md + '_' + b + '_' + pc + '.txt'
             with open(fname, "r") as ins:
+                val = 0
                 for line in ins:
                     if not line.strip():
                         continue             

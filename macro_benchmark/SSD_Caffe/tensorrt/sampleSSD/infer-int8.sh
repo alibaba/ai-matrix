@@ -1,6 +1,5 @@
 #!/bin/bash
 batchs='16 32 64'
-export CUDA_VISIBLE_DEVICES=0
 md="ssd-vgg16"
 if [ -d results_infer_int8 ]; then
     mv results_infer_int8 results_infer_int8_$(date +%Y%m%d%H%M%S)
