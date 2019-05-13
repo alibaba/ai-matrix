@@ -20,5 +20,5 @@ for bs in 16 32 64; do
       trtexec --deploy=$CR_PWD/densenet121_deploy.prototxt  --output=prob --batch=$bs --iterations=1 --avgRuns=500 --model=$CR_PWD/densenet121.caffemodel | tee densenet121_${bs}_fp32.txt
       trtexec --deploy=$CR_PWD/squeezenet_v1.1_deploy.prototxt  --output=prob --batch=$bs --iterations=1  --avgRuns=500  --model=$CR_PWD/squeezenet_v1.1.caffemodel | tee squeezenetv1.1_${bs}_fp32.txt
 done
-
+cd ..
 python process_results.py --infer_trt --infer_trt_precision=fp32
