@@ -1,5 +1,5 @@
 # CNN-Caffe  
-The test below is run on Nvidia Tensor RT with trained weights. The results is for throughput with synthetic inputs.  
+The test below is run on Cambricon MLU100 with trained weights. The results is for throughput with synthetic inputs.  
   
 | Models    | Precision | BS = 16 | BS = 32 | BS = 64 |  
 |-----------|-----------|---------|---------|---------|  
