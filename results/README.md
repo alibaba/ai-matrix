@@ -1,6 +1,3 @@
-# Results
-The AI Matrix results are uploaded to this folder result_a_b_c where a_b_c means AIMatrix version a_b_c
-
 ## Format of the Results Folder
 The folder name should follow the following format:
 
