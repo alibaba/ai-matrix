@@ -1,0 +1,11 @@
+System performance, unit is images/second,
+System performance measures the performance of the entire system, including both CPU work and GPU work. The benchmark is timed right before and after the script is ran.,
+model,batch 16,batch 32,batch 64,
+ssd-vgg16,35.0,40.0,46.0,
+
+
+
+Approximate accelerator performance, unit is images/second,
+Approximate accelerator performance aims at measuring only the performance of the accelerator. The benchmark does its best to exclude CPU work from performance measurement and approximates the accelerator performance.,
+model,batch 16,batch 32,batch 64,
+ssd-vgg16,67.8812,68.1665,69.5623,

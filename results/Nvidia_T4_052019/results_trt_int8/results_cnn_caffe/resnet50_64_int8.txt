@@ -1,0 +1,12 @@
+&&&& RUNNING TensorRT.trtexec # trtexec --deploy=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-deploy.prototxt --output=prob --batch=64 --iterations=1 --avgRuns=500 --model=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-model.caffemodel --int8
+[I] deploy: /data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-deploy.prototxt
+[I] output: prob
+[I] batch: 64
+[I] iterations: 1
+[I] avgRuns: 500
+[I] model: /data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-model.caffemodel
+[I] int8
+[I] Input "data": 3x224x224
+[I] Output "prob": 1000x1x1
+[I] Average over 500 runs is 14.7251 ms (host walltime is 14.7954 ms, 99% percentile time is 23.0259).
+&&&& PASSED TensorRT.trtexec # trtexec --deploy=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-deploy.prototxt --output=prob --batch=64 --iterations=1 --avgRuns=500 --model=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/ResNet-50-model.caffemodel --int8
