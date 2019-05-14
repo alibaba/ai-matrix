@@ -1,36 +1,36 @@
-#CNN-Tensorflow  
+# CNN-Tensorflow  
 The test below is run on Nvidia Tensor RT with trained weights. The results is for throughput with synthetic inputs.  
   
 | Models    | Precision | BS = 16 | BS = 32 | BS = 64 |  
 |-----------|-----------|---------|---------|---------|  
-| Googlenet | int8|3276.0|3664.0|3769.0|  
-| Resnet50 | int8|2478.0|2760.0|2795.0|  
-| Resnet152 | int8|1324.0|1466.0|1452.0|  
-| Densenet121 | int8|1546.0|1686.0|1745.0|  
+| Googlenet | fp32|875.0|945.0|953.0|  
+| Resnet50 | fp32|450.0|454.0|468.0|  
+| Resnet152 | fp32|178.0|181.0|188.0|  
+| Densenet121 | fp32|362.0|386.0|401.0|  
   
 *BS: Batch Size*  
 *Unit: Img/sec*  
   
-#CNN-Caffe  
+# CNN-Caffe  
 The test below is run on Nvidia Tensor RT with trained weights. The results is for throughput with synthetic inputs.  
   
 | Models    | Precision | BS = 16 | BS = 32 | BS = 64 |  
 |-----------|-----------|---------|---------|---------|  
-| Googlenet | int8|6148.01|6815.69|6891.00|  
-| Resnet50 | int8|4038.99|4425.34|4346.32|  
-| Resnet152 | int8|1666.58|1820.06|1814.88|  
-| Densenet121 | int8|1305.93|1385.30|1404.78|  
-| Squeezenetv1.1 | int8|12558.18|14204.23|15125.20|  
+| Googlenet | fp32|1065.91|1152.18|1171.74|  
+| Resnet50 | fp32|507.91|506.40|521.56|  
+| Resnet152 | fp32|185.81|189.14|194.79|  
+| Densenet121 | fp32|292.51|300.35|313.02|  
+| Squeezenetv1.1 | fp32|2935.77|3155.76|3250.43|  
   
 *BS: Batch Size*  
 *Unit: Img/sec*  
   
-#SSD-Caffe  
+# SSD-Caffe  
 The test below is run on Nvidia Tensor RT with trained weights. The results is for throughput with synthetic inputs.  
   
 | Models    | Precision | BS = 16 | BS = 32 | BS = 64 |  
 |-----------|-----------|---------|---------|---------|  
-| SSD-VGG16 | int8|465.36|457.437|455.529|  
+| SSD-VGG16 | fp32|67.8812|68.1665|69.5623|  
   
 *BS: Batch Size*  
 *Unit: Img/sec*  
