@@ -1,0 +1,11 @@
+&&&& RUNNING TensorRT.trtexec # trtexec --deploy=/data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.prototxt --output=prob --batch=32 --iterations=1 --avgRuns=500 --model=/data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.caffemodel
+[I] deploy: /data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.prototxt
+[I] output: prob
+[I] batch: 32
+[I] iterations: 1
+[I] avgRuns: 500
+[I] model: /data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.caffemodel
+[I] Input "data": 3x224x224
+[I] Output "prob": 1000x1x1
+[I] Average over 500 runs is 14.1965 ms (host walltime is 14.2389 ms, 99% percentile time is 15.5074).
+&&&& PASSED TensorRT.trtexec # trtexec --deploy=/data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.prototxt --output=prob --batch=32 --iterations=1 --avgRuns=500 --model=/data/weiwei/AIMatrix/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/googlenet_bvlc.caffemodel

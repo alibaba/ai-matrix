@@ -1,0 +1,11 @@
+&&&& RUNNING TensorRT.trtexec # trtexec --deploy=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1_deploy.prototxt --output=prob --batch=16 --iterations=1 --avgRuns=500 --model=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1.caffemodel
+[I] deploy: /data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1_deploy.prototxt
+[I] output: prob
+[I] batch: 16
+[I] iterations: 1
+[I] avgRuns: 500
+[I] model: /data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1.caffemodel
+[I] Input "data": 3x227x227
+[I] Output "prob": 1000x1x1
+[I] Average over 500 runs is 4.22705 ms (host walltime is 4.29642 ms, 99% percentile time is 6.72115).
+&&&& PASSED TensorRT.trtexec # trtexec --deploy=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1_deploy.prototxt --output=prob --batch=16 --iterations=1 --avgRuns=500 --model=/data/weiwei/aimatrix-github/ai-matrix/macro_benchmark/CNN_Caffe/squeezenet_v1.1.caffemodel

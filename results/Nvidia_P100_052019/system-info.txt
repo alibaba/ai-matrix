@@ -1,0 +1,14 @@
+1.GPU
+Tesla P100-PCIE-16GB
+
+2.CPU
+model name	: Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz
+
+3.MemTotal
+264017000 kB
+
+4.Operating system
+Ubuntu 18.04
+
+5.Framework
+NV Tensorflow 19.04-py3
