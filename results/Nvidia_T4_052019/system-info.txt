@@ -1,0 +1,18 @@
+1.GPU
+Tesla T4
+
+2.CPU
+model name: Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+Number of CPU: 2
+
+3.MemTotal
+512GB
+
+4.Operating system
+Alios 7.2
+
+5.Framework
+Nvidia Tensorflow container 19.04-py3
+ 
+6.Others:
+Nvidia Driver: 418.39
