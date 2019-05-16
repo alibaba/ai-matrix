@@ -5,15 +5,16 @@ apt-get update
 ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.10.1.0 /usr/lib/x86_64-linux-gnu/libhdf5.so
 ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.10.0.2 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
 
-apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libprotobuf-dev protobuf-compiler libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev
+#apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libprotobuf-dev protobuf-compiler libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev
+apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev
 
-apt-get install -y python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-gflags cython ipython python-yaml 
+#apt-get install -y python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-gflags cython ipython python-yaml 
+apt-get install -y python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-leveldb python-networkx python-nose python-pandas python-gflags cython ipython python-yaml 
 
 dpkg --configure -a
 apt-get -f install
 apt-get install libhdf5-dev
 
-pip3 install scikit-image
 
 if [ -f /usr/bin/python ]; then
 	rm /usr/bin/python
@@ -31,7 +32,23 @@ else
 	exit -1
 fi
 
+pip3 install scikit-image
 #apt-get autoremove -y libopencv-dev
+
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+tar -zxvf protobuf-2.6.1.tar.gz
+apt-get install build-essential
+cd protobuf-2.6.1
+./configure
+make -j64
+make check -j64
+make install -j64
+cd ..
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+protoc src/caffe/proto/caffe.proto --cpp_out=.
+mkdir include/caffe/proto
+mv src/caffe/proto/caffe.pb.h include/caffe/proto
 
 make clean
 make -j64
