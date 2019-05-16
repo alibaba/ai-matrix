@@ -81,7 +81,8 @@ def decode_and_evaluate(name,
               "  done, num sentences %d, num translations per input %d" %
               (num_sentences, num_translations_per_input), start_time)
           break
-      print("Approximate inference accelerator time in seconds is %.3f" % total_time)
+      print("Approximate accelerator time in seconds is %.3f" % total_time)
+      print("Approximate inference accelerator performance in sentences/second is %.3f" % (float(num_sentences)/float(total_time)))
 
   # Evaluation
   evaluation_scores = {}

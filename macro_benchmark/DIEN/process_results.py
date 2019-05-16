@@ -34,6 +34,8 @@ def process_infer():
             for line in ins:
                 if not line.strip():
                     continue
+                if len(line.split()) < 3:
+                    continue
                 if ( line.split()[0]== 'Approximate' and line.split()[1]== 'accelerator' and line.split()[2]== 'time' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)
@@ -89,6 +91,8 @@ def process_train():
             flag1 = False
             flag0 = False
             for line in ins:
+                if len(line.split()) < 3:
+                    continue
                 if ( line.split()[0]== 'Approximate' and line.split()[1]== 'accelerator' and line.split()[2]== 'time' and is_number(line.split()[-1])):
                     val = line.split()[-1]
                     val = float(val)

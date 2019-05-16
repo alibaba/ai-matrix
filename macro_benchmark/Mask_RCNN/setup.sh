@@ -13,6 +13,7 @@ fi
 
 
 pip3 install imgaug opencv-python keras==2.1.6 scikit-image cython
+apt-get install python3-tk
 cd coco/PythonAPI
 make
 make install
