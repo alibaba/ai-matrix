@@ -5,7 +5,10 @@ if [ ! -d "dataset" ]; then
 fi
 
 cd dataset
-#../nmt/scripts/wmt16_en_de.sh
+if [ ! -d "wmt16_de_en" ]; then
+	../nmt/scripts/wmt16_en_de.sh
+fi
+
 cd wmt16_de_en
 cat newstest2016.tok.bpe.32000.de > newstest.tok.bpe.32000.de
 cat newstest2016.tok.bpe.32000.en > newstest.tok.bpe.32000.en
