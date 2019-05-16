@@ -8,9 +8,8 @@ f. Memory size: 264GB
 Accelerator
 a. Vendor: NVIDIA
 b. Accelerator type: V100
-c. Number of accelerators used for training: 1
-d. Frequency: 1245MHz, 1530MHz (boost)
-e. Memory size: 32GB
+c. Frequency: 1245MHz, 1530MHz (boost)
+d. Memory size: 32GB
 Operating system
 a. OS name: Ubuntu
 b. OS version: 18.04
