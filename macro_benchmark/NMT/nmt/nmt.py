@@ -501,6 +501,8 @@ def extend_hparams(hparams):
         sos=hparams.sos,
         eos=hparams.eos,
         unk=vocab_utils.UNK)
+  src_vocab_size -= 1
+  tgt_vocab_size -= 1
   _add_argument(hparams, "src_vocab_size", src_vocab_size)
   _add_argument(hparams, "tgt_vocab_size", tgt_vocab_size)
   _add_argument(hparams, "src_vocab_file", src_vocab_file)

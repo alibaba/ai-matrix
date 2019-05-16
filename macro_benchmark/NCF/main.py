@@ -32,8 +32,8 @@ tf.app.flags.DEFINE_float('dropout', 0.0, 'dropout rate.')
 tf.app.flags.DEFINE_boolean('train_flag', True, 'training or inference.')
 
 
-opt_gpu = FLAGS.gpu
-os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
+#opt_gpu = FLAGS.gpu
+#os.environ["CUDA_VISIBLE_DEVICES"] = opt_gpu
 
 def train(train_data, test_data, user_size, item_size):
 	config = tf.ConfigProto()
