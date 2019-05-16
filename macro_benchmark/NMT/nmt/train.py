@@ -601,7 +601,8 @@ def train(hparams, scope=None, target_session=""):
 
   print("***************************************************************")
   print("Total training steps: %d" % global_step)
-  print("Approximate training accelerator time in seconds: %.3f" % total_time)
+  print("Approximate accelerator time in seconds: %.3f" % total_time)
+  print("Approximate training accelerator performance in sentences/second: %.3f" % (float(hparams.batch_size) * float(hparams.num_gpus) * float(global_step) / float(total_time)))
   print("***************************************************************")
 
   # Done training
