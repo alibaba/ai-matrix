@@ -4,7 +4,7 @@ b. CPU type: Xeon(R) CPU E5-2682 v4
 c. Number of cores: 16
 d. Number of sockets: 2
 e. Frequency: 2.50GHz
-f. Memory size: 264GB
+f. Memory size: 251GB
 Accelerator
 a. Vendor: NVIDIA
 b. Accelerator type: P4
