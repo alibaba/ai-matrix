@@ -15,6 +15,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--batch_size", type=int, default=4, help="training batch size")
 parser.add_argument("--num_accelerators", type=int, default=1, help="number of accelerators used for training")
+parser.add_argument("--max_iter", type=int, default=120000, help="number of batches to train")
 args = parser.parse_args()
 
 
@@ -435,7 +436,7 @@ solver_param = {
     'gamma': 0.1,
     'momentum': 0.9,
     'iter_size': iter_size,
-    'max_iter': 1000,
+    'max_iter': args.max_iter,
     'snapshot': 1000,
     'display': 10,
     'average_loss': 10,
