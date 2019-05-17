@@ -27,7 +27,6 @@ db136e6ea52332a6babd6c3a998f0085  dataset/wmt16_de_en/newstest2016.tok.bpe.32000
 87a4faead418ab19f173bc59f3e9dffc  dataset/wmt16_de_en/train.tok.clean.bpe.32000.de
 f76caa30ad2d2034e2eeb9b7a234fb87  dataset/wmt16_de_en/train.tok.clean.de
 89786bed7a822898de616cff6cfce06b  dataset/wmt16_de_en/train.tok.de
-c145896329834fc7df9b1068f55e9b79  dataset/wmt16_de_en/vocab.bpe.32000.de
 ef5a07243f3081d0d5ecd3524b82a4b3  dataset/wmt16_de_en/newstest2009.en
 feb386f744b1fd47fd1829860a925422  dataset/wmt16_de_en/newstest2009.tok.bpe.32000.en
 5fb0367bdf5ac2e6a805a9b56ab45d90  dataset/wmt16_de_en/newstest2009.tok.en
@@ -57,4 +56,3 @@ f80229b9cf3af27d7781a48ca429930a  dataset/wmt16_de_en/newstest2016.tok.en
 5759d28412660a6261d9599c4fcfc848  dataset/wmt16_de_en/train.tok.clean.bpe.32000.en
 a7a333d1a81af3205c5244ce760c6673  dataset/wmt16_de_en/train.tok.clean.en
 224869e3df9303455477a5d9a178c3ea  dataset/wmt16_de_en/train.tok.en
-c145896329834fc7df9b1068f55e9b79  dataset/wmt16_de_en/vocab.bpe.32000.en

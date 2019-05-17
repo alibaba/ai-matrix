@@ -32,12 +32,12 @@ pip3 install xlsxwriter
 apt-get install bc
 yum install bc
 
-#echo "##########################################"
-#echo "### Set up DSSD                        ###"
-#echo "##########################################"
-#cd DSSD
-#./setup.sh
-#cd ..
+echo "##########################################"
+echo "### Set up DSSD                        ###"
+echo "##########################################"
+cd DSSD
+./setup.sh
+cd ..
 
 echo "##########################################"
 echo "### Set up SSD_Caffe                   ###"

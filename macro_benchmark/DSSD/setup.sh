@@ -35,15 +35,17 @@ fi
 pip3 install scikit-image
 #apt-get autoremove -y libopencv-dev
 
-wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
-tar -zxvf protobuf-2.6.1.tar.gz
-apt-get install build-essential
-cd protobuf-2.6.1
-./configure
-make -j64
-make check -j64
-make install -j64
-cd ..
+if [ ! -f /usr/local/lib/libprotobuf.so.9 ]; then
+	wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+	tar -zxvf protobuf-2.6.1.tar.gz
+	apt-get install build-essential
+	cd protobuf-2.6.1
+	./configure
+	make -j64
+	make check -j64
+	make install -j64
+	cd ..
+fi
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 protoc src/caffe/proto/caffe.proto --cpp_out=.
