@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PYTHONPATH=`pwd`/python
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 batchs='8 16 32'
 NUM_IMAGES=4952

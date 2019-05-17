@@ -15,7 +15,6 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--batch_size", type=int, default=4, help="training batch size")
 parser.add_argument("--num_accelerators", type=int, default=1, help="number of accelerators used for training")
-parser.add_argument("--max_iter", type=int, default=120000, help="number of batches to train")
 args = parser.parse_args()
 
 
@@ -124,7 +123,7 @@ caffe_root = os.getcwd()
 run_soon = True
 # Set true if you want to load from most recently saved snapshot.
 # Otherwise, we will load from the pretrain_model defined below.
-resume_training = True
+resume_training = False
 # If true, Remove old model files.
 remove_old_models = False
 
@@ -282,13 +281,13 @@ job_name = "DSSD_VOC07_FT_{}".format(resize)
 model_name = "ResNet-101_VOC0712_{}".format(job_name)
 
 # Directory which stores the model .prototxt file.
-save_dir = "models/ResNet-101/VOC0712/{}".format(job_name)
+save_dir = "models/ResNet-101/VOC0712/{}_score".format(job_name)
 # Directory which stores the snapshot of models.
 snapshot_dir = "models/ResNet-101/VOC0712/{}".format(job_name)
 # Directory which stores the job script and log file.
-job_dir = "jobs/ResNet-101/VOC0712/{}".format(job_name)
+job_dir = "jobs/ResNet-101/VOC0712/{}_score".format(job_name)
 # Directory which stores the detection results.
-output_result_dir = "./results/VOC0712/{}/Main".format(job_name)
+output_result_dir = "./results/VOC0712/{}_score/Main".format(job_name)
 
 # model definition files.
 train_net_file = "{}/train.prototxt".format(save_dir)
@@ -429,7 +428,7 @@ elif normalization_mode == P.Loss.FULL:
 
 # Evaluate on whole test set.
 num_test_image = 4952
-test_batch_size = 4
+test_batch_size = args.batch_size
 test_iter = num_test_image // test_batch_size
 
 solver_param = {
@@ -441,21 +440,21 @@ solver_param = {
     'gamma': 0.1,
     'momentum': 0.9,
     'iter_size': iter_size,
-    'max_iter': args.max_iter,
-    'snapshot': 1000,
+    'max_iter': 0,
+    'snapshot': 0,
     'display': 10,
     'average_loss': 10,
     'type': "SGD",
     'solver_mode': solver_mode,
     'device_id': device_id,
     'debug_info': False,
-    'snapshot_after_train': True,
+    'snapshot_after_train': False,
     # Test parameters
-#    'test_iter': [test_iter],
-#    'test_interval': 10000,
-#    'eval_type': "detection",
-#    'ap_version': "11point",
-#    'test_initialization': False,
+    'test_iter': [test_iter],
+    'test_interval': 10000,
+    'eval_type': "detection",
+    'ap_version': "11point",
+    'test_initialization': True,
     }
 
 # test_solver_param
@@ -640,7 +639,7 @@ shutil.copy(deploy_net_file, job_dir)
 # Create solver.
 solver = caffe_pb2.SolverParameter(
         train_net=train_net_file,
-        #test_net=[test_net_file],
+        test_net=[test_net_file],
         snapshot_prefix=snapshot_prefix,
         **solver_param)
 
@@ -691,6 +690,7 @@ with open(job_file, 'w') as f:
   f.write('cd {}\n'.format(caffe_root))
   f.write('./build/tools/caffe train \\\n')
   f.write('--solver="{}" \\\n'.format(solver_file))
+  f.write('--weights="{}" \\\n'.format(pretrain_model))
   f.write(train_src_param)
   if solver_param['solver_mode'] == P.Solver.GPU:
     f.write('--gpu {} 2>&1 | tee {}/{}.log\n'.format(gpus, job_dir, model_name))
