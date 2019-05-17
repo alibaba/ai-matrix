@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PYTHONPATH=`pwd`/python
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 if [ ! -d "VOC0712" ]; then
     mkdir VOC0712
