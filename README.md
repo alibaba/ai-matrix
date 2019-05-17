@@ -1,6 +1,6 @@
 # AI Matrix
 
-AI Matrix aims at measuring the performance of AI hardware platforms and software frameworks. The benchmark suite currently consists of three types of workloads: layer-based benchmark, macro benchmark, and micro benchmark.
+AI Matrix is an AI benchmark suite aiming at measuring the performance of AI hardware platforms and software frameworks. This deep learning benchmark suite currently consists of three types of workloads: layer-based benchmark, macro benchmark, and micro benchmark.
 
 ## Layer-Based Benchmark
 Layer-based benchmark consists of commonly used layers in deep learning neural networks, such as convolution layer, fully-connected layer, activation layer, etc. The purpose of layer-based benchmark is to test the performance of AI hardware at running the commonly used neural network layers.
