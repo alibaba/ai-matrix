@@ -127,6 +127,7 @@ with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, allow_soft_placem
   for _ in range(2):
     random.shuffle(train_set)
     epoch_size = round(len(train_set) / train_batch_size)
+    print("train_set size: %d" % len(train_set))
     loss_sum = 0.0
     for _, uij in DataInput(train_set, train_batch_size):
       if len(uij[0]) != train_batch_size:
@@ -154,5 +155,6 @@ with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, allow_soft_placem
     model.global_epoch_step_op.eval()
 
   print('best test_gauc:', best_auc)
-  print("Approximate accelerator time in seconds: %.3f" % total_time)	
+  print("Approximate accelerator time in seconds: %.3f" % total_time)
+  print("Approximate accelerator performance in recommendations/second: %.3f" % (2*len(train_set)/total_time))
   sys.stdout.flush()

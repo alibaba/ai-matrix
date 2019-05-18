@@ -63,25 +63,29 @@ def _test(sess, model):
   time_st = time.time()
   iteration = 0
   for _, uij in DataInputTest(test_set, predict_batch_size):
+    if len(uij[0]) != predict_batch_size:
+        break
     s_time = time.time()
     score_ = model.test(sess, uij)
     e_time = time.time()
     total_time += e_time - s_time
 
     iteration += 1
-    if iteration == 1000:
+    if iteration % 1000 == 0:
       time_dur = time.time() - time_st
-      perf = predict_batch_size * iteration * predict_ads_num / time_dur
+      perf = predict_batch_size * iteration / time_dur
       print(' %2i      %4i        %10.1f' % (iteration, predict_batch_size, perf ))
-      break
-    elif iteration % 100 == 0:
-      time_dur = time.time() - time_st
-      perf = predict_batch_size * iteration * predict_ads_num / time_dur
-      print(' %2i      %4i        %10.1f' % (iteration, predict_batch_size, perf ))
+      # break
+    # elif iteration % 100 == 0:
+    #   time_dur = time.time() - time_st
+    #   perf = predict_batch_size * iteration / time_dur
+    #   print(' %2i      %4i        %10.1f' % (iteration, predict_batch_size, perf ))
   time_dur = time.time() - time_st
-  perf = predict_batch_size * iteration * predict_ads_num / time_dur
+  perf = predict_batch_size * iteration / time_dur
   print("Average performance is %10.1f for batch size=" % perf, predict_batch_size)
+  print("Total recommendations: %d" % len(test_set))
   print("Approximate accelerator time in seconds: %.3f" % total_time)
+  print("Approximate accelerator performance in recommendations/second: %.3f" % (len(test_set)/total_time))
 
 devices = ['/gpu:0']
 gpu_options = tf.GPUOptions(allow_growth=True)
