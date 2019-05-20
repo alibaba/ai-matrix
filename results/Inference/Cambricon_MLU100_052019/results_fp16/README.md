@@ -9,4 +9,4 @@ The test below is run on Cambricon MLU100 with trained weights. The results is f
 *BS: Batch Size*  
 *Unit: Img/sec*  
   
-  
+[Instructions to reproduce the results](./instructions.txt)
