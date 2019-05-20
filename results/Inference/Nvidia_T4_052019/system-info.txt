@@ -15,9 +15,10 @@ a. OS name: Ubuntu
 b. OS version: AliOS 7.2
 c. Library information (Such as python version): Python 3
 Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
-a. Library name: CUDA
-i. Version: 10.1
+a. Library name: CUDA 10.1
 b. Driver version: 418.39
 AI Frameworks (Such as Tensorflow and Caffe)
-a. Framework name: Tensorflow
+a. Framework name: Tensorflow, Caffe, TensorRT
 b. Docker container: Nvidia tensorflow 19.04-py3(https://docs.nvidia.com/deeplearning/dgx/tensorflow-release-notes/rel_19.04.html#rel_19.04)
+Others  
+a. TDP: 70W
