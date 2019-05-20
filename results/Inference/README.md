@@ -1,4 +1,4 @@
-This folder stores the results of AIMatrix running on different GPUs and accelerators.  To achieve the best performance of GPU, the TensorRT is used for GPU. Other accelerators also make their implementation under their software enviroment.  
+This folder stores the results of AIMatrix running on different GPUs and accelerators.  To achieve the best performance of GPU, the TensorRT is used for GPU. Other accelerators also make their implementations under their software enviroments.  
   
 The current applications running in GPUs are
 *    Googlenet
