@@ -1,0 +1,89 @@
+## Instructions to reproduce  
+
+1. Use the models from *macro_benchmark/CNN_Caffe*  
+
+2. Set up Cambricon docker，and enter into /home/Cambricon-Test/models/caffe，make folder of ai-matrix，move the models to this folder  
+
+3. Rename model to：
+densenet121_float16_dense.caffemodel
+densenet121_float16_dense_1batch.prototxt
+googlenet-bvlc_float16_dense.caffemodel
+googlenet-bvlc_float16_dense_1batch.prototxt
+  
+4.  Add some statistics (mean and std) to prototxt file  
+densenet121: 
+name: "DENSENET_121"
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 224
+input_dim: 224
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1/bn"
+  convolution_param {
+      mean_value:103.94
+      mean_value:116.78
+      mean_value:123.68
+      std:0.017
+    num_output: 64
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    stride: 2
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+
+googlenet-bvlc:
+
+name: "GoogleNet"
+layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  input_param { shape: { dim: 1 dim: 3 dim: 224 dim: 224 } }
+}
+layer {
+  name: "conv1/7x7_s2"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1/7x7_s2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    mean_value: 103.94
+    mean_value: 116.78
+    mean_value: 123.68
+    num_output: 64
+    pad: 3
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.2
+    }
+  }
+  
+
+5. Put *ai-matrix_validation_file_list* file at /home/Cambricon-Test/datasets/imagenet，and change /home/Cambricon-Test/caffe/src/caffe/scripts/set_caffe_module_env.sh and point file_list to  *ai-matrix_validation_file_list*   
+
+6. Put *ai-matrix_offline_mc.sh* and *clas_offline_multicore* to /home/Cambricon-Test/caffe/src/caffe/examples/clas_offline_multicore 
+
+7. Run the command below  
+./ai-matrix_offline_mc.sh 
