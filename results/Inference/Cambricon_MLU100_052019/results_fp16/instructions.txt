@@ -1,6 +1,6 @@
-## Instructions to reproduce  
+Instructions to reproduce  
 
-1. Use the models from *macro_benchmark/CNN_Caffe*  
+1. Use the models from macro_benchmark/CNN_Caffe 
 
 2. Set up Cambricon docker，and enter into /home/Cambricon-Test/models/caffe，make folder of ai-matrix，move the models to this folder  
 
@@ -81,9 +81,9 @@ layer {
   }
   
 
-5. Put *ai-matrix_validation_file_list* file at /home/Cambricon-Test/datasets/imagenet，and change /home/Cambricon-Test/caffe/src/caffe/scripts/set_caffe_module_env.sh and point file_list to  *ai-matrix_validation_file_list*   
+5. Put ai-matrix_validation_file_list file at /home/Cambricon-Test/datasets/imagenet，and change /home/Cambricon-Test/caffe/src/caffe/scripts/set_caffe_module_env.sh and point file_list to  ai-matrix_validation_file_list  
 
-6. Put *ai-matrix_offline_mc.sh* and *clas_offline_multicore* to /home/Cambricon-Test/caffe/src/caffe/examples/clas_offline_multicore 
+6. Put ai-matrix_offline_mc.sh and clas_offline_multicore to /home/Cambricon-Test/caffe/src/caffe/examples/clas_offline_multicore 
 
 7. Run the command below  
 ./ai-matrix_offline_mc.sh 
