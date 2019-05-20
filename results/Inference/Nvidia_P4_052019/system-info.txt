@@ -15,9 +15,10 @@ a. OS name: Ubuntu
 b. OS version: 18.04
 c. Library information (Such as python version): Python 3
 Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
-a. Library name: CUDA
-i. Version: 10.1
+a. Library name: CUDA 10.1
 b. Driver version: 410.48
 AI Frameworks (Such as Tensorflow and Caffe)
-a. Framework name: Tensorflow
+a. Framework name: Tensorflow, Caffe, TensorRT
 b. Docker container: Nvidia tensorflow 19.04-py3(https://docs.nvidia.com/deeplearning/dgx/tensorflow-release-notes/rel_19.04.html#rel_19.04)
+Others  
+a. TDP: 75W  
