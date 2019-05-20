@@ -1,18 +1,23 @@
-1.GPU
-Tesla P100-PCIE-16GB
-
-2.CPU
-model name: Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz
-Number of CPU: 2
-
-3.MemTotal
-256GB
-
-4.Operating system
-Ubuntu 16.04
-
-5.Framework
-Nvidia Tensorflow container 19.04-py3
- 
-6.Others:
-Nvidia Driver: 410.79
+CPU
+a. Vendor: Intel
+b. CPU type: Xeon(R) CPU E5-2682 v4
+c. Number of cores: 16
+d. Number of sockets: 2
+e. Frequency: 2.50GHz
+f. Memory size: 251GB
+Accelerator
+a. Vendor: NVIDIA
+b. Accelerator type: P100
+c. Frequency: 1126MHz, 1303MHz (boost)
+d. Memory size: 16GB
+Operating system
+a. OS name: Ubuntu
+b. OS version: 16.04
+c. Library information (Such as python version): Python 3
+Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
+a. Library name: CUDA
+i. Version: 10.1
+b. Driver version: 410.79
+AI Frameworks (Such as Tensorflow and Caffe)
+a. Framework name: Tensorflow
+b. Docker container: Nvidia tensorflow 19.04-py3(https://docs.nvidia.com/deeplearning/dgx/tensorflow-release-notes/rel_19.04.html#rel_19.04)
