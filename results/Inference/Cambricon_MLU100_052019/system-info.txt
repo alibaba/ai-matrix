@@ -1,0 +1,23 @@
+CPU
+a. Vendor: Intel
+b. CPU type: Xeon(R) CPU Gold 5118
+c. Number of cores: 12
+d. Number of sockets: 2
+e. Frequency: 2.30GHz
+f. Memory size: 192GB
+Accelerator
+a. Vendor: Cambricon
+b. Accelerator type: MLU100
+c. Frequency: 1000MHz, 1300MHz (boost)
+d. Memory size: 16GB
+Operating system
+a. OS name: Ubuntu
+b. OS version: 16.04
+c. Library information (Such as python version): Python 3
+Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
+a. Library name: Cambricon Neuware
+b. Driver version: 3.3.2
+AI Frameworks (Such as Tensorflow and Caffe)
+a. Framework name: Caffe
+Others  
+a. TDP: 110W
