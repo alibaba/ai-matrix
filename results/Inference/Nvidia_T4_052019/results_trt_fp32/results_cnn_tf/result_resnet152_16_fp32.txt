@@ -1,0 +1,87 @@
+WARNING:tensorflow:From /usr/local/lib/python3.5/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+2019-05-12 23:17:37.373537: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2499445000 Hz
+2019-05-12 23:17:37.379821: I tensorflow/compiler/xla/service/service.cc:161] XLA service 0x76f39a0 executing computations on platform Host. Devices:
+2019-05-12 23:17:37.379862: I tensorflow/compiler/xla/service/service.cc:168]   StreamExecutor device (0): <undefined>, <undefined>
+2019-05-12 23:17:37.897017: I tensorflow/compiler/xla/service/service.cc:161] XLA service 0x7773360 executing computations on platform CUDA. Devices:
+2019-05-12 23:17:37.897052: I tensorflow/compiler/xla/service/service.cc:168]   StreamExecutor device (0): Tesla T4, Compute Capability 7.5
+2019-05-12 23:17:37.897813: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1433] Found device 0 with properties: 
+name: Tesla T4 major: 7 minor: 5 memoryClockRate(GHz): 1.59
+pciBusID: 0000:1b:00.0
+totalMemory: 14.73GiB freeMemory: 14.62GiB
+2019-05-12 23:17:37.897833: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0
+2019-05-12 23:17:38.457186: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-12 23:17:38.457231: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 
+2019-05-12 23:17:38.457239: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N 
+2019-05-12 23:17:38.457950: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14135 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:1b:00.0, compute capability: 7.5)
+2019-05-12 23:17:41.032666: I tensorflow/core/grappler/devices.cc:57] Number of eligible GPUs (core count >= 8, compute capability >= 0.0): 1
+2019-05-12 23:17:41.037036: I tensorflow/core/grappler/clusters/single_machine.cc:359] Starting new session
+2019-05-12 23:17:41.037802: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0
+2019-05-12 23:17:41.347269: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-12 23:17:41.347320: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 
+2019-05-12 23:17:41.347329: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N 
+2019-05-12 23:17:41.348016: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14135 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:1b:00.0, compute capability: 7.5)
+2019-05-12 23:17:45.025537: W tensorflow/contrib/tensorrt/convert/trt_optimization_pass.cc:219] Configured batch size 16 is less than input batch size 32 adjusting maximum batch size to match input batch size
+2019-05-12 23:17:45.765934: I tensorflow/contrib/tensorrt/segment/segment.cc:461] There are 5 ops of 4 different types in the graph that are not converted to TensorRT: ArgMax, Identity, Placeholder, NoOp, (For more information see https://docs.nvidia.com/deeplearning/dgx/integrate-tf-trt/index.html#support-ops).
+2019-05-12 23:17:46.120436: I tensorflow/contrib/tensorrt/convert/convert_graph.cc:928] Number of TensorRT candidate segments: 1
+2019-05-12 23:17:47.323258: W tensorflow/contrib/tensorrt/log/trt_logger.cc:34] DefaultLogger Tensor DataType is determined at build time for tensors not marked as input or output.
+2019-05-12 23:18:17.441754: I tensorflow/contrib/tensorrt/convert/convert_graph.cc:1030] TensorRT node TRTEngineOp_0 added for segment 0 consisting of 1301 nodes succeeded.
+2019-05-12 23:18:17.629055: I tensorflow/core/grappler/optimizers/meta_optimizer.cc:616] Optimization results for grappler item: tf_graph
+2019-05-12 23:18:17.629113: I tensorflow/core/grappler/optimizers/meta_optimizer.cc:618]   constant folding: Graph size after: 1303 nodes (-777), 1352 edges (-777), time = 1386.271ms.
+2019-05-12 23:18:17.629185: I tensorflow/core/grappler/optimizers/meta_optimizer.cc:618]   layout: Graph size after: 1307 nodes (4), 1354 edges (2), time = 347.963ms.
+2019-05-12 23:18:17.629190: I tensorflow/core/grappler/optimizers/meta_optimizer.cc:618]   constant folding: Graph size after: 1305 nodes (-2), 1354 edges (0), time = 1079.12598ms.
+2019-05-12 23:18:17.629196: I tensorflow/core/grappler/optimizers/meta_optimizer.cc:618]   TensorRTOptimizer: Graph size after: 5 nodes (-1300), 4 edges (-1350), time = 32509.5273ms.
+WARNING:tensorflow:Using temporary folder as model directory: /tmp/tmpmi1x6jhj
+WARNING:tensorflow:From /usr/local/lib/python3.5/dist-packages/tensorflow/python/ops/losses/losses_impl.py:209: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+2019-05-12 23:18:28.216682: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0
+2019-05-12 23:18:28.216733: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-12 23:18:28.216745: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 
+2019-05-12 23:18:28.216752: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N 
+2019-05-12 23:18:28.217140: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 14135 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:1b:00.0, compute capability: 7.5)
+WARNING: NCCL support not available
+TensorFlow:  1.13.1
+This script: nvcnn.py v1.6
+Cmd line args:
+  --model=resnet152
+  --batch_size=16
+  --num_gpus=1
+  --display_every=100
+  --eval
+  --use_trt
+  --trt_precision=fp32
+  --num_batches=500
+  --cache_path=../pretrained_models/aimatrix-pretrained-weights/CNN_Tensorflow/graphs_NHWC
+Num images:  Synthetic
+Input type:  Variable
+Model:       resnet152
+Batch size:  16 global
+             16.0 per device
+Devices:     ['/gpu:0']
+Data format: NCHW
+Data type:   fp32
+Have NCCL:   False
+Using NCCL:  True
+Using XLA:   False
+Building evaluation graph
+Creating session
+====TRT inference with synthetic data====
+====Load cached graph====
+Loading cached frozen graph from '../pretrained_models/aimatrix-pretrained-weights/CNN_Tensorflow/graphs_NHWC/frozen_graph_resnet152_fp32_32.pb'
+num of nodes= 2080
+    step 100/3125, iter_time(ms)=84.6436, images/sec=189
+    step 200/3125, iter_time(ms)=84.3890, images/sec=189
+    step 300/3125, iter_time(ms)=83.9341, images/sec=190
+    step 400/3125, iter_time(ms)=85.0191, images/sec=188
+    step 500/3125, iter_time(ms)=85.1724, images/sec=187
+    top1: 0.00
+    top5: 0.00
+    images/sec: 189
+    99th_percentile(ms): 86.0
+    total_time(s): 45.5
+    latency_mean(ms): 90.9
+Total images is: 8000
+Total running time in miliseconds is: 119630
+System performance in images/second is: 66

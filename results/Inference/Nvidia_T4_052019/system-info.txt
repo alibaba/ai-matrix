@@ -1,0 +1,24 @@
+CPU
+a. Vendor: Intel
+b. CPU type: Xeon(R) CPU Platinum 8130
+c. Number of cores: 24
+d. Number of sockets: 2
+e. Frequency: 2.50GHz
+f. Memory size: 503GB
+Accelerator
+a. Vendor: NVIDIA
+b. Accelerator type: T4
+c. Frequency: 585MHz, 1590MHz (boost)
+d. Memory size: 16GB
+Operating system
+a. OS name: Ubuntu
+b. OS version: AliOS 7.2
+c. Library information (Such as python version): Python 3
+Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
+a. Library name: CUDA 10.1
+b. Driver version: 418.39
+AI Frameworks (Such as Tensorflow and Caffe)
+a. Framework name: Tensorflow, Caffe, TensorRT
+b. Docker container: Nvidia tensorflow 19.04-py3(https://docs.nvidia.com/deeplearning/dgx/tensorflow-release-notes/rel_19.04.html#rel_19.04)
+Others  
+a. TDP: 70W

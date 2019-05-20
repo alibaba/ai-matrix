@@ -1,0 +1,24 @@
+CPU
+a. Vendor: Intel
+b. CPU type: Xeon(R) CPU E5-2682 v4
+c. Number of cores: 16
+d. Number of sockets: 2
+e. Frequency: 2.50GHz
+f. Memory size: 251GB
+Accelerator
+a. Vendor: NVIDIA
+b. Accelerator type: P4
+c. Frequency: 810MHz, 1063MHz (boost)
+d. Memory size: 8GB
+Operating system
+a. OS name: Ubuntu
+b. OS version: 18.04
+c. Library information (Such as python version): Python 3
+Accelerator specific libraries and driver (Such as cuda for NVIDIA GPUs)
+a. Library name: CUDA 10.1
+b. Driver version: 410.48
+AI Frameworks (Such as Tensorflow and Caffe)
+a. Framework name: Tensorflow, Caffe, TensorRT
+b. Docker container: Nvidia tensorflow 19.04-py3(https://docs.nvidia.com/deeplearning/dgx/tensorflow-release-notes/rel_19.04.html#rel_19.04)
+Others  
+a. TDP: 75W  

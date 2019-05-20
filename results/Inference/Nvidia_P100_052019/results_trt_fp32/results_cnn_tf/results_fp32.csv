@@ -1,0 +1,17 @@
+System performance, unit is images/second,
+System performance measures the performance of the entire system, including both CPU work and GPU work. The benchmark is timed right before and after the script is ran.,
+model,batch 16,batch 32,batch 64,
+googlenet,295,511,782,
+resnet50,171,298,452,
+resnet152,75,126,194,
+densenet121,166,283,419,
+
+
+
+Approximate accelerator performance, unit is images/second,
+Approximate accelerator performance aims at measuring only the performance of the accelerator. The benchmark does its best to exclude CPU work from performance measurement and approximates the accelerator performance.,
+model,batch 16,batch 32,batch 64,
+googlenet,1499.0,1760.0,1871.0,
+resnet50,834.0,916.0,952.0,
+resnet152,341.0,364.0,379.0,
+densenet121,728.0,841.0,887.0,
