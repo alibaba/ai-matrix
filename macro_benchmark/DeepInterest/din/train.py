@@ -26,7 +26,7 @@ print("train_batch_size: %d" % train_batch_size)
 test_batch_size = 512*num_accelerators
 predict_batch_size = 32*num_accelerators
 predict_users_num = 1000
-predict_ads_num = 100
+predict_ads_num = 1
 
 with open('dataset.pkl', 'rb') as f:
   train_set = pickle.load(f)
