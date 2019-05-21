@@ -18,7 +18,7 @@ np.random.seed(1234)
 tf.set_random_seed(1234)
 
 predict_batch_size = args.batch_size
-predict_ads_num = 100
+predict_ads_num = 1
 
 
 with open('dataset.pkl', 'rb') as f:

@@ -7,7 +7,8 @@ if [ -d results ]; then
 fi
 mkdir results
 
-batchs='1 32 64'
+#batchs='1 32 64'
+batchs='256 512 1024'
 
 cd din
 

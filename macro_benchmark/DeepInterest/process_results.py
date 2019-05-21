@@ -14,15 +14,15 @@ def process_infer():
     table0.append(['System performance, unit is recommendations/second'])
     table0.append(['System performance measures the performance of the entire system, including both CPU work and GPU work. ' +
                    'The benchmark is timed right before and after the script is ran.'])
-    table0.append(['batch 1','batch 32','batch 64'])
+    table0.append(['batch 256','batch 512','batch 1024'])
 
     table1 = []
     table1.append(['Approximate accelerator performance, unit is recommendations/second'])
     table1.append(['Approximate accelerator performance aims at measuring only the performance of the accelerator. ' +
                    'The benchmark does its best to exclude CPU work from performance measurement and approximates the accelerator performance.'])
-    table1.append(['batch 1','batch 32','batch 64'])
+    table1.append(['batch 256','batch 512','batch 1024'])
 
-    bs = ['1', '32', '64']
+    bs = ['256', '512', '1024']
 
     row_table0 = []
     row_table1 = []
