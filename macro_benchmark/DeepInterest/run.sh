@@ -35,7 +35,7 @@ python process_results.py --train
 
 TOTAL_RECOMMDS=192403
 
-batchs='1 32 64'
+#batchs='1 32 64'
 
 cd din
 
