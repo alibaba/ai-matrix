@@ -97,7 +97,9 @@ def train(train_data, test_data, user_size, item_size):
 				print("HR is %.3f, MRR is %.3f, NDCG is %.3f" %(hr, mrr, ndcg))
 		
 		print("Total Epochs: %d on training " %(epoch+1))
+		print("Total recommendations: %d" % (count * FLAGS.batch_size))
 		print("Approximate accelerator time in seconds is: %.2f" %total_time)
+		print("Approximate accelerator performance in recommendations/second is: %.2f" % (float(count * FLAGS.batch_size)/float(total_time)))
 		################################## SAVE MODEL ################################
 		checkpoint_path = os.path.join(FLAGS.model_dir, "NCF.ckpt")
 		model.saver.save(sess, checkpoint_path)
@@ -127,17 +129,18 @@ def infer(train_data, test_data, user_size, item_size):
 		############################### Training ####################################
 		 
 		total_time = 0
+		count = 0
 		for epoch in range(FLAGS.epochs):
 			 
 		################################ EVALUATION ##################################
 			sess.run(model.iterator.make_initializer(test_data))
 			model.is_training = False
-			start_time = time.time()
 			HR, MRR, NDCG = [], [], []
 			start_time = time.time()
 			try:
 				while True:
 					prediction, label = model.step(sess, None)
+					count = count + 1
 
 					label = int(label[0])
 					HR.append(metrics.hit(label, prediction))
@@ -152,8 +155,10 @@ def infer(train_data, test_data, user_size, item_size):
 				print("HR is %.3f, MRR is %.3f, NDCG is %.3f" %(hr, mrr, ndcg))
 			total_time += time.time() - start_time
 		print("Total Epochs: %d on inference " %(epoch+1))
-		print("Approximate accelerator time in seconds is (on average): %.2f" % (total_time / FLAGS.epochs))
- 
+		print("Total recommendations: %d" % (count * FLAGS.batch_size))
+		print("Approximate accelerator time in seconds is: %.2f" % total_time)
+		print("Approximate accelerator performance in recommendations/second is: %.2f" % (float(count * FLAGS.batch_size)/float(total_time)))
+
 def main(argv=None):
  
 	((train_features, train_labels), 
