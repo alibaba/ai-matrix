@@ -25,7 +25,7 @@ def compare():
     os.mkdir(out_dir)
 
     ops = ["train", "infer"]
-    models = ["cnn", "deepinterest", "dien", "dssd", "maskrcnn", "ncf", "nmt", "ssd"]
+    models = ["cnn", "deepinterest", "dien", "dssd", "maskrcnn", "ncf", "nmt", "ssd_vgg16", "ssd_resnet18"]
     for op in ops:
         for model in models:
             fname_target = args.target_dir + "/results_" + model + "_" + op + ".csv"
@@ -59,12 +59,8 @@ def compare():
                         items_ref = line_ref.split(",")
                         for item_target, item_ref in zip(items_target, items_ref):
                             if is_number(item_target):
-                                if model == "cnn" or model == "maskrcnn" or model == "ssd":
-                                    f_out.write(str(float(item_target)/float(item_ref)))
-                                    f_out.write(",")
-                                else:
-                                    f_out.write(str(float(item_ref)/float(item_target)))
-                                    f_out.write(",")
+                                f_out.write(str(float(item_target)/float(item_ref)))
+                                f_out.write(",")
                             else:
                                 f_out.write(item_target)
                                 if item_target != "\n":
