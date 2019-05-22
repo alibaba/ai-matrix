@@ -53,9 +53,16 @@ cd NMT
 cd ..
 
 echo "##########################################"
-echo "### Running SSD_Caffe                  ###"
+echo "### Running SSD_VGG16_Caffe            ###"
 echo "##########################################"
-cd SSD_Caffe
+cd SSD_VGG16_Caffe
+./infer.sh
+cd ..
+
+echo "##########################################"
+echo "### Running SSD_ResNet18_Caffe         ###"
+echo "##########################################"
+cd SSD_ResNet18_Caffe
 ./infer.sh
 cd ..
 
