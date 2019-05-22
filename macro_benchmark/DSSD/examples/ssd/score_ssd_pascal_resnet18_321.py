@@ -51,7 +51,7 @@ run_soon = True
 # Otherwise, we will load from the pretrain_model defined below.
 resume_training = False
 # If true, Remove old model files.
-remove_old_models = True
+remove_old_models = False
 
 # The database file for training data. Created by data/coco/create_data.sh
 #train_data = "examples/VOC0712/VOC0712_trainval_lmdb"
@@ -207,13 +207,13 @@ job_name = "SSD_VOC07_{}".format(resize)
 model_name = "ResNet-18_VOC0712_{}".format(job_name)
 
 # Directory which stores the model .prototxt file.
-save_dir = "models/ResNet-18/VOC0712/{}".format(job_name)
+save_dir = "models/ResNet-18/VOC0712/{}_score".format(job_name)
 # Directory which stores the snapshot of models.
 snapshot_dir = "models/ResNet-18/VOC0712/{}".format(job_name)
 # Directory which stores the job script and log file.
-job_dir = "jobs/ResNet-18/VOC0712/{}".format(job_name)
+job_dir = "jobs/ResNet-18/VOC0712/{}_score".format(job_name)
 # Directory which stores the detection results.
-output_result_dir = "./results/VOC0712/{}/Main".format(job_name)
+output_result_dir = "./results/VOC0712/{}_score/Main".format(job_name)
 
 # model definition files.
 train_net_file = "{}/train.prototxt".format(save_dir)
@@ -229,8 +229,8 @@ job_file = "{}/{}.sh".format(job_dir, model_name)
 # Stores the test image names and sizes. Created by data/coco/create_list.sh
 name_size_file = "data/VOC0712/test_name_size.txt"
 # The pretrained ResNet101 model from https://github.com/KaimingHe/deep-residual-networks.
-pretrain_model = "models/ResNet-18/resnet-18.caffemodel"
-#pretrain_model = "models/ResNet/VOC0712/SSD_deconv_300x300/ResNet_VOC0712_SSD_deconv_300x300_iter_60000.caffemodel"
+# pretrain_model = "models/ResNet-18/resnet-18.caffemodel"
+pretrain_model = "models/ResNet-18/VOC0712/SSD_VOC07_321x321/ResNet-18_VOC0712_SSD_VOC07_321x321_iter_1000.caffemodel"
 # Stores LabelMapItem.
 label_map_file = "data/VOC0712/labelmap_voc.prototxt"
 
@@ -348,7 +348,7 @@ elif normalization_mode == P.Loss.FULL:
 
 # Evaluate on whole test set.
 num_test_image = 4952
-test_batch_size = 4
+test_batch_size = args.batch_size
 test_iter = num_test_image // test_batch_size
 
 solver_param = {
@@ -360,21 +360,21 @@ solver_param = {
     'gamma': 0.1,
     'momentum': 0.9,
     'iter_size': iter_size,
-    'max_iter': args.max_iter,
-    'snapshot': 20000,
+    'max_iter': 0,
+    'snapshot': 0,
     'display': 10,
     'average_loss': 10,
     'type': "SGD",
     'solver_mode': solver_mode,
     'device_id': device_id,
     'debug_info': False,
-    'snapshot_after_train': True,
+    'snapshot_after_train': False,
     # Test parameters
     'test_iter': [test_iter],
     'test_interval': 10000,
     'eval_type': "detection",
     'ap_version': "11point",
-    'test_initialization': False,
+    'test_initialization': True,
     }
 
 # test_solver_param
@@ -594,6 +594,7 @@ with open(job_file, 'w') as f:
   f.write('cd {}\n'.format(caffe_root))
   f.write('./build/tools/caffe train \\\n')
   f.write('--solver="{}" \\\n'.format(solver_file))
+  f.write('--weights="{}" \\\n'.format(pretrain_model))
   f.write(train_src_param)
   if solver_param['solver_mode'] == P.Solver.GPU:
     f.write('--gpu {} 2>&1 | tee {}/{}.log\n'.format(gpus, job_dir, model_name))
