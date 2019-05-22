@@ -87,23 +87,42 @@ else
 	echo "NMT/results does not exist, check if test is ran successfully"
 fi
 
-### SSD_Caffe ###
-if [ -f SSD_Caffe/results/results_train.csv ]; then
-	cp SSD_Caffe/results/results_train.csv results/results_ssd_train.csv
+### SSD_VGG16_Caffe ###
+if [ -f SSD_VGG16_Caffe/results/results_train.csv ]; then
+	cp SSD_VGG16_Caffe/results/results_train.csv results/results_ssd_vgg16_train.csv
 else
-	echo "SSD_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
+	echo "SSD_VGG16_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
 fi
 
-if [ -f SSD_Caffe/results/results_infer.csv ]; then
-	cp SSD_Caffe/results/results_infer.csv results/results_ssd_infer.csv
+if [ -f SSD_VGG16_Caffe/results/results_infer.csv ]; then
+	cp SSD_VGG16_Caffe/results/results_infer.csv results/results_ssd_vgg16_infer.csv
 else
-	echo "SSD_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
+	echo "SSD_VGG16_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
 fi
 
-if [ -d SSD_Caffe/results ]; then
-	cp -r SSD_Caffe/results results/results_ssd
+if [ -d SSD_VGG16_Caffe/results ]; then
+	cp -r SSD_VGG16_Caffe/results results/results_ssd_vgg16
 else
-	echo "SSD_Caffe/results does not exist, check if test is ran successfully"
+	echo "SSD_VGG16_Caffe/results does not exist, check if test is ran successfully"
+fi
+
+### SSD_ResNet18_Caffe ###
+if [ -f SSD_ResNet18_Caffe/results/results_train.csv ]; then
+	cp SSD_ResNet18_Caffe/results/results_train.csv results/results_ssd_resnet18_train.csv
+else
+	echo "SSD_ResNet18_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f SSD_ResNet18_Caffe/results/results_infer.csv ]; then
+	cp SSD_ResNet18_Caffe/results/results_infer.csv results/results_ssd_resnet18_infer.csv
+else
+	echo "SSD_ResNet18_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d SSD_ResNet18_Caffe/results ]; then
+	cp -r SSD_ResNet18_Caffe/results results/results_ssd_resnet18
+else
+	echo "SSD_ResNet18_Caffe/results does not exist, check if test is ran successfully"
 fi
 
 ### DSSD ###
