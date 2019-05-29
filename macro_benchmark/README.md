@@ -90,10 +90,10 @@ cd pretrained_models
 ./download_models.sh
 cd ..
 ./run-infer-trt-tf-{fp32/fp16/int8}.sh  
-./process\_results\_trt\_{fp32/fp16/int8}.sh  
+./process_results_trt_{fp32/fp16/int8}.sh  
 ```
 Then the results are listed in   
-   results\_trt\_ {fp32/fp16/int8} 
+   results_trt_ {fp32/fp16/int8} 
 
 
 ## 7. Other Tests
