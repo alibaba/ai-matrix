@@ -23,7 +23,7 @@ import pprint
 import numpy as np
 import sys, os
 import multiprocessing as mp
-import cPickle
+import pickle
 import shutil
 
 def parse_args():
@@ -166,7 +166,7 @@ def rpn_generate(queue=None, imdb_name=None, rpn_model_path=None, cfg=None,
     rpn_proposals_path = os.path.join(
         output_dir, rpn_net_name + '_proposals.pkl')
     with open(rpn_proposals_path, 'wb') as f:
-        cPickle.dump(rpn_proposals, f, cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(rpn_proposals, f, pickle.HIGHEST_PROTOCOL)
     print 'Wrote RPN proposals to {}'.format(rpn_proposals_path)
     queue.put({'proposal_path': rpn_proposals_path})
 
