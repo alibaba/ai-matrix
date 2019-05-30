@@ -60,9 +60,9 @@ def parse_args():
 def combined_roidb(imdb_names):
     def get_roidb(imdb_name):
         imdb = get_imdb(imdb_name)
-        print 'Loaded dataset `{:s}` for training'.format(imdb.name)
+        print('Loaded dataset `{:s}` for training'.format(imdb.name))
         imdb.set_proposal_method(cfg.TRAIN.PROPOSAL_METHOD)
-        print 'Set proposal method: {:s}'.format(cfg.TRAIN.PROPOSAL_METHOD)
+        print('Set proposal method: {:s}'.format(cfg.TRAIN.PROPOSAL_METHOD))
         roidb = get_training_roidb(imdb)
         return roidb
 
@@ -102,10 +102,10 @@ if __name__ == '__main__':
     caffe.set_device(args.gpu_id)
 
     imdb, roidb = combined_roidb(args.imdb_name)
-    print '{:d} roidb entries'.format(len(roidb))
+    print('{:d} roidb entries'.format(len(roidb)))
 
     output_dir = get_output_dir(imdb)
-    print 'Output will be saved to `{:s}`'.format(output_dir)
+    print('Output will be saved to `{:s}`'.format(output_dir))
 
     train_net(args.solver, roidb, output_dir,
               pretrained_model=args.pretrained_model,

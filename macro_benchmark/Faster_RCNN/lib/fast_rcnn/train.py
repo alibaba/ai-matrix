@@ -13,6 +13,7 @@ import roi_data_layer.roidb as rdl_roidb
 from utils.timer import Timer
 import numpy as np
 import os
+import google.protobuf.text_format
 
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
@@ -35,15 +36,15 @@ class SolverWrapper(object):
             assert cfg.TRAIN.BBOX_NORMALIZE_TARGETS_PRECOMPUTED
 
         if cfg.TRAIN.BBOX_REG:
-            print 'Computing bounding-box regression targets...'
+            print('Computing bounding-box regression targets...')
             self.bbox_means, self.bbox_stds = \
                     rdl_roidb.add_bbox_regression_targets(roidb)
-            print 'done'
+            print('done')
 
         self.solver = caffe.SGDSolver(solver_prototxt)
         if pretrained_model is not None:
-            print ('Loading pretrained model '
-                   'weights from {:s}').format(pretrained_model)
+            print(('Loading pretrained model '
+                   'weights from {:s}').format(pretrained_model))
             self.solver.net.copy_from(pretrained_model)
 
         self.solver_param = caffe_pb2.SolverParameter()
@@ -58,9 +59,14 @@ class SolverWrapper(object):
         """
         net = self.solver.net
 
+        if 'bbox_pred' in net.params:
+            BBOX_PRED = True
+        else:
+            BBOX_PRED = False
+
         scale_bbox_params = (cfg.TRAIN.BBOX_REG and
                              cfg.TRAIN.BBOX_NORMALIZE_TARGETS and
-                             net.params.has_key('bbox_pred'))
+                             BBOX_PRED)
 
         if scale_bbox_params:
             # save original values
@@ -82,7 +88,7 @@ class SolverWrapper(object):
         filename = os.path.join(self.output_dir, filename)
 
         net.save(str(filename))
-        print 'Wrote snapshot to: {:s}'.format(filename)
+        print('Wrote snapshot to: {:s}'.format(filename))
 
         if scale_bbox_params:
             # restore net to original state
@@ -101,7 +107,7 @@ class SolverWrapper(object):
             self.solver.step(1)
             timer.toc()
             if self.solver.iter % (10 * self.solver_param.display) == 0:
-                print 'speed: {:.3f}s / iter'.format(timer.average_time)
+                print('speed: {:.3f}s / iter'.format(timer.average_time))
 
             if self.solver.iter % cfg.TRAIN.SNAPSHOT_ITERS == 0:
                 last_snapshot_iter = self.solver.iter
@@ -114,13 +120,13 @@ class SolverWrapper(object):
 def get_training_roidb(imdb):
     """Returns a roidb (Region of Interest database) for use in training."""
     if cfg.TRAIN.USE_FLIPPED:
-        print 'Appending horizontally-flipped training examples...'
+        print('Appending horizontally-flipped training examples...')
         imdb.append_flipped_images()
-        print 'done'
+        print('done')
 
-    print 'Preparing training data...'
+    print('Preparing training data...')
     rdl_roidb.prepare_roidb(imdb)
-    print 'done'
+    print('done')
 
     return imdb.roidb
 
@@ -144,8 +150,8 @@ def filter_roidb(roidb):
     num = len(roidb)
     filtered_roidb = [entry for entry in roidb if is_valid(entry)]
     num_after = len(filtered_roidb)
-    print 'Filtered {} roidb entries: {} -> {}'.format(num - num_after,
-                                                       num, num_after)
+    print('Filtered {} roidb entries: {} -> {}'.format(num - num_after,
+                                                       num, num_after))
     return filtered_roidb
 
 def train_net(solver_prototxt, roidb, output_dir,
@@ -156,7 +162,7 @@ def train_net(solver_prototxt, roidb, output_dir,
     sw = SolverWrapper(solver_prototxt, roidb, output_dir,
                        pretrained_model=pretrained_model)
 
-    print 'Solving...'
+    print('Solving...')
     model_paths = sw.train_model(max_iters)
-    print 'done solving'
+    print('done solving')
     return model_paths
