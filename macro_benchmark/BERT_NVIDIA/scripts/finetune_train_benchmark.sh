@@ -9,12 +9,16 @@ num_gpu=${4:-"8"}
 batch_size=${5:-"8"}
 learning_rate=${6:-"5e-6"}
 
+if [ ! -d output ]; then
+    mkdir output
+fi
+
 if [ "$task" = "squad" ] ; then
     export SQUAD_DIR=data/squad/v1.1
 
-    epochs="2.0"
+    epochs="1.0"
     use_fp16=""
-    LOGFILE="/results/${task}_training_benchmark.log"
+    LOGFILE="output/${task}_training_benchmark.log"
     if [ "$precision" = "fp16" ] ; then
             export TF_ENABLE_AUTO_MIXED_PRECISION_GRAPH_REWRITE=1
             use_fp16="--use_fp16"
@@ -51,10 +55,10 @@ if [ "$task" = "squad" ] ; then
     --num_train_epochs=$epochs \
     --max_seq_length=384 \
     --doc_stride=128 \
-    --output_dir=/results \
+    --output_dir=output \
     "$use_hvd" \
     "$use_fp16" \
-    $use_xla_tag &> $LOGFILE
+    $use_xla_tag |& tee $LOGFILE
 
     perf=`cat $LOGFILE | grep -F 'Training Performance' | awk -F'= ' '{print $2}'`
     echo "Training performance is $perf"

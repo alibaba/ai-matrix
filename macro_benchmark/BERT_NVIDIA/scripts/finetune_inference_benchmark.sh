@@ -12,17 +12,17 @@ init_checkpoint=${5:-"$BERT_DIR/bert_model.ckpt"}
 if [ "$task" = "squad" ] ; then
     export SQUAD_DIR=data/squad/v1.1
 
-    LOGFILE="/results/${task}_inference_benchmark.log"
+    LOGFILE="checkpoints/${task}_inference_benchmark.log"
 
     use_fp16=""
     if [ "$precision" = "fp16" ] ; then
             echo "fp16 activated!"
             export TF_ENABLE_AUTO_MIXED_PRECISION_GRAPH_REWRITE=1
-            use_fp16="--use_fp16"
+            use_fp16="--use_fp16=True"
     fi
 
     if [ "$use_xla" = "true" ] ; then
-        use_xla_tag="--use_xla"
+        use_xla_tag="--use_xla=True"
         echo "XLA activated"
     else
         use_xla_tag=""
@@ -38,9 +38,9 @@ if [ "$task" = "squad" ] ; then
     --predict_batch_size=$batch_size \
     --max_seq_length=384 \
     --doc_stride=128 \
-    --output_dir=/results \
-    "$use_fp16" \
-    $use_xla_tag &> $LOGFILE
+    --output_dir=checkpoints \
+    $use_fp16 \
+    $use_xla_tag |& tee $LOGFILE
 
     perf=`cat $LOGFILE | grep -F 'Inference Performance' | awk -F'= ' '{print $2}'`
     echo "Inference performance is $perf"

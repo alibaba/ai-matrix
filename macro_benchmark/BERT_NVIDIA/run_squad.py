@@ -100,7 +100,7 @@ flags.DEFINE_float(
     "Proportion of training to perform linear learning rate warmup for. "
     "E.g., 0.1 = 10% of training.")
 
-flags.DEFINE_integer("save_checkpoints_steps", 1000,
+flags.DEFINE_integer("save_checkpoints_steps", 10000,
                      "How often to save the model checkpoint.")
 
 flags.DEFINE_integer("iterations_per_loop", 1000,
@@ -1234,7 +1234,7 @@ def main(_):
     train_examples = read_squad_examples(
         input_file=FLAGS.train_file, is_training=True)
     num_train_steps = int(
-        len(train_examples) / global_batch_size * FLAGS.num_train_epochs)
+        len(train_examples) * FLAGS.warmup_proportion / global_batch_size * FLAGS.num_train_epochs)
     num_warmup_steps = int(num_train_steps * FLAGS.warmup_proportion)
 
     # Pre-shuffle the input to avoid having to make a very large shuffle
