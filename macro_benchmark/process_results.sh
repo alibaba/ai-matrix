@@ -182,4 +182,42 @@ else
 	echo "DIEN/results does not exist, check if test is ran successfully"
 fi
 
+### BERT_NVIDIA ###
+if [ -f BERT_NVIDIA/results/results_train.csv ]; then
+	cp BERT_NVIDIA/results/results_train.csv results/results_bert_train.csv
+else
+	echo "BERT_NVIDIA/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f BERT_NVIDIA/results/results_infer.csv ]; then
+	cp BERT_NVIDIA/results/results_infer.csv results/results_bert_infer.csv
+else
+	echo "BERT_NVIDIA/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d BERT_NVIDIA/results ]; then
+	cp -r BERT_NVIDIA/results results/results_bert
+else
+	echo "BERT_NVIDIA/results does not exist, check if test is ran successfully"
+fi
+
+### Faster_RCNN ###
+if [ -f Faster_RCNN/results/results_train.csv ]; then
+	cp Faster_RCNN/results/results_train.csv results/results_faster_rcnn_train.csv
+else
+	echo "Faster_RCNN/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f Faster_RCNN/results/results_infer.csv ]; then
+	cp Faster_RCNN/results/results_infer.csv results/results_faster_rcnn_infer.csv
+else
+	echo "Faster_RCNN/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d Faster_RCNN/results ]; then
+	cp -r Faster_RCNN/results results/results_faster_rcnn
+else
+	echo "Faster_RCNN/results does not exist, check if test is ran successfully"
+fi
+
 python process_results.py

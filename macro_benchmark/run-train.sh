@@ -66,6 +66,20 @@ cd DIEN
 ./train.sh
 cd ..
 
+echo "##########################################"
+echo "### Running BERT_NVIDIA                ###"
+echo "##########################################"
+cd BERT_NVIDIA
+./train.sh
+cd ..
+
+echo "##########################################"
+echo "### Running Faster_RCNN                ###"
+echo "##########################################"
+cd Faster_RCNN
+./train.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
