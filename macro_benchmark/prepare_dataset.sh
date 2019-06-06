@@ -55,3 +55,17 @@ echo "##########################################"
 cd DIEN
 ./prepare_dataset.sh
 cd ..
+
+echo "##########################################"
+echo "###        BERT_NVIDIA                 ###"
+echo "##########################################"
+cd BERT_NVIDIA
+./prepare_dataset.sh
+cd ..
+
+echo "##########################################"
+echo "###        Faster_RCNN                 ###"
+echo "##########################################"
+cd Faster_RCNN
+./prepare_dataset.sh
+cd ..
