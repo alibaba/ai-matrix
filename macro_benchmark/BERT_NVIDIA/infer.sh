@@ -5,7 +5,7 @@ if [ -d results ]; then
 fi
 mkdir results
 
-batchs='1 2 4'
+batchs='1 2'
 
 for batch in $batchs
 do

@@ -12,7 +12,7 @@ if [ ! -d output ]; then
     mkdir output
 fi
 
-batchs='1 2 4'
+batchs='1 2'
 
 for batch in $batchs
 do
