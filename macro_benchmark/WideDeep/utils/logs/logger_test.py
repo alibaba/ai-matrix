@@ -34,8 +34,8 @@ try:
 except ImportError:
   bigquery = None
 
-from official.utils.flags import core as flags_core
-from official.utils.logs import logger
+from utils.flags import core as flags_core
+from utils.logs import logger
 
 
 class BenchmarkLoggerTest(tf.test.TestCase):
@@ -73,7 +73,7 @@ class BenchmarkLoggerTest(tf.test.TestCase):
       self.assertIsInstance(logger.get_benchmark_logger(),
                             logger.BenchmarkBigQueryLogger)
 
-  @mock.patch("official.utils.logs.logger.config_benchmark_logger")
+  @mock.patch("utils.logs.logger.config_benchmark_logger")
   def test_benchmark_context(self, mock_config_benchmark_logger):
     mock_logger = mock.MagicMock()
     mock_config_benchmark_logger.return_value = mock_logger
@@ -81,7 +81,7 @@ class BenchmarkLoggerTest(tf.test.TestCase):
       tf.compat.v1.logging.info("start benchmarking")
     mock_logger.on_finish.assert_called_once_with(logger.RUN_STATUS_SUCCESS)
 
-  @mock.patch("official.utils.logs.logger.config_benchmark_logger")
+  @mock.patch("utils.logs.logger.config_benchmark_logger")
   def test_benchmark_context_failure(self, mock_config_benchmark_logger):
     mock_logger = mock.MagicMock()
     mock_config_benchmark_logger.return_value = mock_logger
@@ -218,7 +218,7 @@ class BenchmarkFileLoggerTest(tf.test.TestCase):
     metric_log = os.path.join(log_dir, "metric.log")
     self.assertFalse(tf.io.gfile.exists(metric_log))
 
-  @mock.patch("official.utils.logs.logger._gather_run_info")
+  @mock.patch("utils.logs.logger._gather_run_info")
   def test_log_run_info(self, mock_gather_run_info):
     log_dir = tempfile.mkdtemp(dir=self.get_temp_dir())
     log = logger.BenchmarkFileLogger(log_dir)
@@ -338,7 +338,7 @@ class BenchmarkBigQueryLoggerTest(tf.test.TestCase):
     self.mock_bq_uploader.upload_benchmark_metric_json.assert_called_once_with(
         "dataset", "metric_table", "run_id", expected_metric_json)
 
-  @mock.patch("official.utils.logs.logger._gather_run_info")
+  @mock.patch("utils.logs.logger._gather_run_info")
   def test_log_run_info(self, mock_gather_run_info):
     run_info = {"model_name": "model_name",
                 "dataset": "dataset_name",

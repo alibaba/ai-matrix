@@ -22,11 +22,11 @@ import os
 import numpy as np
 import tensorflow as tf  # pylint: disable=g-bad-import-order
 
-from official.datasets import movielens
-from official.utils.testing import integration
-from official.wide_deep import movielens_dataset
-from official.wide_deep import movielens_main
-from official.wide_deep import wide_deep_run_loop
+from datasets import movielens
+from utils.testing import integration
+import movielens_dataset
+import movielens_main
+import wide_deep_run_loop
 
 tf.logging.set_verbosity(tf.logging.ERROR)
 

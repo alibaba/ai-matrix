@@ -24,11 +24,11 @@ from absl import app as absl_app
 from absl import flags
 import tensorflow as tf
 
-from official.datasets import movielens
-from official.utils.flags import core as flags_core
-from official.utils.logs import logger
-from official.wide_deep import movielens_dataset
-from official.wide_deep import wide_deep_run_loop
+from datasets import movielens
+from utils.flags import core as flags_core
+from utils.logs import logger
+import movielens_dataset
+import wide_deep_run_loop
 
 
 def define_movie_flags():

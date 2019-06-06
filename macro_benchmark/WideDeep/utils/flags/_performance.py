@@ -23,7 +23,7 @@ import multiprocessing
 from absl import flags    # pylint: disable=g-bad-import-order
 import tensorflow as tf   # pylint: disable=g-bad-import-order
 
-from official.utils.flags._conventions import help_wrap
+from utils.flags._conventions import help_wrap
 
 
 # Map string to (TensorFlow dtype, default loss scale)

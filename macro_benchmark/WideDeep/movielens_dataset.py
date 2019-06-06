@@ -28,9 +28,9 @@ import numpy as np
 import tensorflow as tf
 # pylint: enable=wrong-import-order
 
-from official.datasets import movielens
-from official.utils.data import file_io
-from official.utils.flags import core as flags_core
+from datasets import movielens
+from utils.data import file_io
+from utils.flags import core as flags_core
 
 
 _BUFFER_SUBDIR = "wide_deep_buffer"
