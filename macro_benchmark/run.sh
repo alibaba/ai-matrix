@@ -73,6 +73,20 @@ cd NCF
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running BERT_NVIDIA                ###"
+echo "##########################################"
+cd BERT_NVIDIA
+./run.sh
+cd ..
+
+echo "##########################################"
+echo "### Running Faster_RCNN                ###"
+echo "##########################################"
+cd Faster_RCNN
+./run.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

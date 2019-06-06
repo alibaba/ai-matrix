@@ -87,6 +87,20 @@ cd DIEN
 ./infer.sh
 cd ..
 
+echo "##########################################"
+echo "### Running BERT_NVIDIA                ###"
+echo "##########################################"
+cd BERT_NVIDIA
+./infer.sh
+cd ..
+
+echo "##########################################"
+echo "### Running Faster_RCNN                ###"
+echo "##########################################"
+cd Faster_RCNN
+./infer.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
