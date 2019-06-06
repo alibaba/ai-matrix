@@ -28,7 +28,7 @@ from six.moves import urllib
 import tensorflow as tf
 # pylint: enable=wrong-import-order
 
-from official.utils.flags import core as flags_core
+from utils.flags import core as flags_core
 
 
 DATA_URL = 'https://archive.ics.uci.edu/ml/machine-learning-databases/adult'

@@ -26,7 +26,7 @@ import tempfile
 
 from absl import flags
 
-from official.utils.flags import core as flags_core
+from utils.flags import core as flags_core
 
 
 def run_synthetic(main, tmp_root, extra_flags=None, synth=True, max_train=1):

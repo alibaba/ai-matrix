@@ -17,7 +17,7 @@
 import numpy as np
 import tensorflow as tf
 
-from official.utils.accelerator import tpu as tpu_utils
+from utils.accelerator import tpu as tpu_utils
 
 
 TEST_CASES = [

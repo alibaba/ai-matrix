@@ -28,12 +28,12 @@ from six.moves import shlex_quote
 from absl import app as absl_app
 from absl import flags
 
-from official.utils.flags import _base
-from official.utils.flags import _benchmark
-from official.utils.flags import _conventions
-from official.utils.flags import _device
-from official.utils.flags import _misc
-from official.utils.flags import _performance
+from utils.flags import _base
+from utils.flags import _benchmark
+from utils.flags import _conventions
+from utils.flags import _device
+from utils.flags import _misc
+from utils.flags import _performance
 
 
 def set_defaults(**kwargs):

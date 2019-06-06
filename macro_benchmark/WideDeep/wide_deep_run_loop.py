@@ -25,10 +25,10 @@ from absl import app as absl_app
 from absl import flags
 import tensorflow as tf  # pylint: disable=g-bad-import-order
 
-from official.utils.flags import core as flags_core
-from official.utils.logs import hooks_helper
-from official.utils.logs import logger
-from official.utils.misc import model_helpers
+from utils.flags import core as flags_core
+from utils.logs import hooks_helper
+from utils.logs import logger
+from utils.misc import model_helpers
 
 
 LOSS_PREFIX = {'wide': 'linear/', 'deep': 'dnn/'}

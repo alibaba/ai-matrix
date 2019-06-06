@@ -20,19 +20,19 @@ from absl import app as absl_app
 from absl import flags
 import tensorflow as tf
 
-from official.utils.flags import core as flags_core
-from official.utils.logs import logger
-from official.wide_deep import census_dataset
-from official.wide_deep import wide_deep_run_loop
+from utils.flags import core as flags_core
+from utils.logs import logger
+import census_dataset
+import wide_deep_run_loop
 
 
 def define_census_flags():
   wide_deep_run_loop.define_wide_deep_flags()
   flags.adopt_module_key_flags(wide_deep_run_loop)
-  flags_core.set_defaults(data_dir='/tmp/census_data',
-                          model_dir='/tmp/census_model',
+  flags_core.set_defaults(data_dir='census_data',
+                          model_dir='census_model',
                           train_epochs=40,
-                          epochs_between_evals=2,
+                          epochs_between_evals=40,
                           inter_op_parallelism_threads=0,
                           intra_op_parallelism_threads=0,
                           batch_size=40)
