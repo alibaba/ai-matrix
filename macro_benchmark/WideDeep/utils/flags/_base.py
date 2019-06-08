@@ -28,7 +28,7 @@ from utils.logs import hooks_helper
 def define_base(data_dir=True, model_dir=True, clean=True, train_epochs=True,
                 epochs_between_evals=True, stop_threshold=True, batch_size=True,
                 num_gpu=True, hooks=True, export_dir=True,
-                distribution_strategy=True):
+                distribution_strategy=True, infer=True):
   """Register base flags.
 
   Args:
@@ -66,6 +66,12 @@ def define_base(data_dir=True, model_dir=True, clean=True, train_epochs=True,
         name="clean", default=False,
         help=help_wrap("If set, model_dir will be removed if it exists."))
     key_flags.append("clean")
+
+  if infer:
+    flags.DEFINE_boolean(
+        name="infer", default=False,
+        help=help_wrap("If True, training is skipped and only inference is done."))
+    key_flags.append("infer")
 
   if train_epochs:
     flags.DEFINE_integer(
