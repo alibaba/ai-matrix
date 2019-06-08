@@ -220,4 +220,23 @@ else
 	echo "Faster_RCNN/results does not exist, check if test is ran successfully"
 fi
 
+### WideDeep ###
+if [ -f WideDeep/results/results_train.csv ]; then
+	cp WideDeep/results/results_train.csv results/results_wide_deep_train.csv
+else
+	echo "WideDeep/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f WideDeep/results/results_infer.csv ]; then
+	cp WideDeep/results/results_infer.csv results/results_wide_deep_infer.csv
+else
+	echo "WideDeep/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d WideDeep/results ]; then
+	cp -r WideDeep/results results/results_wide_deep
+else
+	echo "WideDeep/results does not exist, check if test is ran successfully"
+fi
+
 python process_results.py
