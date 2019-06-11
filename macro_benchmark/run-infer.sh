@@ -101,6 +101,13 @@ cd Faster_RCNN
 ./infer.sh
 cd ..
 
+echo "##########################################"
+echo "### Running WideDeep                   ###"
+echo "##########################################"
+cd WideDeep
+./infer.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

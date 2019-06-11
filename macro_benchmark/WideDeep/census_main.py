@@ -31,11 +31,12 @@ def define_census_flags():
   flags.adopt_module_key_flags(wide_deep_run_loop)
   flags_core.set_defaults(data_dir='census_data',
                           model_dir='census_model',
-                          train_epochs=40,
-                          epochs_between_evals=40,
+                          train_epochs=50,
+                          epochs_between_evals=50,
                           inter_op_parallelism_threads=0,
                           intra_op_parallelism_threads=0,
-                          batch_size=40)
+                          batch_size=40,
+                          infer=False)
 
 
 def build_estimator(model_dir, model_type, model_column_fn, inter_op, intra_op):
@@ -46,7 +47,7 @@ def build_estimator(model_dir, model_type, model_column_fn, inter_op, intra_op):
   # Create a tf.estimator.RunConfig to ensure the model is run on CPU, which
   # trains faster than GPU for this model.
   run_config = tf.estimator.RunConfig().replace(
-      session_config=tf.ConfigProto(device_count={'GPU': 0},
+      session_config=tf.ConfigProto(device_count={'GPU': 8},
                                     inter_op_parallelism_threads=inter_op,
                                     intra_op_parallelism_threads=intra_op))
 
@@ -88,7 +89,7 @@ def run_census(flags_obj):
         train_file, flags_obj.epochs_between_evals, True, flags_obj.batch_size)
 
   def eval_input_fn():
-    return census_dataset.input_fn(test_file, 1, False, flags_obj.batch_size)
+    return census_dataset.input_fn(test_file, flags_obj.epochs_between_evals, False, flags_obj.batch_size)
 
   tensors_to_log = {
       'average_loss': '{loss_prefix}head/truediv',

@@ -80,6 +80,13 @@ cd Faster_RCNN
 ./train.sh
 cd ..
 
+echo "##########################################"
+echo "### Running WideDeep                   ###"
+echo "##########################################"
+cd WideDeep
+./train.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
