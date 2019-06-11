@@ -69,3 +69,10 @@ echo "##########################################"
 cd Faster_RCNN
 ./prepare_dataset.sh
 cd ..
+
+echo "##########################################"
+echo "###        WideDeep                    ###"
+echo "##########################################"
+cd WideDeep
+./prepare_dataset.sh
+cd ..
