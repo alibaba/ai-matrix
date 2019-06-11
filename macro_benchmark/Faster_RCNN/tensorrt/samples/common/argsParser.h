@@ -47,6 +47,7 @@ struct Args
     bool runInFp16{false};
     bool help{false};
     int useDLACore{-1};
+    int batch_size{1};
     std::vector<std::string> dataDirs;
 };
 
@@ -68,6 +69,7 @@ inline bool parseArgs(Args& args, int argc, char* argv[])
             {"int8", no_argument, 0, 'i'},
             {"fp16", no_argument, 0, 'f'},
             {"useDLACore", required_argument, 0, 'u'},
+            {"batch_size", required_argument, 0, 'b'},
             {nullptr, 0, nullptr, 0}};
         int option_index = 0;
         arg = getopt_long(argc, argv, "hd:iu", long_options, &option_index);
@@ -97,6 +99,10 @@ inline bool parseArgs(Args& args, int argc, char* argv[])
         case 'u':
             if (optarg)
                 args.useDLACore = std::stoi(optarg);
+            break;
+        case 'b':
+            if (optarg)
+                args.batch_size = std::stoi(optarg);
             break;
         default:
             return false;

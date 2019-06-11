@@ -5,3 +5,10 @@ tar zxvf data/faster-rcnn/faster-rcnn.tgz -C data/faster-rcnn --strip-components
 
 make
 
+if [ ! -d "output" ]; then
+    mkdir output
+fi
+
+apt-get update
+apt-get install imagemagick
+
