@@ -54,7 +54,7 @@ struct BBox
 
 std::string locateFile(const std::string& input)
 {
-    std::vector<std::string> dirs{"data/samples/faster-rcnn/", "data/faster-rcnn/"};
+    std::vector<std::string> dirs{"images/", "data/faster-rcnn/"};
     return locateFile(input, dirs);
 }
 
@@ -70,7 +70,7 @@ void readPPMFile(const std::string& filename, PPM& ppm)
 
 void writePPMFileWithBBox(const std::string& filename, PPM& ppm, const BBox& bbox)
 {
-    std::ofstream outfile("./" + filename, std::ofstream::binary);
+    std::ofstream outfile("./output/" + filename, std::ofstream::binary);
     assert(!outfile.fail());
     outfile << "P6"
             << "\n"
@@ -273,7 +273,8 @@ void printHelp(const char* name)
     std::cout << "Usage: " << name << "\n"
         << "Optional Parameters:\n"
         << "  -h, --help        Display help information.\n"
-        << "  --useDLACore=N    Specify the DLA engine to run on.\n";
+        << "  --useDLACore=N    Specify the DLA engine to run on.\n"
+        << "  --batch_size=N    Specify the batch size.\n";
 }
 
 
@@ -294,7 +295,7 @@ int main(int argc, char** argv)
     initLibNvInferPlugins(&gLogger.getTRTLogger(), "");
 
     // Batch size
-    const int N = 5;
+    const int N = gArgs.batch_size;
     // Create a TensorRT model from the caffe model and serialize it to a stream
     caffeToTRTModel("faster_rcnn_test_iplugin.prototxt",
                     "VGG16_faster_rcnn_final.caffemodel",
@@ -303,31 +304,24 @@ int main(int argc, char** argv)
     assert(trtModelStream != nullptr);
 
     // Available images
-    std::vector<std::string> imageList = {"000456.ppm", "000542.ppm", "001150.ppm", "001763.ppm", "004545.ppm"};
+    std::string image;
+    std::ifstream infile("images/list.txt");
+    // std::vector<std::string> imageList = {"000456.ppm", "000542.ppm", "001150.ppm", "001763.ppm", "004545.ppm"};
+    std::vector<std::string> imageList(N);
+    std::vector<std::string> images;
+    while (getline(infile, image)) {
+        images.push_back(image);
+    }
+    infile.close();
+    
     std::vector<PPM> ppms(N);
 
     float imInfo[N * 3]; // Input im_info
     assert(ppms.size() <= imageList.size());
-    for (int i = 0; i < N; ++i)
-    {
-        readPPMFile(imageList[i], ppms[i]);
-        imInfo[i * 3] = float(ppms[i].h);     // Number of rows
-        imInfo[i * 3 + 1] = float(ppms[i].w); // Number of columns
-        imInfo[i * 3 + 2] = 1;                // Image scale
-    }
 
     float* data = new float[N * INPUT_C * INPUT_H * INPUT_W];
     // Pixel mean used by the Faster R-CNN's author
     float pixelMean[3]{102.9801f, 115.9465f, 122.7717f}; // Also in BGR order
-    for (int i = 0, volImg = INPUT_C * INPUT_H * INPUT_W; i < N; ++i)
-    {
-        for (int c = 0; c < INPUT_C; ++c)
-        {
-            // The color image to input should be in BGR order
-            for (unsigned j = 0, volChl = INPUT_H * INPUT_W; j < volChl; ++j)
-                data[i * volImg + c * volChl + j] = float(ppms[i].buffer[j * INPUT_C + 2 - c]) - pixelMean[c];
-        }
-    }
 
     // Deserialize the engine
     IRuntime* runtime = createInferRuntime(gLogger.getTRTLogger());
@@ -355,69 +349,104 @@ int main(int argc, char** argv)
     // Predicted bounding boxes
     predBBoxes.assign(N * NMS_MAX_OUT * OUTPUT_BBOX_SIZE, 0);
 
-    // Run inference
-    doInference(*context, data, imInfo, bboxPreds, clsProbs, rois, N);
+    // The sample passes if there is at least one detection for each item in the batch
+    bool pass = true;
+
+    const int num_batches = images.size() / N;
+
+    for (int iter = 0; iter < num_batches; iter++)
+    {
+        imageList.clear();
+
+        for (int i = 0; i < N; ++i)
+        {
+            imageList.push_back(images[iter*N+i]);
+        }
+
+        for (int i = 0; i < N; ++i)
+        {
+            readPPMFile(imageList[i], ppms[i]);
+            imInfo[i * 3] = float(ppms[i].h);     // Number of rows
+            imInfo[i * 3 + 1] = float(ppms[i].w); // Number of columns
+            imInfo[i * 3 + 2] = 1;                // Image scale
+        }
+
+        for (int i = 0, volImg = INPUT_C * INPUT_H * INPUT_W; i < N; ++i)
+        {
+            for (int c = 0; c < INPUT_C; ++c)
+            {
+                // The color image to input should be in BGR order
+                for (unsigned j = 0, volChl = INPUT_H * INPUT_W; j < volChl; ++j)
+                    data[i * volImg + c * volChl + j] = float(ppms[i].buffer[j * INPUT_C + 2 - c]) - pixelMean[c];
+            }
+        }
+
+        // Run inference
+        doInference(*context, data, imInfo, bboxPreds, clsProbs, rois, N);
+
+        // Unscale back to raw image space
+        for (int i = 0; i < N; ++i)
+        {
+            for (int j = 0; j < NMS_MAX_OUT * 4 && imInfo[i * 3 + 2] != 1; ++j)
+                rois[i * NMS_MAX_OUT * 4 + j] /= imInfo[i * 3 + 2];
+        }
+
+        bboxTransformInvAndClip(rois, bboxPreds, predBBoxes, imInfo, N, NMS_MAX_OUT, OUTPUT_CLS_SIZE);
+
+        const float nms_threshold = 0.3f;
+        const float score_threshold = 0.8f;
+
+        for (int i = 0; i < N; ++i)
+        {
+            float* bbox = predBBoxes.data() + i * NMS_MAX_OUT * OUTPUT_BBOX_SIZE;
+            float* scores = clsProbs.data() + i * NMS_MAX_OUT * OUTPUT_CLS_SIZE;
+            int numDetections = 0;
+            for (int c = 1; c < OUTPUT_CLS_SIZE; ++c) // Skip the background
+            {
+                std::vector<std::pair<float, int>> score_index;
+                for (int r = 0; r < NMS_MAX_OUT; ++r)
+                {
+                    if (scores[r * OUTPUT_CLS_SIZE + c] > score_threshold)
+                    {
+                        score_index.push_back(std::make_pair(scores[r * OUTPUT_CLS_SIZE + c], r));
+                        std::stable_sort(score_index.begin(), score_index.end(),
+                                         [](const std::pair<float, int>& pair1,
+                                            const std::pair<float, int>& pair2) {
+                                             return pair1.first > pair2.first;
+                                         });
+                    }
+                }
+
+                // Apply NMS algorithm
+                std::vector<int> indices = nms(score_index, bbox, c, OUTPUT_CLS_SIZE, nms_threshold);
+
+                numDetections += static_cast<int>(indices.size());
+
+                // Show results
+                for (unsigned k = 0; k < indices.size(); ++k)
+                {
+                    int idx = indices[k];
+                    std::string storeName = CLASSES[c] + "-" + std::to_string(scores[idx * OUTPUT_CLS_SIZE + c]) + ".ppm";
+                    // gLogInfo << "Detected " << CLASSES[c] << " in " << ppms[i].fileName << " with confidence " << scores[idx * OUTPUT_CLS_SIZE + c] * 100.0f << "% "
+                             // << " (Result stored in " << storeName << ")." << std::endl;
+
+                    BBox b{bbox[idx * OUTPUT_BBOX_SIZE + c * 4], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 1], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 2], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 3]};
+                    writePPMFileWithBBox(storeName, ppms[i], b);
+                }
+            }
+            pass &= numDetections >= 1;
+        }
+
+        if (iter % 100 == 0)
+        {
+            gLogInfo << "Number of batches processed: " << iter << std::endl;
+        }
+    }
 
     // Destroy the engine
     context->destroy();
     engine->destroy();
     runtime->destroy();
-
-    // Unscale back to raw image space
-    for (int i = 0; i < N; ++i)
-    {
-        for (int j = 0; j < NMS_MAX_OUT * 4 && imInfo[i * 3 + 2] != 1; ++j)
-            rois[i * NMS_MAX_OUT * 4 + j] /= imInfo[i * 3 + 2];
-    }
-
-    bboxTransformInvAndClip(rois, bboxPreds, predBBoxes, imInfo, N, NMS_MAX_OUT, OUTPUT_CLS_SIZE);
-
-    const float nms_threshold = 0.3f;
-    const float score_threshold = 0.8f;
-
-    // The sample passes if there is at least one detection for each item in the batch
-    bool pass = true;
-
-    for (int i = 0; i < N; ++i)
-    {
-        float* bbox = predBBoxes.data() + i * NMS_MAX_OUT * OUTPUT_BBOX_SIZE;
-        float* scores = clsProbs.data() + i * NMS_MAX_OUT * OUTPUT_CLS_SIZE;
-        int numDetections = 0;
-        for (int c = 1; c < OUTPUT_CLS_SIZE; ++c) // Skip the background
-        {
-            std::vector<std::pair<float, int>> score_index;
-            for (int r = 0; r < NMS_MAX_OUT; ++r)
-            {
-                if (scores[r * OUTPUT_CLS_SIZE + c] > score_threshold)
-                {
-                    score_index.push_back(std::make_pair(scores[r * OUTPUT_CLS_SIZE + c], r));
-                    std::stable_sort(score_index.begin(), score_index.end(),
-                                     [](const std::pair<float, int>& pair1,
-                                        const std::pair<float, int>& pair2) {
-                                         return pair1.first > pair2.first;
-                                     });
-                }
-            }
-
-            // Apply NMS algorithm
-            std::vector<int> indices = nms(score_index, bbox, c, OUTPUT_CLS_SIZE, nms_threshold);
-
-            numDetections += static_cast<int>(indices.size());
-
-            // Show results
-            for (unsigned k = 0; k < indices.size(); ++k)
-            {
-                int idx = indices[k];
-                std::string storeName = CLASSES[c] + "-" + std::to_string(scores[idx * OUTPUT_CLS_SIZE + c]) + ".ppm";
-                gLogInfo << "Detected " << CLASSES[c] << " in " << ppms[i].fileName << " with confidence " << scores[idx * OUTPUT_CLS_SIZE + c] * 100.0f << "% "
-                         << " (Result stored in " << storeName << ")." << std::endl;
-
-                BBox b{bbox[idx * OUTPUT_BBOX_SIZE + c * 4], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 1], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 2], bbox[idx * OUTPUT_BBOX_SIZE + c * 4 + 3]};
-                writePPMFileWithBBox(storeName, ppms[i], b);
-            }
-        }
-        pass &= numDetections >= 1;
-    }
 
     delete[] data;
 
