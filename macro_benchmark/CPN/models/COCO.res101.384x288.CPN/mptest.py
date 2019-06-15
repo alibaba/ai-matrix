@@ -46,8 +46,8 @@ def test_net(tester, logger, dets, det_range):
         img_start = img_end
 
         iter_avg_cost_time = (time.time() - start_time) / (img_end - det_range[0])
-        print('ran %.ds >> << left %.ds' % (
-            iter_avg_cost_time * (img_end - det_range[0]), iter_avg_cost_time * (det_range[1] - img_end)))
+        print('ran %.ds >> << left %.ds img_end %d' % (
+            iter_avg_cost_time * (img_end - det_range[0]), iter_avg_cost_time * (det_range[1] - img_end), img_end))
 
         all_res.append([])
 
@@ -78,7 +78,7 @@ def test_net(tester, logger, dets, det_range):
         # crop and detect keypoints
         cls_skeleton = np.zeros((len(test_data), cfg.nr_skeleton, 3))
         crops = np.zeros((len(test_data), 4))
-        cfg.batch_size = 32
+        #cfg.batch_size = 32
         batch_size = cfg.batch_size // 2
         for test_id in range(0, len(test_data), batch_size):
             start_id = test_id
@@ -212,8 +212,10 @@ def test(test_model, logger):
             ranges.append(img_end)
         img_start = img_end
 
+    ranges = [0, args.epoch_size]
+
     def func(id):
-        cfg.set_args(args.gpu_ids.split(',')[id])
+        #cfg.set_args(args.gpu_ids.split(',')[id])
         tester = Tester(Network(), cfg)
         tester.load_weights(test_model)
         range = [ranges[id], ranges[id + 1]]
@@ -241,6 +243,9 @@ if __name__ == '__main__':
         parser.add_argument('--gpu', '-d', type=str, dest='gpu_ids')
         parser.add_argument('--range', '-r', type=str, dest='test_epochs')
         parser.add_argument('--model', '-m', type=str, dest='test_model')
+        parser.add_argument('--batch_size', type=int, dest='batch_size')
+        parser.add_argument('--epoch_size', type=int, dest='epoch_size')
+        #parser.add_argument('--num_epochs', type=int, dest='num_epochs')
         args = parser.parse_args()
 
         # test gpus
@@ -261,6 +266,7 @@ if __name__ == '__main__':
 
     global args
     args = parse_args()
+    cfg.set_args(args.gpu_ids, False, args.batch_size, args.epoch_size, 1)
 
     if args.test_model:
         logger = colorlogger(cfg.output_dir, 'test_model_{}'.format(args.test_model.split('/')[-1].split('.')[0]))

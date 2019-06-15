@@ -145,6 +145,9 @@ if __name__ == '__main__':
         parser.add_argument('--gpu', '-d', type=str, dest='gpu_ids')
         parser.add_argument('--continue', '-c', dest='continue_train', action='store_true')
         parser.add_argument('--debug', dest='debug', action='store_true')
+        parser.add_argument('--batch_size', type=int, dest='batch_size')
+        parser.add_argument('--epoch_size', type=int, dest='epoch_size')
+        parser.add_argument('--num_epochs', type=int, dest='num_epochs')
         args = parser.parse_args()
 
         if not args.gpu_ids:
@@ -159,7 +162,7 @@ if __name__ == '__main__':
         return args
     args = parse_args()
 
-    cfg.set_args(args.gpu_ids, args.continue_train)
+    cfg.set_args(args.gpu_ids, args.continue_train, args.batch_size, args.epoch_size, args.num_epochs)
     trainer = Trainer(Network(), cfg)
     trainer.train()
 

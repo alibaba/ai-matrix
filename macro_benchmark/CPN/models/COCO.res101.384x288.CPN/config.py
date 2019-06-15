@@ -22,14 +22,15 @@ class Config:
     lr_gamma = 0.5
     lr_dec_epoch = 60
 
-    epoch_size = 60000 
+    epoch_size = 10000
+    num_epochs = 1
     optimizer = 'adam'
 
     batch_size = 24 
     weight_decay = 1e-5
 
     step_size = epoch_size * lr_dec_epoch
-    max_itr = epoch_size * 400
+    max_itr = epoch_size * num_epochs
     double_bias = False
 
     dpflow_enable = True
@@ -43,12 +44,17 @@ class Config:
         lr = self.lr * self.lr_gamma ** (itr // self.step_size)
         return lr
 
-    def set_args(self, gpu_ids, continue_train=False):
+    def set_args(self, gpu_ids, continue_train=False, batch_size=24, epoch_size=60000, num_epochs=2):
         self.gpu_ids = gpu_ids
         self.nr_gpus = len(self.gpu_ids.split(','))
         self.continue_train = continue_train
+        self.batch_size = batch_size
+        self.epoch_size = epoch_size
+        self.num_epochs = num_epochs
+        self.max_itr = epoch_size * num_epochs
         os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_ids
         print('>>> Using /gpu:{}'.format(self.gpu_ids))
+        print('batch_size: ', batch_size)
 
     bn_train = True
     init_model = osp.join(root_dir, 'data', 'imagenet_weights', 'resnet_v1_101.ckpt')
