@@ -21,7 +21,7 @@ do
     echo "Running inference with batch size of $batch"
     echo "----------------------------------------------------------------"
     start=`date +%s%N`
-    python models/COCO.res101.384x288.CPN/mptest.py -d $CUDA_VISIBLE_DEVICES -m ../../pretrained_model/snapshot_350.ckpt --batch_size $batch --epoch_size $EPOCH_SIZE |& tee ./results/result_infer_${batch}.txt
+    python models/COCO.res101.384x288.CPN/mptest.py -d $CUDA_VISIBLE_DEVICES -m pretrained_model/snapshot_350.ckpt --batch_size $batch --epoch_size $EPOCH_SIZE |& tee ./results/result_infer_${batch}.txt
     end=`date +%s%N`
     total_time=$(((end-start)/1000000))
     #total_time=`bc <<< "scale = 3; ($end-$start)/1000000000"`
