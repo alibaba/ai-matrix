@@ -1,0 +1,7 @@
+0772148116dfa4a584b89c84fdbd96f8  data/imagenet_weights/resnet_v1_101_2016_08_28.tar.gz
+dbb6cb6104a6ef30bb3bb680577a42dc  data/COCO/person_detection_minival411_human553.json
+3c38101bd264612976fe57609198e7fe  data/COCO/person_keypoints_minival2014.json
+8d298a965ec9332f14e719d660c473e0  data/COCO/person_keypoints_trainvalminusminival2014.json
+310294e87ff89ded356031236f5e86c4  pretrained_model/snapshot_350.ckpt.data-00000-of-00001
+3c17978e26fa9d5ca5f4e9cc2db38c4a  pretrained_model/snapshot_350.ckpt.index
+07e551cf94d83e3bbefa022deba0b290  pretrained_model/snapshot_350.ckpt.meta
