@@ -1,0 +1,4 @@
+0772148116dfa4a584b89c84fdbd96f8  data/imagenet_weights/resnet_v1_101_2016_08_28.tar.gz
+dbb6cb6104a6ef30bb3bb680577a42dc  data/COCO/person_detection_minival411_human553.json
+3c38101bd264612976fe57609198e7fe  data/COCO/person_keypoints_minival2014.json
+8d298a965ec9332f14e719d660c473e0  data/COCO/person_keypoints_trainvalminusminival2014.json
