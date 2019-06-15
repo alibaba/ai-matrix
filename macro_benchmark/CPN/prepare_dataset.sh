@@ -8,6 +8,15 @@ if [ ! -d "data/imagenet_weights" ]; then
 	cd -
 fi
 
+if [ ! -d "pretrained_model" ]; then
+	mkdir pretrained_model
+	cd pretrained_model
+	gdown https://drive.google.com/uc?id=1qljT4G6P0Q5eV2lwxZ_R2-2h3Gi1Yq7D
+	gdown https://drive.google.com/uc?id=1DyW24mn1kn9mE1mXogYsYYXghk2EAxVj
+	gdown https://drive.google.com/uc?id=1KFvvIpSFaA9OVYPy0wELb7g67yYxuJDi
+	cd -
+fi
+
 if [ ! -f "data/COCO/person_detection_minival411_human553.json" ]; then
 	cd data/COCO
 	gdown https://drive.google.com/uc?id=1RHWE0xYcnDyUiB5pHKfJZYJsOeN_rr7A
