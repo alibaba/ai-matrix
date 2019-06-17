@@ -108,6 +108,13 @@ cd WideDeep
 ./infer.sh
 cd ..
 
+echo "##########################################"
+echo "### Running CPN                        ###"
+echo "##########################################"
+cd CPN
+./infer.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
