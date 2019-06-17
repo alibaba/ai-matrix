@@ -94,6 +94,13 @@ cd WideDeep
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running CPN                        ###"
+echo "##########################################"
+cd CPN
+./run.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

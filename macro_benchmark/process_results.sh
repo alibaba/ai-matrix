@@ -239,4 +239,23 @@ else
 	echo "WideDeep/results does not exist, check if test is ran successfully"
 fi
 
+### CPN ###
+if [ -f CPN/results/results_train.csv ]; then
+	cp CPN/results/results_train.csv results/results_cpn_train.csv
+else
+	echo "CPN/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f CPN/results/results_infer.csv ]; then
+	cp CPN/results/results_infer.csv results/results_cpn_infer.csv
+else
+	echo "CPN/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d CPN/results ]; then
+	cp -r CPN/results results/results_cpn
+else
+	echo "CPN/results does not exist, check if test is ran successfully"
+fi
+
 python process_results.py

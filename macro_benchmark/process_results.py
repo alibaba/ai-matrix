@@ -152,7 +152,7 @@ def create_excel(args):
         wb.close()
 	
     else:
-        models = ["cnn", "deepinterest", "maskrcnn", "nmt", "ssd_vgg16", "ssd_resnet18", "dssd", "ncf", "dien", "bert", "faster_rcnn", "wide_deep"]
+        models = ["cnn", "deepinterest", "maskrcnn", "nmt", "ssd_vgg16", "ssd_resnet18", "dssd", "ncf", "dien", "bert", "faster_rcnn", "wide_deep", "cpn"]
         wb = xlsxwriter.Workbook(results_dir + "/results_train.xlsx")
         for model in models:
             ws = wb.add_worksheet(model)

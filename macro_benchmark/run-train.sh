@@ -87,6 +87,13 @@ cd WideDeep
 ./train.sh
 cd ..
 
+echo "##########################################"
+echo "### Running CPN                        ###"
+echo "##########################################"
+cd CPN
+./train.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
