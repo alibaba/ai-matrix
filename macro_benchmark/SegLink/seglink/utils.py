@@ -32,7 +32,9 @@ def log_flags(FLAGS):
   Log all variables defined in FLAGS and their values.
   """
   param_list = []
-  for k, v in FLAGS.__dict__['__flags'].items():
+  #for k, v in FLAGS.__flags.items():
+  for k in FLAGS:
+    v = FLAGS[k].value
     param_list.append("'--{}': {}".format(k, v))
   logging.info('Parameters:\n' + '\n'.join(param_list))
 

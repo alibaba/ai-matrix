@@ -5,8 +5,8 @@ import numpy as np
 import argparse
 
 parentdir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(parentdir, '../../src'))
-import model_vgg16
+sys.path.insert(0, os.path.join(parentdir, '../../seglink'))
+import model_cnn
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--model_scope', default='vgg16',
@@ -17,14 +17,17 @@ parser.add_argument('--caffe_weights_path', default='../model/VGG_ILSVRC_16_laye
                     help='weights dump path.')
 args = parser.parse_args()
 
+tf.app.flags.DEFINE_string("model_scope", args.model_scope, "")
+tf.app.flags.DEFINE_string("ckpt_path", args.ckpt_path, "")
+tf.app.flags.DEFINE_string("caffe_weights_path", args.caffe_weights_path, "")
 
 def convert_caffemodel_to_ckpt():
   caffe_weights = joblib.load(args.caffe_weights_path)
 
   # create network
-  vgg16 = model_vgg16.Vgg16Model()
+  vgg16 = model_cnn.SsdVgg16()
   model_scope = args.model_scope
-  vgg16.build_model(tf.placeholder(tf.float32, shape=[32,3,300,300]), scope=model_scope)
+  vgg16.build_model(tf.placeholder(tf.float32, shape=[32,300,300,3]), scope=model_scope)
 
   # auxillary functions for conversion
   def load_conv_weight(target_name, src_name):

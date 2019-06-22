@@ -516,17 +516,17 @@ def create_merge_multiple(save_path, creators, shuffle=True):
 
 if __name__ == '__main__':
   # SynthText all
-  # data_root = '/mnt/datasets/scene_text/SynthText/SynthText/'
-  # create_synthtext_dataset('../data/synthtext_10k.tf',
-  #                          data_root,
-  #                          n_max=10000,
-  #                          shuffle=True)
-  # create_synthtext_dataset('/mnt/datasets/scene_text/SynthText/synthtext_full.tf',
-  #                          data_root,
-  #                          shuffle=True)
+  data_root = '../datasets/SynthText/'
+  create_synthtext_dataset('../data/synthtext_10k.tf',
+                           data_root,
+                           n_max=10000,
+                           shuffle=True)
+  create_synthtext_dataset('../data/synthtext_full.tf',
+                           data_root,
+                           shuffle=True)
 
   # ICDAR 2015 incidental
-  ic15_data_root = '/mnt/datasets/scene_text/icdar_2015_incidental/'
+  ic15_data_root = '../datasets/icdar_2015_incidental/'
   creator_ic15_train = DatasetCreator_Icdar2015Incidental(
       '../data/icdar_2015_incidental_train.tf',
       ic15_data_root,

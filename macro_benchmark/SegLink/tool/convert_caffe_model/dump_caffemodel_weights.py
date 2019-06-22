@@ -1,6 +1,8 @@
 import numpy as np
 import joblib
 import argparse
+import os
+import sys
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--caffe_root', help='Caffe root directory.')

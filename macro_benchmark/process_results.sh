@@ -258,4 +258,23 @@ else
 	echo "CPN/results does not exist, check if test is ran successfully"
 fi
 
+### SegLink ###
+if [ -f SegLink/results/results_train.csv ]; then
+	cp SegLink/results/results_train.csv results/results_seglink_train.csv
+else
+	echo "SegLink/results/results_train.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -f SegLink/results/results_infer.csv ]; then
+	cp SegLink/results/results_infer.csv results/results_seglink_infer.csv
+else
+	echo "SegLink/results/results_infer.csv does not exist, check if test is ran successfully"
+fi
+
+if [ -d SegLink/results ]; then
+	cp -r SegLink/results results/results_seglink
+else
+	echo "SegLink/results does not exist, check if test is ran successfully"
+fi
+
 python process_results.py

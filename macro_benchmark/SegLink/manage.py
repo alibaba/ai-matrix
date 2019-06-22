@@ -54,8 +54,8 @@ def run_tf_program_with_json_config(program):
   elif program == 'test':
     script = 'evaluate.py'
   
-  if len(sys.argv) != 4:
-    print('Usage ./manage.py {} <exp_dir> <config_name>'.format(program))
+  if len(sys.argv) != 6:
+    print('Usage ./manage.py {} <exp_dir> <config_name> <batch_size> <max_steps>'.format(program))
     return
   exp_dir = abspath(sys.argv[2])
   config_name = sys.argv[3]
@@ -77,6 +77,13 @@ def run_tf_program_with_json_config(program):
     cmd = 'CUDA_VISIBLE_DEVICES={} '.format(cuda_devices) + cmd
   else:
     n_gpu = 1
+
+  if program == 'train':
+    cmd += ' --train_batch_size {0}'.format(sys.argv[4])
+    cmd += ' --max_steps {0}'.format(sys.argv[5])
+  elif program == 'test':
+    cmd += ' --test_batch_size {0}'.format(sys.argv[4])
+    cmd += ' --num_test {0}'.format(sys.argv[5])
   cmd += ' --log_dir {0}'.format(exp_dir)
   cmd += ' --n_gpu {0}'.format(n_gpu)
   for key, value in config.items():
@@ -84,6 +91,8 @@ def run_tf_program_with_json_config(program):
       value_str = ','.join(['{}'.format(o) for o in value])
     else:
       value_str = value
+    if key == "vgg16_model" or key == "train_datasets" or key == "finetune_model" or key == "test_model" or key == "test_dataset":
+      value_str = abspath(value_str)
     cmd += (' --{0} {1}'.format(key, value_str))
   print(cmd)
 

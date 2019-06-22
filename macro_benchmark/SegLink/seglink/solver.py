@@ -13,37 +13,39 @@ import model
 import data
 import utils
 
-FLAGS = tf.app.flags.FLAGS
-# logging
-tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
-tf.app.flags.DEFINE_string('log_prefix', '', 'Log file name prefix')
-# training
-tf.app.flags.DEFINE_string('resume', 'vgg16', 'Training from loading VGG16 parameters ("vgg16"), resume a checkpoint ("resume"), or finetune a pretrained model ("finetune")')
-tf.app.flags.DEFINE_string('vgg16_model', '../data/VGG_ILSVRC_16_layers_ssd.ckpt', 'The pretrained VGG16 model checkpoint')
-tf.app.flags.DEFINE_string('finetune_model', '', 'Finetuning model path')
-tf.app.flags.DEFINE_string('train_datasets', '', 'Training datasets file names separated by semicolons')
-tf.app.flags.DEFINE_string('weight_init_method', 'xavier', 'Weight initialization method')
-tf.app.flags.DEFINE_integer('train_batch_size', 32, 'Training batch size')
-tf.app.flags.DEFINE_integer('n_gpu', 1, 'Number of GPUs used in training')
-tf.app.flags.DEFINE_float('hard_neg_ratio', 3.0, 'Ratio of hard negatives to positives')
-tf.app.flags.DEFINE_integer('no_random_crop', 0, 'In data augmentation, do not crop image, i.e. use full images')
-# optimizer
-tf.app.flags.DEFINE_string('optimizer', 'sgd', 'Optimization algorithm')
-tf.app.flags.DEFINE_float('base_lr', 1e-3, 'Base learning rate')
-tf.app.flags.DEFINE_float('momentum', 0.9, 'SGD momentum')
-tf.app.flags.DEFINE_float('weight_decay', 5e-4, 'SGD weight decay')
-tf.app.flags.DEFINE_integer('max_steps', 60000, 'Maximum number of iterations.')
-tf.app.flags.DEFINE_string('lr_policy', 'staircase', 'Learning rate decaying policy')
-tf.app.flags.DEFINE_string('lr_breakpoints', '', 'Comma-separated breakpoints of learning rate decay')
-tf.app.flags.DEFINE_string('lr_decays', '', 'Comma-separated decay values for every breakpoint')
-tf.app.flags.DEFINE_integer('profiling', 0, 'Do profiling during training (profiling could slow down training significantly)')
-tf.app.flags.DEFINE_integer('profiling_step', 21, 'Run profiling once at this step')
-tf.app.flags.DEFINE_string('profiling_report', 'timeline.json', 'Profiling report filename')
-# summaries and checkpoints
-tf.app.flags.DEFINE_integer('brief_summary_period', 10, 'Period for brief summaries')
-tf.app.flags.DEFINE_integer('detailed_summary_period', 200, 'Period for detailed summaries')
-tf.app.flags.DEFINE_integer('checkpoint_period', 5000, 'Period for saving checkpoints')
-
+try:
+  FLAGS = tf.app.flags.FLAGS
+  # logging
+  tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
+  tf.app.flags.DEFINE_string('log_prefix', '', 'Log file name prefix')
+  # training
+  tf.app.flags.DEFINE_string('resume', 'vgg16', 'Training from loading VGG16 parameters ("vgg16"), resume a checkpoint ("resume"), or finetune a pretrained model ("finetune")')
+  tf.app.flags.DEFINE_string('vgg16_model', '../data/VGG_ILSVRC_16_layers_ssd.ckpt', 'The pretrained VGG16 model checkpoint')
+  tf.app.flags.DEFINE_string('finetune_model', '', 'Finetuning model path')
+  tf.app.flags.DEFINE_string('train_datasets', '', 'Training datasets file names separated by semicolons')
+  tf.app.flags.DEFINE_string('weight_init_method', 'xavier', 'Weight initialization method')
+  tf.app.flags.DEFINE_integer('train_batch_size', 32, 'Training batch size')
+  tf.app.flags.DEFINE_integer('n_gpu', 1, 'Number of GPUs used in training')
+  tf.app.flags.DEFINE_float('hard_neg_ratio', 3.0, 'Ratio of hard negatives to positives')
+  tf.app.flags.DEFINE_integer('no_random_crop', 0, 'In data augmentation, do not crop image, i.e. use full images')
+  # optimizer
+  tf.app.flags.DEFINE_string('optimizer', 'sgd', 'Optimization algorithm')
+  tf.app.flags.DEFINE_float('base_lr', 1e-3, 'Base learning rate')
+  tf.app.flags.DEFINE_float('momentum', 0.9, 'SGD momentum')
+  tf.app.flags.DEFINE_float('weight_decay', 5e-4, 'SGD weight decay')
+  tf.app.flags.DEFINE_integer('max_steps', 90000, 'Maximum number of iterations.')
+  tf.app.flags.DEFINE_string('lr_policy', 'staircase', 'Learning rate decaying policy')
+  tf.app.flags.DEFINE_string('lr_breakpoints', '', 'Comma-separated breakpoints of learning rate decay')
+  tf.app.flags.DEFINE_string('lr_decays', '', 'Comma-separated decay values for every breakpoint')
+  tf.app.flags.DEFINE_integer('profiling', 0, 'Do profiling during training (profiling could slow down training significantly)')
+  tf.app.flags.DEFINE_integer('profiling_step', 21, 'Run profiling once at this step')
+  tf.app.flags.DEFINE_string('profiling_report', 'timeline.json', 'Profiling report filename')
+  # summaries and checkpoints
+  tf.app.flags.DEFINE_integer('brief_summary_period', 10, 'Period for brief summaries')
+  tf.app.flags.DEFINE_integer('detailed_summary_period', 200, 'Period for detailed summaries')
+  tf.app.flags.DEFINE_integer('checkpoint_period', 5000, 'Period for saving checkpoints')
+except:
+  print("Some flags have been defined before!")
 
 class Solver:
   def __init__(self):
@@ -324,7 +326,7 @@ if __name__ == '__main__':
   log_file_path = os.path.join(FLAGS.log_dir, log_file_name)
   utils.setup_logger(log_file_path)
   utils.log_flags(FLAGS)
-  utils.log_git_version()
+  #utils.log_git_version()
   # run solver
   solver = Solver()
   solver.train_and_eval()
