@@ -21,7 +21,6 @@ tf.app.flags.DEFINE_string('link_clf_mode', 'softmax', 'Mode of classifying loca
 tf.app.flags.DEFINE_integer('test_period', 5000, 'Period of on-the-fly testing')
 tf.app.flags.DEFINE_string('test_model_path', '', 'Test model path')
 tf.app.flags.DEFINE_string('test_record_path', '', 'Test tf-records path')
-tf.app.flags.DEFINE_integer('test_batch_size', 32, 'Test batch size')
 tf.app.flags.DEFINE_integer('num_test', 500, 'Number of test images')
 tf.app.flags.DEFINE_float('node_threshold', 0.5, 'Confidence threshold for nodes')
 tf.app.flags.DEFINE_float('link_threshold', 0.5, 'Confidence threshold for links')

@@ -101,6 +101,13 @@ cd CPN
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running SegLink                    ###"
+echo "##########################################"
+cd SegLink
+./run.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`

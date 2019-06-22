@@ -14,8 +14,14 @@ import ops
 
 FLAGS = tf.app.flags.FLAGS
 # logging
-tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
-tf.app.flags.DEFINE_string('log_prefix', '', 'Log file name prefix')
+try:
+  tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
+except:
+  print("log_dir has been defined before!")
+try:
+  tf.app.flags.DEFINE_string('log_prefix', '', 'Log file name prefix')
+except:
+  print("log_prefix has been defined before!")
 # testing
 tf.app.flags.DEFINE_string('image_resize_method', 'fixed', 'Image resizing method. "fixed" or "dynamic"')
 tf.app.flags.DEFINE_string('test_model', '', 'Checkpoint for testing')
@@ -35,7 +41,10 @@ tf.app.flags.DEFINE_float('bbox_min_area', 0, 'Minimum bounding box area')
 tf.app.flags.DEFINE_integer('load_intermediate', 0, 'Whether to load intermediate results.')
 tf.app.flags.DEFINE_integer('save_intermediate', 0, 'Whether to load intermediate results.')
 # useless flags, do not set
-tf.app.flags.DEFINE_string('weight_init_method', 'xavier', 'Weight initialization method')
+try:
+  tf.app.flags.DEFINE_string('weight_init_method', 'xavier', 'Weight initialization method')
+except:
+  print("weight_init_method has been defined before!")
 
 def evaluate():
   with tf.device('/cpu:0'):
@@ -135,7 +144,8 @@ def evaluate():
       all_batches = []
       with slim.queues.QueueRunners(sess):
         for i in range(n_batches):
-          logging.info('Evaluating batch %d/%d' % (i+1, n_batches))
+          if i % 10 == 0:
+            logging.info('Evaluating batch %d/%d' % (i+1, n_batches))
           sess_outputs = sess.run(fetches)
           all_batches.append(sess_outputs)
       if FLAGS.save_intermediate:
@@ -213,7 +223,7 @@ def postprocess_and_write_results_ic15(all_batches, result_dir):
         # remove duplicated lines
         lines = list(frozenset(lines))
         f.write('\r\n'.join(lines))
-        logging.info('Detection results written to {}'.format(save_path))
+        #logging.info('Detection results written to {}'.format(save_path))
         
         test_count += 1
   
@@ -266,7 +276,7 @@ def postprocess_and_write_results_ic13(all_results):
       # remove duplicated lines
       lines = list(set(lines))
       f.write('\r\n'.join(lines))
-      logging.info('Detection results written to {}'.format(save_path))
+      #logging.info('Detection results written to {}'.format(save_path))
 
     # save images and lexicon list for post-processing
     if FLAGS.save_image_and_lexicon:
@@ -281,6 +291,6 @@ if __name__ == '__main__':
   log_file_path = os.path.join(FLAGS.log_dir, log_file_name)
   utils.setup_logger(log_file_path)
   utils.log_flags(FLAGS)
-  utils.log_git_version()
+  #utils.log_git_version()
   # run test
   evaluate()

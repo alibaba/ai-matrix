@@ -4,7 +4,9 @@ import numpy as np
 
 import ops
 import utils
+import solver
 
+#tf.app.flags.DEFINE_string("weight_init_method", "xavier", "")
 FLAGS = tf.app.flags.FLAGS
 
 
