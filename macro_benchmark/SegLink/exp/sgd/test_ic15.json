@@ -1,0 +1,12 @@
+{
+  "log_prefix": "test_",
+  "test_model": "exp/sgd/checkpoint-1000",
+  "test_dataset": "data/icdar_2015_incidental_test.tf",
+  "image_height": 1280,
+  "image_width": 768,
+  "node_threshold": 0.9,
+  "link_threshold": 0.7,
+  "result_format": "icdar_2015_inc",
+  "load_intermediate": 0,
+  "save_intermediate": 0
+}
