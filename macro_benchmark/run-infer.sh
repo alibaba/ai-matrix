@@ -115,6 +115,13 @@ cd CPN
 ./infer.sh
 cd ..
 
+echo "##########################################"
+echo "### Running SegLink                    ###"
+echo "##########################################"
+cd SegLink
+./infer.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
