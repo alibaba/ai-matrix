@@ -46,7 +46,7 @@ __C.TRAIN.PATIENCE_DELTA = 1e-3
 # Set the shadownet training epochs
 __C.TRAIN.EPOCHS = 2000000
 # Set the display step
-__C.TRAIN.DISPLAY_STEP = 1
+__C.TRAIN.DISPLAY_STEP = 1000
 # Set the test display step during training process
 __C.TRAIN.TEST_DISPLAY_STEP = 100
 # Set the momentum parameter of the optimizer

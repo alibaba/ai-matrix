@@ -26,7 +26,6 @@ from data_provider import tf_io_pipline_fast_tools
 
 CFG = global_config.cfg
 
-
 def init_args():
     """
     :return: parsed arguments and (updated) config.cfg object
@@ -45,7 +44,10 @@ def init_args():
                         help='Activate decoding of predictions during training (slow!)')
     parser.add_argument('-m', '--multi_gpus', type=args_str2bool, default=False,
                         nargs='?', const=True, help='Use multi gpus to train')
-
+    parser.add_argument('-n', '--num_iters', type=int, default=0,
+                        help='Number of iterations to run.')
+    parser.add_argument('-b', '--batch_size', type=int, default=0,
+                        help='Number of iterations to run.')
     return parser.parse_args()
 
 
@@ -245,8 +247,9 @@ def train_shadownet(dataset_dir, weights_path, char_dict_path, ord_map_dict_path
     saver = tf.train.Saver()
     model_save_dir = 'model/crnn_syn90k'
     os.makedirs(model_save_dir, exist_ok=True)
-    train_start_time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
-    model_name = 'shadownet_{:s}.ckpt'.format(str(train_start_time))
+    #train_start_time = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
+    #model_name = 'shadownet_{:s}.ckpt'.format(str(train_start_time))
+    model_name = 'shadownet.ckpt'
     model_save_path = ops.join(model_save_dir, model_name)
 
     # Set sess configuration
@@ -556,6 +559,9 @@ if __name__ == '__main__':
 
     # init args
     args = init_args()
+
+    CFG.TRAIN.EPOCHS = args.num_iters
+    CFG.TRAIN.BATCH_SIZE = args.batch_size
 
     if args.multi_gpus:
         logger.info('Use multi gpus to train the model')

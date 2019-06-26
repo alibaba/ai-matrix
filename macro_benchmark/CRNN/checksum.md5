@@ -1,0 +1,5 @@
+7bf2b60ad935eaf64e5b606f782d68e5  data/mjsynth.tar.gz
+51dbbc10ca19516343e45e2f7dfc2849  model/pretrained_model/checkpoint
+239318aee465eea23cd2404e5af506be  model/pretrained_model/shadownet.ckpt.data-00000-of-00001
+7db87e3354ef477fc3bbf1acd2210649  model/pretrained_model/shadownet.ckpt.index
+d5472a7f77e6bac0fbb682fe89912469  model/pretrained_model/shadownet.ckpt.meta
