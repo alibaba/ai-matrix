@@ -235,7 +235,7 @@ class CrnnDataFeeder(object):
         """
         self._dataset_dir = dataset_dir
 
-        self._tfrecords_dir = ops.join(dataset_dir, 'tfrecords')
+        self._tfrecords_dir = ops.join(dataset_dir, '')
         if not ops.exists(self._tfrecords_dir):
             raise ValueError('{:s} not exist, please check again'.format(self._tfrecords_dir))
 

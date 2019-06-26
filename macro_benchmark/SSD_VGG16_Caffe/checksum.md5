@@ -2,3 +2,4 @@ f544332b79d78c838978ce2782b0c196  models/VGGNet/VGG_ILSVRC_16_layers_fc_reduced.
 c52e279531787c972589f7e41ab4ae64  data/VOCtrainval_06-Nov-2007.tar
 b6e924de25625d8de591ea690078ad9f  data/VOCtest_06-Nov-2007.tar
 6cd6e144f989b92b3379bac3b3de84fd  data/VOCtrainval_11-May-2012.tar
+94587f4ddfa49a23b6dc038aef66e2bb  models/VGGNet/VOC0712_pretrained/SSD_300x300/VGG_VOC0712_SSD_300x300_iter_120000.caffemodel

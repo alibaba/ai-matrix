@@ -46,6 +46,10 @@ def init_args():
                         help='Whether to display images')
     parser.add_argument('-p', '--process_all', type=args_str2bool, nargs='?', const=True,
                         help='Whether to process all test dataset')
+    parser.add_argument('-n', '--num_iters', type=int, default=0,
+                        help='Number of iterations to run.')
+    parser.add_argument('-b', '--batch_size', type=int, default=0,
+                        help='Number of iterations to run.')
 
     return parser.parse_args()
 
@@ -67,7 +71,7 @@ def args_str2bool(arg_value):
 
 def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
                        ord_map_dict_path, is_visualize=False,
-                       is_process_all_data=False):
+                       is_process_all_data=False, num_iters=0, batch_size=32):
     """
 
     :param dataset_dir:
@@ -86,7 +90,8 @@ def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
         flags='test'
     )
     test_images, test_labels, test_images_paths = test_dataset.inputs(
-        batch_size=CFG.TEST.BATCH_SIZE
+        #batch_size=CFG.TEST.BATCH_SIZE
+        batch_size = batch_size
     )
 
     # set up test sample count
@@ -95,9 +100,13 @@ def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
         t_start = time.time()
         test_sample_count = test_dataset.sample_counts()
         log.info('Computing test dataset sample counts finished, cost time: {:.5f}'.format(time.time() - t_start))
-        num_iterations = int(math.ceil(test_sample_count / CFG.TEST.BATCH_SIZE))
+        #num_iterations = int(math.ceil(test_sample_count / CFG.TEST.BATCH_SIZE))
+        num_iterations = int(math.ceil(test_sample_count / batch_size))
     else:
         num_iterations = 1
+
+    if num_iters > 0:
+        num_iterations = num_iters
 
     # declare crnn net
     shadownet = crnn_net.ShadowNet(
@@ -149,10 +158,13 @@ def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
         total_labels_char_list = []
         total_predictions_char_list = []
 
-        while True:
+        stop = False
+        while stop == False:
             try:
 
                 for epoch in range(num_iterations):
+                    if epoch % 100 == 0:
+                        log.info('epoch: {:d}/{:d}'.format(epoch, num_iterations))
                     test_predictions_value, test_images_value, test_labels_value, \
                      test_images_paths_value = sess.run(
                         [test_decoded, test_images, test_labels, test_images_paths])
@@ -173,10 +185,10 @@ def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
                     )
 
                     for index, test_image in enumerate(test_images_value):
-                        log.info('Predict {:s} image with gt label: {:s} **** predicted label: {:s}'.format(
-                            test_images_names_value[index],
-                            test_labels_value[index],
-                            test_predictions_value[index]))
+                        #log.info('Predict {:s} image with gt label: {:s} **** predicted label: {:s}'.format(
+                        #    test_images_names_value[index],
+                        #    test_labels_value[index],
+                        #    test_predictions_value[index]))
 
                         if is_visualize:
                             plt.imshow(np.array(test_image, np.uint8)[:, :, (2, 1, 0)])
@@ -202,6 +214,8 @@ def evaluate_shadownet(dataset_dir, weights_path, char_dict_path,
 
                         if is_visualize:
                             plt.imshow(np.array(test_image, np.uint8)[:, :, (2, 1, 0)])
+
+                stop = True
 
             except tf.errors.OutOfRangeError:
                 log.error('End of tfrecords sequence')
@@ -229,11 +243,15 @@ if __name__ == '__main__':
     """
     args = init_args()
 
+    CFG.TEST.BATCH_SIZE = args.batch_size
+
     evaluate_shadownet(
         dataset_dir=args.dataset_dir,
         weights_path=args.weights_path,
         char_dict_path=args.char_dict_path,
         ord_map_dict_path=args.ord_map_dict_path,
         is_visualize=args.visualize,
-        is_process_all_data=args.process_all
+        is_process_all_data=args.process_all,
+        num_iters=args.num_iters,
+        batch_size=args.batch_size
     )
