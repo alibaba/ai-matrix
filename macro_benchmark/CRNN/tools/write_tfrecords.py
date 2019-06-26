@@ -12,6 +12,7 @@ import argparse
 import os
 import os.path as ops
 
+import data_provider
 from data_provider import shadownet_data_feed_pipline
 
 
