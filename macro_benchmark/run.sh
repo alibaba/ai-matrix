@@ -108,6 +108,13 @@ cd SegLink
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running CRNN                       ###"
+echo "##########################################"
+cd CRNN
+./run.sh
+cd ..
+
 ./process_results.sh
 
 end=`date +%s%N`
