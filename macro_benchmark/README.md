@@ -22,12 +22,12 @@ sudo docker login nvcr.io
 Enter the username and password shown in https://ngc.nvidia.com/configuration/api-key. To get the password, following the instructions on this webpage to generate API key.
 4. Download the docker
 ```
-sudo docker pull nvcr.io/nvidia/tensorflow:19.04-py3
+sudo docker pull nvcr.io/nvidia/tensorflow:19.05-py3
 ```
 Please use version 19.04. Other versions are not tested yet.
 5. Run the docker by following the instructions on https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow, for example
 ```
-sudo nvidia-docker run --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.04-py3
+sudo nvidia-docker run --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.05-py3
 ```
 6. Run the benchmark suite in NVIDIA docker by following the instructions below.
 
