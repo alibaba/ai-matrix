@@ -49,6 +49,7 @@ fi
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 pip3 install easydict
+pip3 install pyyaml
 
 #protoc src/caffe/proto/caffe.proto --cpp_out=.
 #mkdir include/caffe/proto
