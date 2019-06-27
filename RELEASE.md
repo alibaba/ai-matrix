@@ -3,6 +3,19 @@
 ## Major Features and Improvements  
 * Add TF inference test with integration of TensorRT  
 * Add DIEN model from Alimama  
+* Add BERT model, a GOOGLE version and an NVIDIA version
+* Add cascaded pyramid network
+* Add convolutional recurrent neural network
+* Add SSD with resnet18 as backbone uisng Caffe framework
+* Add SSD with VGG18 as backbone using Caffe framework
+* Add TensorRT implementation of SSD with VGG18 as backbone
+* Add Faster RCNN
+* Add Graph Convolutional Network
+* Add NMT TensorRT implementation
+* Add SegLink model
+* Add Wide & Deep model
+* Change unit of results to measurable metrics such as images/s, recommendations/s, sentences/s
+* Fix many miscellaneous issues
 * Refine scripts for accuracy tests  
 
 # Release 1.0.3
