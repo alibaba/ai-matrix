@@ -23,7 +23,7 @@ do
     echo "Running training with batch size of $batch"
     echo "----------------------------------------------------------------"
     start=`date +%s%N`
-    ./experiments/scripts/faster_rcnn_end2end_train.sh $CUDA_VISIBLE_DEVICES VGG16 pascal_voc |& tee ./results/result_train_${batch}.txt
+    ./experiments/scripts/faster_rcnn_end2end_train.sh 0 VGG16 pascal_voc |& tee ./results/result_train_${batch}.txt
     end=`date +%s%N`
     total_time=$(((end-start)/1000000))
     #total_time=`bc <<< "scale = 3; ($end-$start)/1000000000"`
