@@ -10,9 +10,9 @@ if [ "$device_type" = "V100" ];then
     # Only run FP16 mul with FP32 accumulate on Tensorcore
     ./bin/allgemm FP16_32_TENSOR performance | tee log_performance/allgemm_FP16_32_TENSOR.csv
     # Only run FP32 mul with FP32
-    ./bin/allgemm FP32_CUDA performance | tee log_performanceallgemm_FP32_CUDA.csv
+    ./bin/allgemm FP32_CUDA performance | tee log_performance/allgemm_FP32_CUDA.csv
     # Only run FP16 mul with FP16
-    ./bin/allgemm FP16_CUDA performance| tee log_performanceallgemm_FP16_CUDA.csv
+    ./bin/allgemm FP16_CUDA performance| tee log_performance/allgemm_FP16_CUDA.csv
 fi
 
 if [ "$device_type" = "P100" ];then
