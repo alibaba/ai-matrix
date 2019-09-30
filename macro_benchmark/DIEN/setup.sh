@@ -13,7 +13,9 @@ if [ ! -f "data2.tar.gz" ]; then
 fi
 
 if [ ! -f "dnn_best_model_trained/ckpt_noshuffDIEN3.data-00000-of-00001" ]; then
+	cd dnn_best_model_trained
 	wget https://zenodo.org/api/files/d63bab5d-e8ce-4ec8-8dbb-1656d4f653ec/ckpt_noshuffDIEN3.data-00000-of-00001
+	cd ..
 fi
 
 echo "Running md5 checksum on Caffe models ..."
