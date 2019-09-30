@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./setup.sh
+
 echo "Running md5 checksum on Caffe models ..."
 if md5sum -c checksum.md5; then
 	echo "Caffe models checksum pass"
