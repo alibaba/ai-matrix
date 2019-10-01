@@ -1,7 +1,0 @@
-*.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
-*.caffemodel filter=lfs diff=lfs merge=lfs -text
-macro_benchmark/SSD/checkpoints/ssd_300_vgg.ckpt.zip filter=lfs diff=lfs merge=lfs -text
-macro_benchmark/NCF/Data/train_data.npy filter=lfs diff=lfs merge=lfs -text
-macro_benchmark/DIEN/data.tar.gz filter=lfs diff=lfs merge=lfs -text
-macro_benchmark/DIEN/data1.tar.gz filter=lfs diff=lfs merge=lfs -text
-macro_benchmark/SegLink/datasets/icdar_2015_incidental/*.zip filter=lfs diff=lfs merge=lfs -text
