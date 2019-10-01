@@ -56,3 +56,4 @@ f80229b9cf3af27d7781a48ca429930a  dataset/wmt16_de_en/newstest2016.tok.en
 5759d28412660a6261d9599c4fcfc848  dataset/wmt16_de_en/train.tok.clean.bpe.32000.en
 a7a333d1a81af3205c5244ce760c6673  dataset/wmt16_de_en/train.tok.clean.en
 224869e3df9303455477a5d9a178c3ea  dataset/wmt16_de_en/train.tok.en
+ad281f687568e50ee89457eb91b4bbdb  ende_gnmt_model_4_layer/translate.ckpt.data-00000-of-00001
