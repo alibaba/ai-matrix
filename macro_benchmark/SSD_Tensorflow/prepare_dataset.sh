@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -f "checkpoints/ssd_300_vgg.ckpt.zip" ]; then
+        cd checkpoints
+    wget https://zenodo.org/api/files/9cc1a8c5-c46c-425d-9fce-05795e3c25fd/ssd_300_vgg.ckpt.zip
+    cd ..
+fi
+
 cd checkpoints
 if [ ! -f "ssd_300_vgg.ckpt.data-00000-of-00001" ] || [ ! -f "ssd_300_vgg.ckpt.index" ]; then
     unzip ssd_300_vgg.ckpt.zip
