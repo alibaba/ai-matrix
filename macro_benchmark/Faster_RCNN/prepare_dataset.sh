@@ -2,6 +2,12 @@
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
+if [ ! -f "pretrained_model/vgg16_faster_rcnn_iter_70000.caffemodel" ]; then
+    cd pretrained_model
+        wget https://zenodo.org/api/files/2a40c2eb-6930-4883-b48a-d282f6eb3620/vgg16_faster_rcnn_iter_70000.caffemodel
+        cd ..
+fi
+
 if [ ! -d "VOCdevkit" ]; then
     if [ ! -f "../DSSD/VOC0712/VOCtrainval_06-Nov-2007.tar" ]; then
         wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar
