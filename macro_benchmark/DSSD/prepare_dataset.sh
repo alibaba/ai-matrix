@@ -7,7 +7,7 @@ if [ ! -f "models/ResNet-101/ResNet-101-model.caffemodel" ]; then
 fi
 
 if [ ! -f "models/ResNet-18/resnet-18.caffemodel" ]; then
-        cd models/ResNet-101
+        cd models/ResNet-18
     wget https://zenodo.org/record/3463685/files/resnet-18.caffemodel
     cd ../..
 fi
