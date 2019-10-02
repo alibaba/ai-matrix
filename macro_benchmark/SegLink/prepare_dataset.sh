@@ -1,14 +1,18 @@
 #!/bin/bash
 
+cd tool/convert_caffe_model
+./run.sh
+cd -
+
 if [ ! -f "datasets/icdar_2015_incidental/ch4_test_images.zip" ]; then
     cd datasets/icdar_2015_incidental
-    wget https://zenodo.org/api/files/c594b7bc-d06c-4f49-bf67-69fc91920196/ch4_test_images.zip
+    wget https://zenodo.org/record/3463706/files/ch4_test_images.zip
     cd ../..
 fi
 
 if [ ! -f "datasets/icdar_2015_incidental/ch4_training_images.zip" ]; then
     cd datasets/icdar_2015_incidental
-    wget https://zenodo.org/api/files/c594b7bc-d06c-4f49-bf67-69fc91920196/ch4_training_images.zip
+    wget https://zenodo.org/record/3463706/files/ch4_training_images.zip
     cd ../..
 fi
 

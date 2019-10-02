@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 if [ ! -f "pretrained_model/vgg16_faster_rcnn_iter_70000.caffemodel" ]; then
     cd pretrained_model
-        wget https://zenodo.org/api/files/2a40c2eb-6930-4883-b48a-d282f6eb3620/vgg16_faster_rcnn_iter_70000.caffemodel
+        wget https://zenodo.org/record/3463689/files/vgg16_faster_rcnn_iter_70000.caffemodel
         cd ..
 fi
 

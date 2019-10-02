@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if [ ! -f "models/ResNet-101/ResNet-101-model.caffemodel" ]; then
+        cd models/ResNet-101
+    wget https://zenodo.org/record/3463685/files/ResNet-101-model.caffemodel
+    cd ../..
+fi
+
+if [ ! -f "models/ResNet-18/resnet-18.caffemodel" ]; then
+        cd models/ResNet-101
+    wget https://zenodo.org/record/3463685/files/resnet-18.caffemodel
+    cd ../..
+fi
+
 export PYTHONPATH=`pwd`/python
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 

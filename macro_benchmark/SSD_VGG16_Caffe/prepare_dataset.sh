@@ -5,13 +5,13 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 if [ ! -f "models/VGGNet/VGG_ILSVRC_16_layers_fc_reduced.caffemodel" ]; then
     cd models/VGGNet
-    wget https://zenodo.org/api/files/46df7db9-aa30-4a88-b9c3-b4e055e4efe4/VGG_ILSVRC_16_layers_fc_reduced.caffemodel
+    wget https://zenodo.org/record/3463718/files/VGG_ILSVRC_16_layers_fc_reduced.caffemodel
     cd ../..
 fi
 
 if [ ! -f "models/VGGNet/VOC0712_pretrained/SSD_300x300/VGG_VOC0712_SSD_300x300_iter_120000.caffemodel" ]; then
     cd models/VGGNet/VOC0712_pretrained/SSD_300x300
-    wget https://zenodo.org/api/files/46df7db9-aa30-4a88-b9c3-b4e055e4efe4/VGG_VOC0712_SSD_300x300_iter_120000.caffemodel
+    wget https://zenodo.org/record/3463718/files/VGG_VOC0712_SSD_300x300_iter_120000.caffemodel
     cd ../../../..
 fi
 

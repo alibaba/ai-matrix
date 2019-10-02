@@ -1,9 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 import os
 from os.path import join, exists, abspath
 import sys
 import json
 import glob
+import shutil
 
 SRC_DIR = abspath('./seglink')
 SHARED_LIBRARY_NAME = 'libseglink.so'
@@ -11,6 +12,8 @@ SHARED_LIBRARY_NAME = 'libseglink.so'
 
 def build_op():
   build_dir = join(SRC_DIR, 'cpp/build')
+  if exists(build_dir):
+    shutil.rmtree(build_dir)
   if not exists(build_dir):
     os.mkdir(build_dir)
   os.chdir(build_dir)
@@ -70,7 +73,7 @@ def run_tf_program_with_json_config(program):
     config = json.load(f)
 
   # construct command
-  cmd = 'python3 {}'.format(script)
+  cmd = 'python {}'.format(script)
   if 'cuda_devices' in config:
     cuda_devices = config.pop('cuda_devices')
     n_gpu = len(cuda_devices.split(','))
@@ -126,7 +129,7 @@ def upload_logs():
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print('Usage: python3 manage.py <function-name>')
+    print('Usage: python manage.py <function-name>')
   else:
     fn_name = sys.argv[1]
     eval(fn_name + "()")

@@ -4,7 +4,7 @@ pip3 install numpy==1.16.1
 
 if [ ! -f "Data/train_data.npy" ]; then
         cd Data
-    wget https://zenodo.org/api/files/950b6f8e-9676-462e-9704-6e065dde09f7/train_data.npy
+    wget https://zenodo.org/record/3463691/files/train_data.npy
     cd ..
 fi
 

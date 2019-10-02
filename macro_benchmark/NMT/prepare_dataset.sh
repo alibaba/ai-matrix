@@ -2,7 +2,7 @@
 
 if [ ! -f "ende_gnmt_model_4_layer/translate.ckpt.data-00000-of-00001" ]; then
         cd ende_gnmt_model_4_layer
-    wget https://zenodo.org/api/files/593de51b-b72c-4889-8f31-c172a934c442/translate.ckpt.data-00000-of-00001
+    wget https://zenodo.org/record/3463700/files/translate.ckpt.data-00000-of-00001
     cd ..
 fi
 

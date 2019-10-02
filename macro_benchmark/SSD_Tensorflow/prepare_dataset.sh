@@ -2,7 +2,7 @@
 
 if [ ! -f "checkpoints/ssd_300_vgg.ckpt.zip" ]; then
         cd checkpoints
-    wget https://zenodo.org/api/files/9cc1a8c5-c46c-425d-9fce-05795e3c25fd/ssd_300_vgg.ckpt.zip
+    wget https://zenodo.org/record/3463702/files/ssd_300_vgg.ckpt.zip
     cd ..
 fi
 

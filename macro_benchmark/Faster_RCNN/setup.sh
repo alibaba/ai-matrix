@@ -2,8 +2,9 @@
 
 apt-get update
 
-ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.10.1.0 /usr/lib/x86_64-linux-gnu/libhdf5.so
-ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.10.0.2 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
+rm /usr/lib/x86_64-linux-gnu/libhdf5.so /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
+ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.100.0.1 /usr/lib/x86_64-linux-gnu/libhdf5.so
+ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.100.0.0 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
 
 #apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libprotobuf-dev protobuf-compiler libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev
 apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev

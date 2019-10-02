@@ -2,20 +2,9 @@
 
 apt-get update
 
-if [ ! -f "models/ResNet-101/ResNet-101-model.caffemodel" ]; then
-	cd models/ResNet-101
-    wget https://zenodo.org/api/files/071da48e-5f45-445e-8be7-475ab625220f/ResNet-101-model.caffemodel
-    cd ../..
-fi
-
-if [ ! -f "models/ResNet-18/resnet-18.caffemodel" ]; then
-	cd models/ResNet-101
-    wget https://zenodo.org/api/files/071da48e-5f45-445e-8be7-475ab625220f/resnet-18.caffemodel
-    cd ../..
-fi
-
-ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.10.1.0 /usr/lib/x86_64-linux-gnu/libhdf5.so
-ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.10.0.2 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
+rm /usr/lib/x86_64-linux-gnu/libhdf5.so /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
+ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial.so.100.0.1 /usr/lib/x86_64-linux-gnu/libhdf5.so
+ln -s /usr/lib/x86_64-linux-gnu/libhdf5_serial_hl.so.100.0.0 /usr/lib/x86_64-linux-gnu/libhdf5_hl.so
 
 #apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libprotobuf-dev protobuf-compiler libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev
 apt-get install -y libboost-all-dev  gfortran libopenblas-dev liblapack-dev libatlas-base-dev libgflags-dev liblmdb-dev libgoogle-glog-dev libhdf5-serial-dev libleveldb-dev libopencv-dev libsnappy-dev

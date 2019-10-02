@@ -19,4 +19,4 @@ make
 make install
 python setup.py install
 cd ../..
-sed -i 's/if type(resFile) == str or type(resFile) == unicode/if type(resFile) == str or type(resFile) == bytes/g' /usr/local/lib/python3.5/dist-packages/pycocotools/coco.py
+sed -i 's/if type(resFile) == str or type(resFile) == unicode/if type(resFile) == str or type(resFile) == bytes/g' /usr/local/lib/python3.6/dist-packages/pycocotools/coco.py

@@ -9,11 +9,11 @@ PROJECT(seglink)
 #                OUTPUT_VARIABLE TF_LFLAGS)
 #MESSAGE(STATUS "Found TF_CFLAGS: " ${TF_CFLAGS})
 #MESSAGE(STATUS "Found TF_LFLAGS: " ${TF_LFLAGS})
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${OpenMP_CXX_FLAGS} -Wall -fPIC -I/usr/local/lib/python3.5/dist-packages/tensorflow/include -D_GLIBCXX_USE_CXX11_ABI=0 -L/usr/local/lib/python3.5/dist-packages/tensorflow -ltensorflow_framework")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${OpenMP_CXX_FLAGS} -Wall -fPIC -I/usr/local/lib/python3.6/dist-packages/tensorflow/include -D_GLIBCXX_USE_CXX11_ABI=0 -L/usr/local/lib/python3.6/dist-packages/tensorflow -ltensorflow_framework")
 MESSAGE(STATUS "Found CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 
 # TensorFlow dependencies
-EXECUTE_PROCESS(COMMAND python3 -c "import os; os.environ['TF_CPP_MIN_LOG_LEVEL']='3'; import tensorflow as tf; print(tf.sysconfig.get_include())"
+EXECUTE_PROCESS(COMMAND python -c "import os; os.environ['TF_CPP_MIN_LOG_LEVEL']='3'; import tensorflow as tf; print(tf.sysconfig.get_include())"
                 OUTPUT_VARIABLE TF_INC)
 MESSAGE(STATUS "Found TF_INC: " ${TF_INC})
 
@@ -33,6 +33,6 @@ ADD_LIBRARY(seglink SHARED
   polygons_to_rboxes_op.cc
   project_polygons_op.cc)
 #find_library(TF_LIB tensorflow_framework)
-SET(TF_LIB "/usr/local/lib/python3.5/dist-packages/tensorflow/libtensorflow_framework.so")
+SET(TF_LIB "/usr/local/lib/python3.6/dist-packages/tensorflow/libtensorflow_framework.so")
 MESSAGE(STATUS "Found TF_LIB: " ${TF_LIB})
 target_link_libraries(seglink "${TF_LIB}")
