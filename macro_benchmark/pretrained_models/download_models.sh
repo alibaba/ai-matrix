@@ -25,7 +25,7 @@ if [ ! -f "log_googlenet.tgz" ]; then
 	wget https://zenodo.org/record/3470355/files/log_googlenet.tgz
 fi
 
-if [! -f "log_resnet152.tgz" ]; then
+if [ ! -f "log_resnet152.tgz" ]; then
 	wget https://zenodo.org/record/3470355/files/log_resnet152.tgz
 fi
 
