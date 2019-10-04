@@ -1,13 +1,27 @@
 #!/bin/bash
 
 if [ ! -f "models/ResNet-101/ResNet-101-model.caffemodel" ]; then
-        cd models/ResNet-101
+    if [ ! -d "models" ]; then
+	mkdir models
+    fi
+    cd models
+    if [ ! -d "ResNet-101" ]; then
+	mkdir ResNet-101
+    fi
+    cd ResNet-101
     wget https://zenodo.org/record/3463685/files/ResNet-101-model.caffemodel
     cd ../..
 fi
 
 if [ ! -f "models/ResNet-18/resnet-18.caffemodel" ]; then
-        cd models/ResNet-18
+    if [ ! -d "models" ]; then
+        mkdir models
+    fi
+    cd models
+    if [ ! -d "ResNet-18" ]; then
+        mkdir ResNet-18
+    fi
+    cd ResNet-18
     wget https://zenodo.org/record/3463685/files/resnet-18.caffemodel
     cd ../..
 fi
