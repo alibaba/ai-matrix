@@ -18,7 +18,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 for batch in $batchs
 do
-    rm -r models/ResNet-101/VOC0712
+    rm -r models/ResNet-18/VOC0712
     echo "----------------------------------------------------------------"
     echo "Running training with batch size of $batch"
     echo "----------------------------------------------------------------"
