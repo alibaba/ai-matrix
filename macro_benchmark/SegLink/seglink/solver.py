@@ -16,7 +16,7 @@ import utils
 try:
   FLAGS = tf.app.flags.FLAGS
   # logging
-  tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
+  #tf.app.flags.DEFINE_string('log_dir', '', 'Directory for saving checkpoints and log files')
   tf.app.flags.DEFINE_string('log_prefix', '', 'Log file name prefix')
   # training
   tf.app.flags.DEFINE_string('resume', 'vgg16', 'Training from loading VGG16 parameters ("vgg16"), resume a checkpoint ("resume"), or finetune a pretrained model ("finetune")')
