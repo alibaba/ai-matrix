@@ -1,0 +1,2 @@
+mlperf-compliance==0.6.0
+ujson==1.35
