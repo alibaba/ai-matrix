@@ -31,10 +31,17 @@ cd NMT
 ./train.sh
 cd ..
 
+# echo "##########################################"
+# echo "### Running SSD_VGG16_Caffe            ###"
+# echo "##########################################"
+# cd SSD_VGG16_Caffe
+# ./train.sh
+# cd ..
+
 echo "##########################################"
-echo "### Running SSD_VGG16_Caffe            ###"
+echo "### Running SSD_ResNet34_PyTorch       ###"
 echo "##########################################"
-cd SSD_VGG16_Caffe
+cd SSD_ResNet34_PyTorch
 ./train.sh
 cd ..
 

@@ -42,12 +42,12 @@ cd DSSD
 ./prepare_dataset.sh
 cd ..
 
-echo "##########################################"
-echo "###        SSD_VGG16_Caffe             ###"
-echo "##########################################"
-cd SSD_VGG16_Caffe
-./prepare_dataset.sh
-cd ..
+# echo "##########################################"
+# echo "###        SSD_VGG16_Caffe             ###"
+# echo "##########################################"
+# cd SSD_VGG16_Caffe
+# ./prepare_dataset.sh
+# cd ..
 
 echo "##########################################"
 echo "###        SSD_ResNet18_Caffe          ###"

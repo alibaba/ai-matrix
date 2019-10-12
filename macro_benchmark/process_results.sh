@@ -87,23 +87,42 @@ else
 	echo "NMT/results does not exist, check if test is ran successfully"
 fi
 
-### SSD_VGG16_Caffe ###
-if [ -f SSD_VGG16_Caffe/results/results_train.csv ]; then
-	cp SSD_VGG16_Caffe/results/results_train.csv results/results_ssd_vgg16_train.csv
+# ### SSD_VGG16_Caffe ###
+# if [ -f SSD_VGG16_Caffe/results/results_train.csv ]; then
+# 	cp SSD_VGG16_Caffe/results/results_train.csv results/results_ssd_vgg16_train.csv
+# else
+# 	echo "SSD_VGG16_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
+# fi
+
+# if [ -f SSD_VGG16_Caffe/results/results_infer.csv ]; then
+# 	cp SSD_VGG16_Caffe/results/results_infer.csv results/results_ssd_vgg16_infer.csv
+# else
+# 	echo "SSD_VGG16_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
+# fi
+
+# if [ -d SSD_VGG16_Caffe/results ]; then
+# 	cp -r SSD_VGG16_Caffe/results results/results_ssd_vgg16
+# else
+# 	echo "SSD_VGG16_Caffe/results does not exist, check if test is ran successfully"
+# fi
+
+### SSD_ResNet34_PyTorch ###
+if [ -f SSD_ResNet34_PyTorch/results/results_train.csv ]; then
+	cp SSD_ResNet34_PyTorch/results/results_train.csv results/results_ssd_resnet34_train.csv
 else
-	echo "SSD_VGG16_Caffe/results/results_train.csv does not exist, check if test is ran successfully"
+	echo "SSD_ResNet34_PyTorch/results/results_train.csv does not exist, check if test is ran successfully"
 fi
 
-if [ -f SSD_VGG16_Caffe/results/results_infer.csv ]; then
-	cp SSD_VGG16_Caffe/results/results_infer.csv results/results_ssd_vgg16_infer.csv
-else
-	echo "SSD_VGG16_Caffe/results/results_infer.csv does not exist, check if test is ran successfully"
-fi
+# if [ -f SSD_ResNet34_PyTorch/results/results_infer.csv ]; then
+# 	cp SSD_ResNet34_PyTorch/results/results_infer.csv results/results_ssd_resnet34_infer.csv
+# else
+# 	echo "SSD_ResNet34_PyTorch/results/results_infer.csv does not exist, check if test is ran successfully"
+# fi
 
-if [ -d SSD_VGG16_Caffe/results ]; then
-	cp -r SSD_VGG16_Caffe/results results/results_ssd_vgg16
+if [ -d SSD_ResNet34_PyTorch/results ]; then
+	cp -r SSD_ResNet34_PyTorch/results results/results_ssd_resnet34
 else
-	echo "SSD_VGG16_Caffe/results does not exist, check if test is ran successfully"
+	echo "SSD_ResNet34_PyTorch/results does not exist, check if test is ran successfully"
 fi
 
 ### SSD_ResNet18_Caffe ###

@@ -38,10 +38,17 @@ cd ..
 # ./run.sh
 # cd ..
 
+# echo "##########################################"
+# echo "### Running SSD_VGG16_Caffe            ###"
+# echo "##########################################"
+# cd SSD_VGG16_Caffe
+# ./run.sh
+# cd ..
+
 echo "##########################################"
-echo "### Running SSD_VGG16_Caffe            ###"
+echo "### Running SSD_ResNet34_PyTorch       ###"
 echo "##########################################"
-cd SSD_VGG16_Caffe
+cd SSD_ResNet34_PyTorch
 ./run.sh
 cd ..
 

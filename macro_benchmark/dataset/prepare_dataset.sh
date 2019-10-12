@@ -1,6 +1,4 @@
 #!/usr/bin/bash
 
-cd ../dataset
+# Prepare COCO2017
 ./prepare_COCO2017.sh
-cd ../SSD_PyTorch
-

@@ -39,12 +39,12 @@ cd DSSD
 ./setup.sh
 cd ..
 
-echo "##########################################"
-echo "### Set up SSD_VGG16_Caffe             ###"
-echo "##########################################"
-cd SSD_VGG16_Caffe
-./setup.sh
-cd ..
+# echo "##########################################"
+# echo "### Set up SSD_VGG16_Caffe             ###"
+# echo "##########################################"
+# cd SSD_VGG16_Caffe
+# ./setup.sh
+# cd ..
 
 echo "##########################################"
 echo "### Set up SSD_ResNet18_Caffe          ###"

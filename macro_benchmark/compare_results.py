@@ -25,7 +25,7 @@ def compare():
     os.mkdir(out_dir)
 
     ops = ["train", "infer"]
-    models = ["cnn", "deepinterest", "dien", "dssd", "maskrcnn", "ncf", "nmt", "ssd_vgg16", "ssd_resnet18"]
+    models = ["cnn", "deepinterest", "dien", "dssd", "maskrcnn", "ncf", "nmt", "ssd_resnet34", "ssd_resnet18"]
     for op in ops:
         for model in models:
             fname_target = args.target_dir + "/results_" + model + "_" + op + ".csv"
