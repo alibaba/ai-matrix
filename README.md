@@ -16,3 +16,4 @@ To run the benchmark in each of the three categories, please follow the instruct
 
 ## Suggestions and Questions
 AI Matrix is still in early development stage and the development team is working hard to make it better and better. Any suggestions on improving the benchmark suite are highly welcomed and appreciated. If you have questions, good suggestions, or want to participate, please do not hesitate to contact us. You could submit questions on Github or contact us through aimatrix@list.alibaba-inc.com
+ 
