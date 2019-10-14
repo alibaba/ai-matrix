@@ -11,25 +11,19 @@ Automation scripts are provided to easily run all the tests in just a few script
 setup.sh installs all the software packages required by the benchmarks.
 prepare_dataset.sh downloads all the dataset needed in both training and inference and processes the dataset if necessary.
 run.sh runs both training and inference in one sript and automatically generates results in excel sheets.
+  
+1. If you want to test NVIDIA GPU, please run the benchmark suite in the docker released by NVIDIA. Please pull the corresponding container image from NGC (https://ngc.nvidia.com) and pull the docker 
+```
+sudo docker pull nvcr.io/nvidia/tensorflow:19.09-py3
+```
+Please use version 19.09. Other versions are not tested yet.  
 
-If you want to test NVIDIA GPU, please run the benchmark suite in the docker released by NVIDIA. Following the following instructions to set up NVIDIA docker.
-1. Go to https://ngc.nvidia.com and register an account. Sign into your account.
-2. Install the docker for Tensorflow by following https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow
-3. Before installing the docker, you first need to sign in using the following command
+2. Run the docker by following the instructions on https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow. Please map a data volumn for experiment later. It needs over 100GB space.
 ```
-sudo docker login nvcr.io
-```
-Enter the username and password shown in https://ngc.nvidia.com/configuration/api-key. To get the password, following the instructions on this webpage to generate API key.
-4. Download the docker
-```
-sudo docker pull nvcr.io/nvidia/tensorflow:19.05-py3
-```
-Please use version 19.04. Other versions are not tested yet.
-5. Run the docker by following the instructions on https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow, for example
-```
-sudo nvidia-docker run --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.05-py3
-```
-6. Run the benchmark suite in NVIDIA docker by following the instructions below.
+sudo docker run --gpus all --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.09-py3
+```  
+
+3. Run the benchmark suite in NVIDIA docker by following the instructions below.
 
 The below instructions are recommended to run within the aforementioned NVIDIA docker.
 
