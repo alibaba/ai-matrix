@@ -5,6 +5,7 @@
 * Added SSD with ResNet34 as backbone in PyTorch framework
 * Removed SSD with VGG16 in Caffe framework
 * Added support of running benchmarks in detached docker mode
+* Moved large files to Zenodo and reduced repository size
 
 # Release 1.0.4  
 
