@@ -3,12 +3,12 @@
 start=`date +%s%N`
 start_date=`date`
 
-current_path=`pwd`
-
-sudo nvidia-docker exec -it aimatrix-tf bash -c "cd $current_path && CUDA_VISIBLE_DEVICES=0 ./run_tf.sh"
-sudo nvidia-docker exec -it aimatrix-pt bash -c "cd $current_path && CUDA_VISIBLE_DEVICES=0 ./run_pt.sh"
-
-./process_results.sh
+echo "##########################################"
+echo "### Running SSD_ResNet34_PyTorch       ###"
+echo "##########################################"
+cd SSD_ResNet34_PyTorch
+./run.sh
+cd ..
 
 end=`date +%s%N`
 end_date=`date`
