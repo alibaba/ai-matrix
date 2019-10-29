@@ -10,6 +10,13 @@ cd SSD_ResNet34_PyTorch
 ./run.sh
 cd ..
 
+echo "##########################################"
+echo "### Running BERT_PyTorch               ###"
+echo "##########################################"
+cd BERT_PyTorch
+./run.sh
+cd ..
+
 end=`date +%s%N`
 end_date=`date`
 total_time=`bc <<< "scale = 0; ($end-$start)/1000000000"`
