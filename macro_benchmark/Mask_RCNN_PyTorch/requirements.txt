@@ -1,0 +1,3 @@
+mlperf-compliance==0.6.0
+opencv-python==3.4.1.15
+yacs
