@@ -5,7 +5,7 @@ We collected for benchmark the state of art GPU performance. Please run the scri
 `bash ./scripts/RUN_FP16_1GPU.sh`  
 
 
-| GPUs  | Throughput (real data with FP16 AMP) | Throughput (real data,FP16 AMP,XLA) |
-| ------------- | ------------- |---------------|
-| 1  | 772  | 1255 |
-| 2  | 1494 | 2252 |
+| GPUs  | Batch Size| Throughput (real data with FP16 AMP) | Throughput (real data,FP16 AMP,XLA) |
+| ------------- | ----------- | ------------- |---------------|
+| 1  | 256 | 772  | 1255 |
+| 2  | 256 | 1494 | 2252 |
