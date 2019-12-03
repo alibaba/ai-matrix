@@ -46,5 +46,4 @@ Nodes | Converge epochs| Ending epochs | Time to converge (min)
 4 nodes       | 40            | 44            | 42.68         
 
 
-The scripts to run different config are at /scripts folder
-
+The scripts to run different config are at /scripts folder. The ip address in the scripts need to be modified to fit your environment.
