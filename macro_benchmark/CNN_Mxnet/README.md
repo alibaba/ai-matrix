@@ -14,7 +14,7 @@ For further instructions, see https://github.com/NVIDIA/DeepLearningExamples/blo
 
 ## 2. Set up docker image
 docker build --network=host --pull -t mlperf-nvidia:image_classification .
-Or use we build
+Or pull the image we built already. The docker repo may not be public. :-(  
 docker pull reg.docker.alibaba-inc.com/ai_matrix/mlperf-nvidia:image_classification_1910  
 
 ## 3. Set up docker container on each node with passwordless authentication
