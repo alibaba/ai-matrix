@@ -8,23 +8,21 @@ This test is referred from submission to MLPerf Inference v0.5.
    sudo apt install libopencv-dev
    ```   
 ### Set up Python 3 Virtual Environment
-
-    ```
-    python3 -m venv py3
-    source py3/bin/activate
-    ```
+   ```
+   python3 -m venv py3
+   source py3/bin/activate
+   ```
    
 ### Install Python Requisites
-
-    ```
-    pip install --upgrade pip
-    pip install --upgrade setuptools
-    pip install scipy
-    pip install six numpy wheel setuptools mock 'future>=0.17.1'
-    pip install keras_applications==1.0.6 --no-deps
-    pip install keras_preprocessing==1.0.5 --no-deps
-    pip install pudb  
-    ```
+   ```
+   pip install --upgrade pip
+   pip install --upgrade setuptools
+   pip install scipy
+   pip install six numpy wheel setuptools mock 'future>=0.17.1'
+   pip install keras_applications==1.0.6 --no-deps
+   pip install keras_preprocessing==1.0.5 --no-deps
+   pip install pudb  
+   ```
 
 ### Verfiy Bazel version is 0.19.0 (which works with tensorflow 1.13.1)
 
@@ -95,22 +93,20 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
     ```
 
 ### Build the C++ Test Harness
-
-    ``` 
+   
     cd code/resnet/tfcpp/classification/cpp
     mkdir build
     cd build
     cmake ..
     make
-    ```
+   
 
 ## Quantization
-
-    ```shell
-    cd code/resnet/tfcpp/quantize
-    python converter.py --output_type npu
-    ```
-
+   ```
+   cd code/resnet/tfcpp/quantize
+   python converter.py --output_type npu
+   ```  
+    
 ## Execution
    
 ### Performance Mode
