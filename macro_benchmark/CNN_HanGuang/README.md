@@ -5,7 +5,7 @@ This test is referred from submission to MLPerf Inference v0.5.
 
 ### Install OpenCV
    ```shell
-   $ sudo apt install libopencv-dev
+    sudo apt install libopencv-dev
 ```   
 ### Set up Python 3 Virtual Environment
 
@@ -107,8 +107,8 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
 ## Quantization
 
    ```shell
-   $ cd code/resnet/tfcpp/quantize
-   $ python converter.py --output_type npu
+    cd code/resnet/tfcpp/quantize
+    python converter.py --output_type npu
    ```
 
 ## Execution
@@ -116,8 +116,8 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
 ### Performance Mode
 
    ```shell
-   $ cd code/resnet/tfcpp/classification/cpp
-   $ ./run_perf.sh Offline
+    cd code/resnet/tfcpp/classification/cpp
+    ./run_perf.sh Offline
    ```
 
 Feel free to change the Scenarios with SingleStream, MultiStream, Server
