@@ -13,8 +13,8 @@ Please download the dataset manually following the instructions from the ImageNe
 For further instructions, see https://github.com/NVIDIA/DeepLearningExamples/blob/master/MxNet/Classification/RN50v1.5/README.md#prepare-dataset 
 
 ## 2. Set up docker image
-docker build --network=host --pull -t mlperf-nvidia:image_classification .
-Or use we build
+docker build --network=host --pull -t mlperf-nvidia:image_classification .  
+Or pull the image we built already. The docker repo may not be public. :-(  
 docker pull reg.docker.alibaba-inc.com/ai_matrix/mlperf-nvidia:image_classification_1910  
 
 ## 3. Set up docker container on each node with passwordless authentication
