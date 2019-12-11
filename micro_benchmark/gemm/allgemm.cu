@@ -502,7 +502,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     s_max_tflops = 0;
     numRepeats = 10;
-    for(m=1024, n = 1024; m <= 25600; m+=4096, n+=4096) {
+    for(m=1024, n = 1024; m <= 21504; m+=4096, n+=4096) {
     for(k=1024; k <= 20480; k+=4096) {
 	calFP32CUDA( m, n, k,s_max_tflops, s_max_m_n, s_max_k, numRepeats);
     }}
@@ -529,7 +529,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     s_max_tflops = 0;
     numRepeats = 10;
-    for(m=1024, n = 1024; m <= 25600; m+=4096, n+=4096) {
+    for(m=1024, n = 1024; m <= 21504; m+=4096, n+=4096) {
     for(k=1024; k <= 20480; k+=4096) {
 	calFP16CUDA( m, n, k,s_max_tflops, s_max_m_n, s_max_k, numRepeats);
     }}
