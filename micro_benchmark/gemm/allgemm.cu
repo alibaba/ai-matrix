@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <vector>
 #include <cstdlib>
+#include <cuda_fp16.h>
 
 #define MAX(x, y) ((x>y) ? x : y)
 // Define some error checking macros.
@@ -48,16 +49,37 @@ __global__ void assignFloatValue (float *out, int n, float value) {
 __global__ void assignHalfValue (half *out, int n, float value) {
 	int idx = blockDim.x * blockIdx.x + threadIdx.x;
 	if (idx < n) {
-		out[idx] = value;
+		out[idx] = __float2half(value);
+		//if(idx == 0)printf("Assign half precision value to out====%f\n", __half2float(out[idx]));
+	}
+}
+__global__ void assignHalftoFloatValue (half *in, int n, float *out) {
+	int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if (idx < n) {
+		out[idx] = __half2float(in[idx]);
+		//if(idx==0)printf("Cast half to float ====%f\n", out[idx]);
+		
 	}
 }
 void correctnessCheck(int m, int n, int k, float *host, float value){
         for (int i = 0; i < m * n; i++) {      
             float val = host[i];
             if ( val != k * value * value) {
-                std::cout << "ERROR value = " << val<< std::endl;
+                std::cout << "ERROR value = " << val<< ", correct value="<< k * value * value << std::endl;
             }
         }
+}
+
+__global__ void halfCorrectnessCheck(half *in, int n, int k, float value){
+	int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	half valueh = __float2half(value);
+	float kf = k;
+	half kh = __float2half(kf);
+	half v = __hmul(kh,valueh);
+	v = __hmul(v,valueh);
+	if (idx < n) {
+	    if( __heq(in[idx], v)) printf("ERROR value = %f, correct value = %f", __half2float(in[idx]),__half2float(v) );
+	}
 }
 
 void printTime(float cublasTime, int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int &s_max_k ){
@@ -78,8 +100,9 @@ void calFP16Tensor(int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int
         half *a_fp16;
         half *b_fp16;
         half *c_cublas;
+	float *c_cublas_float;
         float *c_host_cublas;
-        const float  value = 1.0f;
+        const float  value = 0.1f;
    
         cublasHandle_t cublasHandle;
 
@@ -95,6 +118,7 @@ void calFP16Tensor(int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int
         cudaErrCheck(cudaMalloc((void**)&a_fp16, m * k * sizeof(half)));
         cudaErrCheck(cudaMalloc((void**)&b_fp16, k * n * sizeof(half)));
         cudaErrCheck(cudaMalloc((void**)&c_cublas, m * n * sizeof(half)));
+        cudaErrCheck(cudaMalloc((void**)&c_cublas_float, m * n * sizeof(float)));
         c_host_cublas = (float*)malloc(m * n * sizeof(float));
 
         // curand doesn't currently support fp16 so we generate in fp32 and convert to fp16.
@@ -102,8 +126,9 @@ void calFP16Tensor(int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int
         assignHalfValue <<< (k * n + 255) / 256, 256 >>> (b_fp16, k*n, value);
         assignHalfValue <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, 0.0f);
 
-        float alpha = 1.0f;
-        float beta = 0.0f;
+	// alpha and beta MUST be the same type as compute type
+        half alpha = __float2half(1.0f);
+        half beta = __float2half(0.0f);
 
         // Now using cuBLAS
         cudaErrCheck(cudaEventRecord(startcublas));
@@ -119,10 +144,15 @@ void calFP16Tensor(int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int
         }
         cudaErrCheck(cudaEventRecord(stopcublas));
         cudaErrCheck(cudaEventSynchronize(stopcublas));
-        // TODO: Correctness check
-        //cudaErrCheck(cudaMemcpy(c_host_cublas, c_cublas, m * n * sizeof(float), cudaMemcpyDeviceToHost));
-        //correctnessCheck(m, n, k, c_host_cublas, value);
-        // Check time
+        // Correctness check method1
+        // it will bring loss in half2float or float2half. For example, 0.1 will become 0.099976 after this change back and forth
+/*	assignHalftoFloatValue <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, c_cublas_float);
+	cudaErrCheck(cudaMemcpy(c_host_cublas, c_cublas_float, m * n * sizeof(float), cudaMemcpyDeviceToHost));
+        correctnessCheck(m, n, k, c_host_cublas, value);
+*/        
+	// Correctness check method 2
+	halfCorrectnessCheck <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, k, value);
+	// Check time
         float cublasTime;	
         cudaErrCheck(cudaEventElapsedTime(&cublasTime, startcublas, stopcublas)); 
         cublasTime /= numRepeats;
@@ -288,8 +318,8 @@ void calFP16CUDA(int m, int n, int k, float &s_max_tflops, int &s_max_m_n, int &
         assignHalfValue <<< (k * n + 255) / 256, 256 >>> (b_fp16, k*n, value);
         assignHalfValue <<< (k * n + 255) / 256, 256 >>> (c_cublas, m*n, 0.0f);
 
-        half alpha = 1.0f;
-        half beta = 0.0f;
+        half alpha = __float2half(1.0f);
+        half beta = __float2half(0.0f);
 
         // Now using cuBLAS
         cudaErrCheck(cudaEventRecord(startcublas));
@@ -441,9 +471,10 @@ int main(int argc, char* argv[]) {
     s_max_m_n = 0;
     s_max_k = 0;
     numRepeats = 10;
-    for(m=1024, n = 1024; m <= 25600; m+=4096, n+=4096) {
+    for(m=1024, n = 1024; m <= 21504; m+=4096, n+=4096) {
     for(k=1024; k <= 20480; k+=4096) {
-	calFP16Tensor( m, n, k,s_max_tflops, s_max_m_n, s_max_k, numRepeats);
+//	m=n=k=1024;
+    calFP16Tensor( m, n, k,s_max_tflops, s_max_m_n, s_max_k, numRepeats);
     }}
     std::cout << "[Peak TFLOPS]=" << s_max_tflops << ", m=n="<< s_max_m_n << ", k="<<s_max_k<< std::endl;
     cudaErrCheck(cudaDeviceReset());
@@ -473,9 +504,10 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     s_max_tflops = 0;
     numRepeats = 10;
-    for(m=1024, n = 1024; m <= 25600; m+=4096, n+=4096) {
+    for(m=1024, n = 1024; m <= 21504; m+=4096, n+=4096) {
     for(k=1024; k <= 20480; k+=4096) {
-  	calFP16Accu32Tensor( m, n, k, s_max_tflops, s_max_m_n, s_max_k, numRepeats);
+  //	m=n=k=1024;
+    	calFP16Accu32Tensor( m, n, k, s_max_tflops, s_max_m_n, s_max_k, numRepeats);
     }}
     std::cout << "[Peak TFLOPS]=" << s_max_tflops << ", m=n="<< s_max_m_n << ", k="<<s_max_k<< std::endl;
     cudaErrCheck(cudaDeviceReset());
