@@ -5,7 +5,8 @@ This test is referred from submission to MLPerf Inference v0.5.
 
 ### Install OpenCV
    ```
-   sudo apt install libopencv-dev
+   sudo apt install libopencv-dev   #ubuntu
+   yum install opencv-devel  #centos
    ```   
 ### Set up Python 3 Virtual Environment
    ```
@@ -118,3 +119,16 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
 
 Feel free to change the Scenarios with SingleStream, MultiStream, Server
 The results locate in mlperf_log_summary.log
+
+
+
+
+
+================
+# Caveats for Centos7 installation
+1. The gcc5 or up is needed. Please use scl project to install  
+https://juejin.im/post/5d0ef5376fb9a07ef63fe74e  
+2. Python3 is also needed in this test  
+https://linuxize.com/post/how-to-install-python-3-on-centos-7/  
+3. Bazel 0.20 or 0.19 is needed in this test. Please follow the bootcamp instruction to build the bazel version yourself  
+https://docs.bazel.build/versions/master/install-compile-source.html#bootstrap-bazel  
