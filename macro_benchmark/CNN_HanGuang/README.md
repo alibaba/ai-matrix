@@ -30,7 +30,12 @@ This test is referred from submission to MLPerf Inference v0.5.
    ``` 
    bazel version
    ```
-
+On CentOS 7, we can only use bazel 0.19 or 0.20. It needs to build from scratch. Please follow instructions below. https://docs.bazel.build/versions/master/install-compile-source.html#bootstrap-bazel
+You may need to install JDK 
+   ```
+   sudo yum install java-1.8.0-openjdk-devel
+   ```
+For convenience we recommend copying this binary to a directory that’s on your PATH (such as /usr/local/bin on Linux).
 ### Download Tensorflow 1.13.1 Source Code and build it
    ``` 
    wget https://github.com/tensorflow/tensorflow/archive/v1.13.1.tar.gz
