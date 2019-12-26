@@ -5,15 +5,24 @@ This test is referred from submission to MLPerf Inference v0.5.
 
 ### Install OpenCV
    ```
-   sudo apt install libopencv-dev   #ubuntu
-   yum install opencv-devel  #centos
+   sudo apt install libopencv-dev   #For ubuntu
+   sudo yum install opencv-devel    #For centos
    ```   
-### Set up Python 3 Virtual Environment
+### Set up Python 3 Virtual Environment. Use python 3.5 in this test. Check [2] for CentOS 7
    ```
    python3 -m venv py3
    source py3/bin/activate
    ```
-   
+### Install glog
+   ```
+   sudo apt-get install libgflags-dev libgoogle-glog-dev   # For ubuntu
+   sudo yum install gflags-devel glog-devel                # For centos 7
+   ```
+### Install libjpeg
+   ```
+   sudo apt-get install libjpeg-dev                        # For ubuntu
+   sudo yum install libjpeg-turbo-devel                    # For centos 7
+   ```
 ### Install Python Requisites
    ```
    pip install --upgrade pip
@@ -23,14 +32,14 @@ This test is referred from submission to MLPerf Inference v0.5.
    pip install keras_applications==1.0.6 --no-deps
    pip install keras_preprocessing==1.0.5 --no-deps
    pip install pudb  
+   pip install absl-py
+   pip install protobuf
    ```
 
-### Verfiy Bazel version is 0.19.0 (which works with tensorflow 1.13.1)
-
-   ``` 
-   bazel version
-   ```
-On CentOS 7, we can only use bazel 0.19 or 0.20. It needs to build from scratch. Please follow instructions below. https://docs.bazel.build/versions/master/install-compile-source.html#bootstrap-bazel
+### Install Bazel
+Bazel 0.20 or 0.19 is needed in this test. 
+For ubuntu please check Bazel instructions to install.
+For **CentOS 7**, we need to use bazel 0.19 or 0.20. It needs to build from scratch. Please follow instructions below. https://docs.bazel.build/versions/master/install-compile-source.html#bootstrap-bazel
 You may need to install JDK 
    ```
    sudo yum install java-1.8.0-openjdk-devel
@@ -51,6 +60,7 @@ For convenience we recommend copying this binary to a directory that’s on your
 
    ``` 
    bazel build -c opt --copt=-msse4.2 --copt=-mavx2 --copt=-mfma --copt=-D_GLIBCXX_USE_CXX11_ABI=0 //tensorflow:libtensorflow_cc.so
+   cd ..           # out to root folder
    ```
 
 ## MLPerf Inference
@@ -61,6 +71,7 @@ For convenience we recommend copying this binary to a directory that’s on your
    mkdir loadgen
    cd loadgen
    git clone --recursive git@github.com:mlperf/inference.git 
+   cd ..
    ```
 ### Download the resnet model
   ```
@@ -68,6 +79,7 @@ For convenience we recommend copying this binary to a directory that’s on your
   cd model
   wget https://zenodo.org/record/2535873/files/resnet50_v1.pb
   mv resnet50_v1.pb to fp32.pb
+  cd ..
   ```
 ### Download the imagenet dataset
 
@@ -75,6 +87,8 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
   ```
   mkdir dataset
   cd dataset
+  # download dataset, you can either use above method or use a copy from yourself
+  cd ..
   ```
 ### HanGuangAI
 
@@ -90,15 +104,16 @@ As indicated [here](https://github.com/mlperf/inference/tree/master/v0.5/classif
 * Add path environment variables used by c++ test harness build
 
     ``` 
-    export PY3_PATH=./py3
-    export LG_PATH=./loadgen
-    export TF_PATH=./tensorflow-1.13.1
-    export MODEL_DIR=./model
-    export DATA_DIR=./dataset
+    PWD=`pwd`
+    export PY3_PATH=$PWD/py3
+    export LG_PATH=$PWD/loadgen/inference/loadgen
+    export TF_PATH=$PWD/tensorflow-1.13.1
+    export MODEL_DIR=$PWD/model
+    export DATA_DIR=$PWD/dataset
     export LD_LIBRARY_PATH=$PY3_PATH/lib/python3.5/site-packages/ratelnn/lib:$TF_PATH/bazel-bin/tensorflow
     ```
 
-### Build the C++ Test Harness
+### Build the C++ Test Harness, GCC v5 up and cmake 3 is needed.Check [1,3] for CentOS 7
    
     cd code/resnet/tfcpp/classification/cpp
     mkdir build
@@ -135,5 +150,8 @@ The results locate in mlperf_log_summary.log
 https://juejin.im/post/5d0ef5376fb9a07ef63fe74e  
 2. Python3 is also needed in this test  
 https://linuxize.com/post/how-to-install-python-3-on-centos-7/  
-3. Bazel 0.20 or 0.19 is needed in this test. Please follow the bootcamp instruction to build the bazel version yourself  
-https://docs.bazel.build/versions/master/install-compile-source.html#bootstrap-bazel  
+3. CMake 3 is needed
+   ```
+   sudo yum install epel-release
+   sudo yum install cmake3
+   ```
