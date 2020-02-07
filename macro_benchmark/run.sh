@@ -3,124 +3,10 @@
 start=`date +%s%N`
 start_date=`date`
 
-echo "##########################################"
-echo "### Running CNN_Tensorflow             ###"
-echo "##########################################"
-cd CNN_Tensorflow
-./run.sh
-cd ..
+current_path=`pwd`
 
-echo "##########################################"
-echo "### Running DeepInterest               ###"
-echo "##########################################"
-cd DeepInterest
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running Mask_RCNN                  ###"
-echo "##########################################"
-cd Mask_RCNN
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running NMT                        ###"
-echo "##########################################"
-cd NMT
-./run.sh
-cd ..
-
-# echo "##########################################"
-# echo "### Running SSD_Tensorflow             ###"
-# echo "##########################################"
-# cd SSD_Tensorflow
-# ./run.sh
-# cd ..
-
-# echo "##########################################"
-# echo "### Running SSD_VGG16_Caffe            ###"
-# echo "##########################################"
-# cd SSD_VGG16_Caffe
-# ./run.sh
-# cd ..
-
-echo "##########################################"
-echo "### Running SSD_ResNet34_PyTorch       ###"
-echo "##########################################"
-cd SSD_ResNet34_PyTorch
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running SSD_ResNet18_Caffe         ###"
-echo "##########################################"
-cd SSD_ResNet18_Caffe
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running DSSD                       ###"
-echo "##########################################"
-cd DSSD
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running DIEN                       ###"
-echo "##########################################"
-cd DIEN
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running NCF                        ###"
-echo "##########################################"
-cd NCF
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running BERT_NVIDIA                ###"
-echo "##########################################"
-cd BERT_NVIDIA
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running Faster_RCNN                ###"
-echo "##########################################"
-cd Faster_RCNN
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running WideDeep                   ###"
-echo "##########################################"
-cd WideDeep
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running CPN                        ###"
-echo "##########################################"
-cd CPN
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running SegLink                    ###"
-echo "##########################################"
-cd SegLink
-./run.sh
-cd ..
-
-echo "##########################################"
-echo "### Running CRNN                       ###"
-echo "##########################################"
-cd CRNN
-./run.sh
-cd ..
+sudo nvidia-docker exec -it aimatrix-tf bash -c "cd $current_path && CUDA_VISIBLE_DEVICES=0 ./run_tf.sh"
+sudo nvidia-docker exec -it aimatrix-pt bash -c "cd $current_path && CUDA_VISIBLE_DEVICES=0 ./run_pt.sh"
 
 ./process_results.sh
 
@@ -133,4 +19,3 @@ total_seconds=`bc <<< "scale = 0; ${total_time}%60"`
 echo "Running started at ${start_date}"
 echo "          ended at ${end_date}"
 echo "Total running time is ${total_hours}h ${total_minutes}m ${total_seconds}s"
-

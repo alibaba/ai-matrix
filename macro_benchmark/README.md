@@ -11,14 +11,28 @@ Automation scripts are provided to easily run all the tests in just a few script
 setup.sh installs all the software packages required by the benchmarks.
 prepare_dataset.sh downloads all the dataset needed in both training and inference and processes the dataset if necessary.
 run.sh runs both training and inference in one sript and automatically generates results in excel sheets.
-  
-1. If you want to test NVIDIA GPU, please run the benchmark suite in the docker released by NVIDIA. Please pull the corresponding container image from NGC (https://ngc.nvidia.com) and pull the docker 
+
+If you want to test NVIDIA GPU, please run the benchmark suite in the docker released by NVIDIA. Following the following instructions to set up NVIDIA docker.
+1. Go to https://ngc.nvidia.com and register an account. Sign into your account.
+2. Install the docker for Tensorflow by following https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow
+3. Before installing the docker, you first need to sign in using the following command
+```
+sudo docker login nvcr.io
+```
+Enter the username and password shown in https://ngc.nvidia.com/configuration/api-key. To get the password, following the instructions on this webpage to generate API key.
+4. Download the docker, AI Matrix needs a tensorflow 
 ```
 sudo docker pull nvcr.io/nvidia/tensorflow:19.09-py3
 ```
-Please use version 19.09. Other versions are not tested yet.  
-
-2. Run the docker by following the instructions on https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow. Please map a data volumn for experiment later. It needs over 100GB space.
+Please use version 19.09 which has been tested and has no problem.
+5. Run the docker by following the instructions on https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow, for example
+If you are still using the old nvidia-docker, use the following command:
+```
+sudo nvidia-docker run --name aimatrix-tf --privileged=true --network=host --ipc=host -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.05-py3
+```
+If you are using the latest docker, which has integrated nvidia-docker, use the following command:
+```
+sudo docker run --name aimatrix-pt --gpus all --privileged=true --network=host --ipc=host -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.05-py3
 ```
 sudo docker run --gpus all --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.09-py3
 ```  
@@ -40,6 +54,9 @@ export NUM_ACCELERATORS=8
 To run the entire benchmark suite, use the following commands:
 ```
 cd macro_benchmark
+./prepare_docker.sh
+sudo nvidia-docker run -d --name aimatrix-tf --privileged=true --network=host --ipc=host -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.09-py3
+sudo nvidia-docker run -d --name aimatrix-pt --privileged=true --network=host --ipc=host -it --rm -v /data:/data aimatrix:pytorch
 ./setup.sh
 ./prepare_dataset.sh
 ./run.sh

@@ -166,6 +166,8 @@ def create_excel(args):
 	
         wb = xlsxwriter.Workbook(results_dir + "/results_infer.xlsx")
         for model in models:
+            if model == "ssd_resnet34":
+                continue
             ws = wb.add_worksheet(model)
             with open(results_dir + "/results_" + model + "_infer.csv") as csvfile:
                 table = csv.reader(csvfile)

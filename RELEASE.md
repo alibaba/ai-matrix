@@ -1,3 +1,12 @@
+# Release 1.0.5
+
+## Major Features and Improvements  
+* Updated the Tensorflow docker to 19.09
+* Added SSD with ResNet34 as backbone in PyTorch framework
+* Removed SSD with VGG16 in Caffe framework
+* Added support of running benchmarks in detached docker mode
+* Moved large files to Zenodo and reduced repository size
+
 # Release 1.0.4  
 
 ## Major Features and Improvements  
@@ -16,7 +25,7 @@
 * Add Wide & Deep model
 * Change unit of results to measurable metrics such as images/s, recommendations/s, sentences/s
 * Fix many miscellaneous issues
-* Refine scripts for accuracy tests  
+* Refine scripts for accuracy tests
 
 # Release 1.0.3
 
