@@ -74,9 +74,9 @@ cd DIEN
 cd ..
 
 echo "##########################################"
-echo "### Running BERT_NVIDIA                ###"
+echo "### Running BERT_Tensorflow            ###"
 echo "##########################################"
-cd BERT_NVIDIA
+cd BERT_Tensorflow
 ./train.sh
 cd ..
 
