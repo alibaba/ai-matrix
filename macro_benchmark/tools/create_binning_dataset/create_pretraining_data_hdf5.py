@@ -68,6 +68,8 @@ flags.DEFINE_float(
     "Probability of creating sequences which are shorter than the "
     "maximum length.")
 
+flags.DEFINE_integer("interval", 16, "Binning interval.")
+
 
 class TrainingInstance(object):
     """A single training instance (sentence pair)."""
@@ -105,7 +107,9 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
 
     features = []
     out_files = []
-    for i in range(max_seq_length):
+    INTERVAL = FLAGS.interval
+    num_intervals = max_seq_length//INTERVAL
+    for i in range(num_intervals):
         temp = collections.OrderedDict()
         temp["input_ids"] = []
         temp["input_mask"] = []
@@ -116,9 +120,11 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         temp["next_sentence_labels"] = []
         features.append(temp)
         
-        file = output_files[0] + "/length_{0:03d}.hdf5".format(i)
+        file = output_files[0] + "/length_{0:03d}.hdf5".format((i+1)*INTERVAL)
         out_files.append(file)
 
+    writer_index = 0
+    seq_length = 0
     for (inst_index, instance) in enumerate(instances):
         input_ids = tokenizer.convert_tokens_to_ids(instance.tokens)
         input_length = len(input_ids)
@@ -126,14 +132,17 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         segment_ids = list(instance.segment_ids)
         assert len(input_ids) <= max_seq_length
 
-        # while len(input_ids) < seq_length:
-        #     input_ids.append(0)
-        #     input_mask.append(0)
-        #     segment_ids.append(0)
+        writer_index = (input_length-1)//INTERVAL
+        seq_length = (writer_index+1)*INTERVAL
 
-        # assert len(input_ids) == seq_length
-        # assert len(input_mask) == seq_length
-        # assert len(segment_ids) == seq_length
+        while len(input_ids) < seq_length:
+            input_ids.append(0)
+            input_mask.append(0)
+            segment_ids.append(0)
+
+        assert len(input_ids) == seq_length
+        assert len(input_mask) == seq_length
+        assert len(segment_ids) == seq_length
 
         masked_lm_positions = list(instance.masked_lm_positions)
         masked_lm_ids = tokenizer.convert_tokens_to_ids(
@@ -147,13 +156,13 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
 
         next_sentence_label = 1 if instance.is_random_next else 0
 
-        features[input_length-1]["input_ids"].append(input_ids)
-        features[input_length-1]["input_mask"].append(input_mask)
-        features[input_length-1]["segment_ids"].append(segment_ids)
-        features[input_length-1]["masked_lm_positions"].append(masked_lm_positions)
-        features[input_length-1]["masked_lm_ids"].append(masked_lm_ids)
-        features[input_length-1]["masked_lm_weights"].append(masked_lm_weights)
-        features[input_length-1]["next_sentence_labels"].append(next_sentence_label)
+        features[writer_index]["input_ids"].append(input_ids)
+        features[writer_index]["input_mask"].append(input_mask)
+        features[writer_index]["segment_ids"].append(segment_ids)
+        features[writer_index]["masked_lm_positions"].append(masked_lm_positions)
+        features[writer_index]["masked_lm_ids"].append(masked_lm_ids)
+        features[writer_index]["masked_lm_weights"].append(masked_lm_weights)
+        features[writer_index]["next_sentence_labels"].append(next_sentence_label)
 
         total_written += 1
 
@@ -172,7 +181,7 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         #         tf.logging.info(
         #             "%s: %s" % (feature_name, " ".join([str(x) for x in values])))
 
-    for i in range(max_seq_length):
+    for i in range(num_intervals):
         features[i]["input_ids"] = np.array(features[i]["input_ids"], dtype="int32")
         features[i]["input_mask"] = np.array(features[i]["input_mask"], dtype="int32")
         features[i]["segment_ids"] = np.array(features[i]["segment_ids"], dtype="int32")
@@ -182,7 +191,7 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         features[i]["next_sentence_labels"] = np.array(features[i]["next_sentence_labels"], dtype="int32")
 
     print("saving data")
-    for i in range(max_seq_length):
+    for i in range(num_intervals):
         f= h5py.File(out_files[i], 'w')
         f.create_dataset("input_ids", data=features[i]["input_ids"], dtype='i4', compression='gzip')
         f.create_dataset("input_mask", data=features[i]["input_mask"], dtype='i1', compression='gzip')

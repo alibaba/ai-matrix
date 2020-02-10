@@ -63,6 +63,8 @@ flags.DEFINE_float(
     "Probability of creating sequences which are shorter than the "
     "maximum length.")
 
+flags.DEFINE_integer("interval", 16, "Binning interval.")
+
 
 class TrainingInstance(object):
     """A single training instance (sentence pair)."""
@@ -97,11 +99,12 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
                                     max_predictions_per_seq, output_files):
     """Create TF example files from `TrainingInstance`s."""
     writers = []
-    for i in range(max_seq_length):
-        writers.append(tf.python_io.TFRecordWriter(output_files[0] + '/length_' + str(i) + '.tfrecord'))
+    INTERVAL = FLAGS.interval
+    num_intervals = max_seq_length//INTERVAL
+    for i in range(num_intervals):
+        writers.append(tf.python_io.TFRecordWriter(output_files[0] + "/length_{0:03d}.tfrecord".format((i+1)*INTERVAL)))
 
-    # writer_index = 0
-
+    writer_index = 0
     total_written = 0
     for (inst_index, instance) in enumerate(instances):
         input_ids = tokenizer.convert_tokens_to_ids(instance.tokens)
@@ -110,14 +113,17 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         segment_ids = list(instance.segment_ids)
         assert len(input_ids) <= max_seq_length
 
-        while len(input_ids) < max_seq_length:
+        writer_index = (input_length-1)//INTERVAL
+        seq_length = (writer_index+1)*INTERVAL
+
+        while len(input_ids) < seq_length:
             input_ids.append(0)
             input_mask.append(0)
             segment_ids.append(0)
 
-        assert len(input_ids) == max_seq_length
-        assert len(input_mask) == max_seq_length
-        assert len(segment_ids) == max_seq_length
+        assert len(input_ids) == seq_length
+        assert len(input_mask) == seq_length
+        assert len(segment_ids) == seq_length
 
         masked_lm_positions = list(instance.masked_lm_positions)
         masked_lm_ids = tokenizer.convert_tokens_to_ids(
@@ -146,7 +152,7 @@ def write_instance_to_example_files(instances, tokenizer, max_seq_length,
         tf_example = tf.train.Example(
             features=tf.train.Features(feature=features))
 
-        writers[input_length-1].write(tf_example.SerializeToString())
+        writers[writer_index].write(tf_example.SerializeToString())
         # writer_index = (writer_index + 1) % len(writers)
 
         total_written += 1
