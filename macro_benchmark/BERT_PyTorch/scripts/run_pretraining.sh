@@ -13,47 +13,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+start=`date +%s%N`
+start_date=`date`
+
+NUM_NODE=${NUM_NODE:-1}
 
 echo "DATA_DIR: $DATA_DIR"
 echo "WORK_DIR: $WORK_DIR"
+echo "NUM_NODE: $NUM_NODE"
 
-# echo "Container nvidia build = " $NVIDIA_BUILD_ID
-train_batch_size=${1:-2048}
+#echo "Container nvidia build = " $NVIDIA_BUILD_ID
+train_batch_size=${1:-240}
 learning_rate=${2:-"6e-3"}
 precision=${3:-"fp16"}
 num_gpus=${4:-1}
 warmup_proportion=${5:-"0.2843"}
-train_steps=${6:-7038}
-save_checkpoint_steps=${7:-200}
+train_steps=${6:-70380000}
+save_checkpoint_steps=${7:-20000}
 resume_training=${8:-"false"}
 create_logfile=${9:-"true"}
-accumulate_gradients=${10:-"true"}
+accumulate_gradients=${10:-"false"}
 gradient_accumulation_steps=${11:-128}
 seed=${12:-$RANDOM}
 job_name=${13:-"bert_lamb_pretraining"}
 allreduce_post_accumulation=${14:-"true"}
 allreduce_post_accumulation_fp16=${15:-"true"}
-accumulate_into_fp16=${16:-"false"}
-
 train_batch_size_phase2=${17:-4096}
 learning_rate_phase2=${18:-"4e-3"}
 warmup_proportion_phase2=${19:-"0.128"}
 train_steps_phase2=${20:-1563}
 gradient_accumulation_steps_phase2=${21:-512}
-num_nodes=${22:-1}
-
-# DATASET=$DATA_DIR/hdf5_lower_case_1_seq_len_128_max_pred_20_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5/books_wiki_en_corpus # change this for other datasets
-DATASET=/data1/zhangwei/dataset/bert/tfrecord/wikicorpus_en
-BERT_CONFIG=bert_config.json
-RESULTS_DIR=$WORK_DIR/results
-CHECKPOINTS_DIR=$WORK_DIR/checkpoints
-
+#DATASET=hdf5_lower_case_1_seq_len_128_max_pred_20_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5/books_wiki_en_corpus # change this for other datasets
+#DATA_DIR_PHASE1=${22:-$BERT_PREP_WORKING_DIR/${DATASET}/}
+#DATA_DIR_PHASE1=$DATA_DIR/create_maxlen128_dupe2_MLM015_NSP_wikiSentSeg/test
+DATA_DIR_PHASE1=$DATA_DIR/create_maxlen128_dupe2_MLM015_NSP_wikiSentSeg/wiki_dupe2_lowercase_hdf5
+#DATA_DIR_PHASE1=$DATA_DIR/wiki_dupe2_lowercase_hdf5
+#BERT_CONFIG=bert_config.json
+BERT_CONFIG=$DATA_DIR/download/google_pretrained_weights/chinese_L-12_H-768_A-12/bert_config.json
+#BERT_CONFIG=fastbert_config.json
+CODEDIR=${24:-"/workspace/bert"}
+init_checkpoint=${25:-"None"}
+RESULTS_DIR=results
+CHECKPOINTS_DIR=$RESULTS_DIR/checkpoints
 
 mkdir -p $CHECKPOINTS_DIR
 
 
-if [ ! -d "$DATASET" ] ; then
-   echo "Warning! $DATASET directory missing. Training cannot start"
+if [ ! -d "$DATA_DIR_PHASE1" ] ; then
+   echo "Warning! $DATA_DIR_PHASE1 directory missing. Training cannot start"
 fi
 if [ ! -d "$RESULTS_DIR" ] ; then
    echo "Error! $RESULTS_DIR directory missing."
@@ -99,18 +106,18 @@ if [ "$allreduce_post_accumulation_fp16" == "true" ] ; then
    ALL_REDUCE_POST_ACCUMULATION_FP16="--allreduce_post_accumulation_fp16"
 fi
 
-ACCUMULATE_INTO_FP16=""
-if [ "$accumulate_into_fp16" == "true" ] ; then
-   ACCUMULATE_INTO_FP16="--accumulate_into_fp16"
+INIT_CHECKPOINT=""
+if [ "$init_checkpoint" != "None" ] ; then
+   INIT_CHECKPOINT="--init_checkpoint=$init_checkpoint"
 fi
 
-echo $DATASET
-INPUT_DIR=$DATASET
-CMD=" $WORK_DIR/run_pretraining.py"
-CMD+=" --input_dir=$DATASET"
+echo $DATA_DIR_PHASE1
+INPUT_DIR=$DATA_DIR_PHASE1
+CMD=" run_pretraining.py"
+CMD+=" --input_dir=$DATA_DIR_PHASE1"
 CMD+=" --output_dir=$CHECKPOINTS_DIR"
 CMD+=" --config_file=$BERT_CONFIG"
-CMD+=" --bert_model=bert-large-uncased"
+CMD+=" --bert_model=bert-base-chinese"
 CMD+=" --train_batch_size=$train_batch_size"
 CMD+=" --max_seq_length=128"
 CMD+=" --max_predictions_per_seq=20"
@@ -124,14 +131,10 @@ CMD+=" $ACCUMULATE_GRADIENTS"
 CMD+=" $CHECKPOINT"
 CMD+=" $ALL_REDUCE_POST_ACCUMULATION"
 CMD+=" $ALL_REDUCE_POST_ACCUMULATION_FP16"
-CMD+=" $ACCUMULATE_INTO_FP16"
+CMD+=" $INIT_CHECKPOINT"
 CMD+=" --do_train"
 
-if [ "$num_nodes" -gt 1 ] ; then
-   CMD="python3 -m torch.distributed.launch --nnodes=$num_nodes --node_rank=1 --nproc_per_node=$num_gpus --master_addr="30.57.186.244" --master_port=334 $CMD"
-else
-   CMD="python3 -m torch.distributed.launch --nproc_per_node=$num_gpus $CMD"
-fi
+CMD="python3 -m torch.distributed.launch --nproc_per_node=$num_gpus $CMD"
 
 
 if [ "$create_logfile" = "true" ] ; then
@@ -163,15 +166,26 @@ throughput=`cat $LOGFILE | grep Iteration | tail -1 | awk -F'it/s' '{print $1}' 
 loss=`cat $LOGFILE | grep 'Average Loss' | tail -1 | awk -F'Average Loss =' '{print $2}' | awk -F' ' '{print $1}' | egrep -o [0-9.]+`
 final_loss=`cat $LOGFILE | grep 'Total Steps' | tail -1 | awk -F'Final Loss =' '{print $2}' | awk -F' ' '{print $1}' | egrep -o [0-9.]+`
 
-train_perf=$(awk 'BEGIN {print ('$throughput' * '$num_gpus' * '$train_batch_size')}')
+train_perf=$(awk 'BEGIN {print ('$throughput' * '$num_gpus' * '$train_batch_size' / '$gradient_accumulation_steps' )}')
 echo " training throughput phase1: $train_perf sequences/second"
 echo "average loss: $loss"
 echo "final loss: $final_loss"
 
+end=`date +%s%N`
+end_date=`date`
+total_time=`bc <<< "scale = 0; ($end-$start)/1000000000"`
+total_hours=`bc <<< "scale = 0; ${total_time}/3600"`
+total_minutes=`bc <<< "sale = 0; (${total_time}%3600)/60"`
+total_seconds=`bc <<< "scale = 0; ${total_time}%60"`
+echo "Running started at ${start_date}"
+echo "          ended at ${end_date}"
+echo "Total running time is ${total_hours}h ${total_minutes}m ${total_seconds}s"
+
+exit 1
 #Start Phase2
 
-# DATASET=$DATA_DIR/hdf5_lower_case_1_seq_len_512_max_pred_80_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5/books_wiki_en_corpus # change this for other datasets
-DATASET=/data1/zhangwei/dataset/bert/tfrecord/wikicorpus_en
+DATASET=hdf5_lower_case_1_seq_len_512_max_pred_80_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5/books_wiki_en_corpus # change this for other datasets
+DATA_DIR_PHASE2=${23:-$BERT_PREP_WORKING_DIR/${DATASET}/}
 
 PREC=""
 if [ "$precision" = "fp16" ] ; then
@@ -198,15 +212,10 @@ if [ "$allreduce_post_accumulation_fp16" == "true" ] ; then
    ALL_REDUCE_POST_ACCUMULATION_FP16="--allreduce_post_accumulation_fp16"
 fi
 
-ACCUMULATE_INTO_FP16=""
-if [ "$accumulate_into_fp16" == "true" ] ; then
-   ACCUMULATE_INTO_FP16="--accumulate_into_fp16"
-fi
-
-echo $DATASET
-INPUT_DIR=$DATASET
-CMD=" $WORK_DIR/run_pretraining.py"
-CMD+=" --input_dir=$DATASET"
+echo $DATA_DIR_PHASE2
+INPUT_DIR=$DATA_DIR_PHASE2
+CMD=" $CODEDIR/run_pretraining.py"
+CMD+=" --input_dir=$DATA_DIR_PHASE2"
 CMD+=" --output_dir=$CHECKPOINTS_DIR"
 CMD+=" --config_file=$BERT_CONFIG"
 CMD+=" --bert_model=bert-large-uncased"
@@ -223,16 +232,9 @@ CMD+=" $ACCUMULATE_GRADIENTS"
 CMD+=" $CHECKPOINT"
 CMD+=" $ALL_REDUCE_POST_ACCUMULATION"
 CMD+=" $ALL_REDUCE_POST_ACCUMULATION_FP16"
-CMD+=" $ACCUMULATE_INTO_FP16"
 CMD+=" --do_train --phase2 --resume_from_checkpoint --phase1_end_step=$train_steps"
 
-if [ "$num_nodes" -gt 1 ] ; then
-   CMD="python3 -m torch.distributed.launch --nnodes=$num_nodes --node_rank=1 --nproc_per_node=$num_gpus --master_addr="30.57.186.244" --master_port=334 $CMD"
-elif [ "$num_gpus" -gt 1  ] ; then
-   CMD="python3 -m torch.distributed.launch --nproc_per_node=$num_gpus $CMD"
-else
-   CMD="python3  $CMD"
-fi
+CMD="python3 -m torch.distributed.launch --nproc_per_node=$num_gpus $CMD"
 
 if [ "$create_logfile" = "true" ] ; then
   export GBS=$(expr $train_batch_size_phase2 \* $num_gpus)
@@ -258,7 +260,7 @@ throughput=`cat $LOGFILE | grep Iteration | tail -1 | awk -F'it/s' '{print $1}' 
 loss=`cat $LOGFILE | grep 'Average Loss' | tail -1 | awk -F'Average Loss =' '{print $2}' | awk -F' ' '{print $1}' | egrep -o [0-9.]+`
 final_loss=`cat $LOGFILE | grep 'Total Steps' | tail -1 | awk -F'Final Loss =' '{print $2}' | awk -F' ' '{print $1}' | egrep -o [0-9.]+`
 
-train_perf=$(awk 'BEGIN {print ('$throughput' * '$num_gpus' * '$train_batch_size_phase2')}')
+train_perf=$(awk 'BEGIN {print ('$throughput' * '$num_gpus' * '$train_batch_size_phase2' / '$gradient_accumulation_steps_phase2')}')
 echo " training throughput phase2: $train_perf sequences/second"
 echo "average loss: $loss"
 echo "final loss: $final_loss"
