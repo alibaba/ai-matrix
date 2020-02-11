@@ -474,7 +474,7 @@ def main():
             
             if len(files) == 1:
                 f_start_id = -1
-            for f_id in range(f_start_id + 1 , len(files)):
+            for f_id in range(f_start_id + 1 , len(files)+1):
                 
    
                 if torch.distributed.get_world_size() > num_files:
