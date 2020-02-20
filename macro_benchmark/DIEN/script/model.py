@@ -6,9 +6,15 @@ from tensorflow.python.ops.rnn import bidirectional_dynamic_rnn as bi_rnn
 from rnn import dynamic_rnn
 from utils import *
 from Dice import dice
+import numpy as np
 
 class Model(object):
-    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, data_type='FP32', use_negsampling = False):
+    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, 
+     data_type='FP32', use_negsampling = False, synthetic_input = False, batch_size = 32,
+     max_length=100, device = 'gpu'):
+        self.synthetic_input = synthetic_input
+        self.seq_len_ph = np.ones((batch_size)) * max_length
+
         if data_type == 'FP32':
             self.model_dtype = tf.float32
         elif data_type == 'FP16':
@@ -16,44 +22,119 @@ class Model(object):
         else:
             raise ValueError("Invalid model data type: %s" % data_type)
 
-        with tf.name_scope('Inputs'):
-            self.mid_his_batch_ph = tf.placeholder(tf.int32, [None, None], name='mid_his_batch_ph')
-            self.cat_his_batch_ph = tf.placeholder(tf.int32, [None, None], name='cat_his_batch_ph')
-            self.uid_batch_ph = tf.placeholder(tf.int32, [None, ], name='uid_batch_ph')
-            self.mid_batch_ph = tf.placeholder(tf.int32, [None, ], name='mid_batch_ph')
-            self.cat_batch_ph = tf.placeholder(tf.int32, [None, ], name='cat_batch_ph')
-            self.mask = tf.placeholder(self.model_dtype, [None, None], name='mask')
-            self.seq_len_ph = tf.placeholder(tf.int32, [None], name='seq_len_ph')
-            self.target_ph = tf.placeholder(self.model_dtype, [None, None], name='target_ph')
-            self.lr = tf.placeholder(tf.float64, [])
-            self.use_negsampling =use_negsampling
-            if use_negsampling:
-                self.noclk_mid_batch_ph = tf.placeholder(tf.int32, [None, None, None], name='noclk_mid_batch_ph') #generate 3 item IDs from negative sampling.
-                self.noclk_cat_batch_ph = tf.placeholder(tf.int32, [None, None, None], name='noclk_cat_batch_ph')
+        if synthetic_input:
+            with tf.device('/cpu:0'):
+                self.mid_his_batch_ph = tf.random.uniform([batch_size, max_length], 
+                    minval = 0, 
+                    maxval= n_mid,
+                    dtype = tf.int32,
+                    name='mid_his_batch_ph')
+                self.cat_his_batch_ph = tf.random.uniform([batch_size, max_length], 
+                    minval = 0, 
+                    maxval= n_cat,
+                    dtype = tf.int32,
+                    name='cat_his_batch_ph')
+                self.uid_batch_ph = tf.random.uniform([batch_size,], 
+                    minval = 0, 
+                    maxval= n_uid,
+                    dtype = tf.int32,
+                    name='cat_his_batch_ph')
+                self.mid_batch_ph = tf.random.uniform([batch_size,], 
+                    minval = 0, 
+                    maxval= n_mid,
+                    dtype = tf.int32,
+                    name='mid_batch_ph') 
+                self.cat_batch_ph = tf.random.uniform([batch_size,], 
+                    minval = 0, 
+                    maxval= n_cat,
+                    dtype = tf.int32,
+                    name='cat_batch_ph')   
+                self.mask = tf.random.uniform([batch_size, max_length], 
+                    minval = 0, 
+                    maxval= 1, # TODO
+                    dtype = self.model_dtype,
+                    name='mask')    
+                self.target_ph = tf.random.uniform([batch_size, 2], 
+                    minval = 0, 
+                    maxval= 1,
+                    dtype = self.model_dtype,
+                    name='target_ph') 
+                
+                self.lr = 0.5 # half it every iteration
+                self.use_negsampling = use_negsampling
+                if use_negsampling:
+                    self.noclk_mid_batch_ph = tf.random.uniform([batch_size, max_length, 5], #TODO, 5 is neg_samples, preset in data_iterator.py
+                        minval = 0, 
+                        maxval= n_mid,
+                        dtype = tf.int32,
+                        name='noclk_mid_batch_ph') 
+                    self.noclk_cat_batch_ph = tf.random.uniform([batch_size, max_length, 5], 
+                        minval = 0, 
+                        maxval= n_cat,
+                        dtype = tf.int32,
+                        name='noclk_cat_batch_ph') 
+        else:
+            with tf.name_scope('Inputs'):
+                self.mid_his_batch_ph = tf.placeholder(tf.int32, [None, None], name='mid_his_batch_ph')
+                self.cat_his_batch_ph = tf.placeholder(tf.int32, [None, None], name='cat_his_batch_ph')
+                self.uid_batch_ph = tf.placeholder(tf.int32, [None, ], name='uid_batch_ph')
+                self.mid_batch_ph = tf.placeholder(tf.int32, [None, ], name='mid_batch_ph')
+                self.cat_batch_ph = tf.placeholder(tf.int32, [None, ], name='cat_batch_ph')
+                self.mask = tf.placeholder(self.model_dtype, [None, None], name='mask')
+                self.seq_len_ph = tf.placeholder(tf.int32, [None], name='seq_len_ph')
+                self.target_ph = tf.placeholder(self.model_dtype, [None, None], name='target_ph')
+                self.lr = tf.placeholder(tf.float64, [])
+                self.use_negsampling =use_negsampling
+                if use_negsampling:
+                    self.noclk_mid_batch_ph = tf.placeholder(tf.int32, [None, None, None], name='noclk_mid_batch_ph') #generate 3 item IDs from negative sampling.
+                    self.noclk_cat_batch_ph = tf.placeholder(tf.int32, [None, None, None], name='noclk_cat_batch_ph')
 
         # Embedding layer
         with tf.name_scope('Embedding_layer'):
-            self.uid_embeddings_var = tf.get_variable("uid_embedding_var", [n_uid, EMBEDDING_DIM], dtype=self.model_dtype)
-            tf.summary.histogram('uid_embeddings_var', self.uid_embeddings_var)
-            self.uid_batch_embedded = tf.nn.embedding_lookup(self.uid_embeddings_var, self.uid_batch_ph)
+            if device == 'cpu':
+                with tf.device('/cpu:0'):
+                    print('embedding on ' + device)
+                    self.uid_embeddings_var = tf.get_variable("uid_embedding_var", [n_uid, EMBEDDING_DIM], dtype=self.model_dtype)
+                    tf.summary.histogram('uid_embeddings_var', self.uid_embeddings_var)
+                    self.uid_batch_embedded = tf.nn.embedding_lookup(self.uid_embeddings_var, self.uid_batch_ph)
 
-            self.mid_embeddings_var = tf.get_variable("mid_embedding_var", [n_mid, EMBEDDING_DIM], dtype=self.model_dtype)
-            tf.summary.histogram('mid_embeddings_var', self.mid_embeddings_var)
-            self.mid_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_batch_ph)
-            self.mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_his_batch_ph)
-            if self.use_negsampling:
-                self.noclk_mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.noclk_mid_batch_ph)
+                    self.mid_embeddings_var = tf.get_variable("mid_embedding_var", [n_mid, EMBEDDING_DIM], dtype=self.model_dtype)
+                    tf.summary.histogram('mid_embeddings_var', self.mid_embeddings_var)
+                    self.mid_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_batch_ph)
+                    self.mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_his_batch_ph)
+                    if self.use_negsampling:
+                        self.noclk_mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.noclk_mid_batch_ph)
 
-            self.cat_embeddings_var = tf.get_variable("cat_embedding_var", [n_cat, EMBEDDING_DIM], dtype=self.model_dtype)
-            tf.summary.histogram('cat_embeddings_var', self.cat_embeddings_var)
-            self.cat_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_batch_ph)
-            self.cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_his_batch_ph)
-            if self.use_negsampling:
-                self.noclk_cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.noclk_cat_batch_ph)
+                    self.cat_embeddings_var = tf.get_variable("cat_embedding_var", [n_cat, EMBEDDING_DIM], dtype=self.model_dtype)
+                    tf.summary.histogram('cat_embeddings_var', self.cat_embeddings_var)
+                    self.cat_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_batch_ph)
+                    self.cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_his_batch_ph)
+                    if self.use_negsampling:
+                        self.noclk_cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.noclk_cat_batch_ph)
+            else:
+                print('embedding on ' + device)
+                self.uid_embeddings_var = tf.get_variable("uid_embedding_var", [n_uid, EMBEDDING_DIM], dtype=self.model_dtype)
+                tf.summary.histogram('uid_embeddings_var', self.uid_embeddings_var)
+                self.uid_batch_embedded = tf.nn.embedding_lookup(self.uid_embeddings_var, self.uid_batch_ph)
+
+                self.mid_embeddings_var = tf.get_variable("mid_embedding_var", [n_mid, EMBEDDING_DIM], dtype=self.model_dtype)
+                tf.summary.histogram('mid_embeddings_var', self.mid_embeddings_var)
+                self.mid_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_batch_ph)
+                self.mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.mid_his_batch_ph)
+                if self.use_negsampling:
+                    self.noclk_mid_his_batch_embedded = tf.nn.embedding_lookup(self.mid_embeddings_var, self.noclk_mid_batch_ph)
+
+                self.cat_embeddings_var = tf.get_variable("cat_embedding_var", [n_cat, EMBEDDING_DIM], dtype=self.model_dtype)
+                tf.summary.histogram('cat_embeddings_var', self.cat_embeddings_var)
+                self.cat_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_batch_ph)
+                self.cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.cat_his_batch_ph)
+                if self.use_negsampling:
+                    self.noclk_cat_his_batch_embedded = tf.nn.embedding_lookup(self.cat_embeddings_var, self.noclk_cat_batch_ph)
 
         self.item_eb = tf.concat([self.mid_batch_embedded, self.cat_batch_embedded], 1)
         self.item_his_eb = tf.concat([self.mid_his_batch_embedded, self.cat_his_batch_embedded], 2)
         self.item_his_eb_sum = tf.reduce_sum(self.item_his_eb, 1)
+        #import pdb; pdb.set_trace()
         if self.use_negsampling:
             self.noclk_item_his_eb = tf.concat(
                 [self.noclk_mid_his_batch_embedded[:, :, 0, :], self.noclk_cat_his_batch_embedded[:, :, 0, :]], -1)# 0 means only using the first negative item ID. 3 item IDs are inputed in the line 24.
@@ -132,6 +213,9 @@ class Model(object):
             y_hat = tf.nn.softmax(dnn3) + 0.00000001
             return y_hat
 
+    def train_synthetic_input(self, sess):
+        loss, accuracy, _ = sess.run([self.loss, self.accuracy, self.optimizer])
+        return loss, accuracy, 0
 
     def train(self, sess, inps):
         if self.use_negsampling:
@@ -319,10 +403,11 @@ class Model_DIN_V2_Gru_QA_attGru(Model):
         self.build_fcn_net(inp, use_dice=True)
 
 class Model_DNN(Model):
-    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, use_negsampling=False):
+    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, data_type='FP32', use_negsampling=False, 
+     synthetic_input = False, batch_size = 32, max_length=100, device = 'gpu'):
         super(Model_DNN, self).__init__(n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE,
-                                                          ATTENTION_SIZE,
-                                                          use_negsampling)
+                                                          ATTENTION_SIZE, data_type,
+                                                          use_negsampling, synthetic_input, batch_size, max_length, device)
 
         inp = tf.concat([self.uid_batch_embedded, self.item_eb, self.item_his_eb_sum], 1)
         self.build_fcn_net(inp, use_dice=False)
@@ -357,10 +442,11 @@ class Model_DIN(Model):
 
 
 class Model_DIN_V2_Gru_Vec_attGru_Neg(Model):
-    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, data_type='FP32', use_negsampling=True):
+    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, data_type='FP32', 
+        use_negsampling=True, synthetic_input = False, batch_size = 32, max_length=100, device = 'gpu'):
         super(Model_DIN_V2_Gru_Vec_attGru_Neg, self).__init__(n_uid, n_mid, n_cat,
                                                           EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, data_type,
-                                                          use_negsampling)
+                                                          use_negsampling, synthetic_input, batch_size, max_length, device)
         def dtype_getter(getter, name, dtype=None, *args, **kwargs):
             var = getter(name, dtype=self.model_dtype, *args, **kwargs)
             return var
@@ -396,10 +482,11 @@ class Model_DIN_V2_Gru_Vec_attGru_Neg(Model):
 
 
 class Model_DIN_V2_Gru_Vec_attGru(Model):
-    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, use_negsampling=False):
+    def __init__(self, n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE, use_negsampling=False,
+     synthetic_input = False):
         super(Model_DIN_V2_Gru_Vec_attGru, self).__init__(n_uid, n_mid, n_cat,
                                                           EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE,
-                                                          use_negsampling)
+                                                          use_negsampling, synthetic_input)
 
         # RNN layer(-s)
         with tf.name_scope('rnn_1'):
