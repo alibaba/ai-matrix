@@ -1,0 +1,15 @@
+2859b251e0b4a940e7f04b38e406b65c  download/google_pretrained_weights/cased_L-12_H-768_A-12.zip
+10a188753111ecf3432e8c7b34ca5ab0  download/google_pretrained_weights/cased_L-24_H-1024_A-16.zip
+8e8de0450e7d973ab7295594bd7196bb  download/google_pretrained_weights/chinese_L-12_H-768_A-12.zip
+e6ed3e5bd054d348efc6f9fded1f301a  download/google_pretrained_weights/multi_cased_L-12_H-768_A-12.zip
+6c8f4dee9c67ad37cc6830307869bbe7  download/google_pretrained_weights/multilingual_L-12_H-768_A-12.zip
+b14dd4db03c41fd7ec9e2fb0610a4474  download/google_pretrained_weights/uncased_L-12_H-768_A-12.zip
+20ad3746ae36c3323d573d6880061e53  download/google_pretrained_weights/uncased_L-24_H-1024_A-16.zip
+42b8c17ee35a0307576498d633c681f6  download/pytorch_pretrained_weights/uncased_L-24_H-1024_A-16/bert_model.pt
+3e85deb501d4e538b6bc56f786231552  download/squad/v1.1/dev-v1.1.json
+afb04912d18ff20696f7f88eed49bea9  download/squad/v1.1/evaluate-v1.1.py
+981b29407e0affa3b1b156f72073b945  download/squad/v1.1/train-v1.1.json
+1c4dea60d5f5554ea5c6bcccb2c59968  download/squad/v1.1/train-v1.1.json_bert-large-uncased_384_128_64
+246adae8b7002f8679c027697b0b7cf8  download/squad/v2.0/dev-v2.0.json
+ff23213bed5516ea4a6d9edb6cd7d627  download/squad/v2.0/evaluate-v2.0.py
+62108c273c268d70893182d5cf8df740  download/squad/v2.0/train-v2.0.json

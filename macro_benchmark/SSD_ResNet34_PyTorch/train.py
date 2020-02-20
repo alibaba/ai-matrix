@@ -814,8 +814,9 @@ def train300_mlperf_coco(args):
                                            'epoch_count': (args.evaluation[i_eval]-args.evaluation[i_eval-1])*32/train_pipe.epoch_size()['train_reader']},
                                  sync=True)
             iter_num += 1
-            if iter_num > args.max_iter:
-                break
+            if args.max_iter > 0:
+                if iter_num > args.max_iter:
+                    break
 
         train_loader.reset()
         mlperf_print(key=mlperf_compliance.constants.EPOCH_STOP,

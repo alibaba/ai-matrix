@@ -64,9 +64,9 @@ cd DIEN
 cd ..
 
 echo "##########################################"
-echo "###        BERT_NVIDIA                 ###"
+echo "###        BERT_Tensorflow             ###"
 echo "##########################################"
-cd BERT_NVIDIA
+cd BERT_Tensorflow
 ./prepare_dataset.sh
 cd ..
 

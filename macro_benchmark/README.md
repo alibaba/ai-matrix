@@ -34,7 +34,10 @@ If you are using the latest docker, which has integrated nvidia-docker, use the 
 ```
 sudo docker run --name aimatrix-pt --gpus all --privileged=true --network=host --ipc=host -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.05-py3
 ```
-6. Run the benchmark suite in NVIDIA docker by following the instructions below.
+sudo docker run --gpus all --privileged=true --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -it --rm -v /data:/data nvcr.io/nvidia/tensorflow:19.09-py3
+```  
+
+3. Run the benchmark suite in NVIDIA docker by following the instructions below.
 
 The below instructions are recommended to run within the aforementioned NVIDIA docker.
 
