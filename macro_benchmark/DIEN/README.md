@@ -58,3 +58,13 @@ Currently AI Matrix only supports running on one accelerator device, being a GPU
 ```
 export CUDA_VISIBLE_DEVICES="DEVICE_NUMBER_TO_TEST"
 ```
+## Run the benchmark with synthetic input
+The background is that real industry models usually have huge size of embedding table. They can not fit into GPU memory. Therefore, they are put into CPU ram and let CPU to handle the corresponding embedding lookup and gradients update. However, PCIE between CPU and GPU are the bottleneck in most cases. Industry solution needs to be innovative to well balance the issue here to achieve better performance. 
+We initiate an synthetic random data as input to our model as a solution to mimic the real case where embedding table is huge. In this way, the embedding related operation can be chosen to implement on CPU side.
+```
+# embedding on GPU
+python script/train.py --mode=synthetic --batch_size=32 --model=DIEN --embedding_device=gpu
+
+# embedding on CPU
+python script/train.py --mode=synthetic --batch_size=32 --model=DIEN --embedding_device=cpu
+```
