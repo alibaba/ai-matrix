@@ -25,26 +25,26 @@ do
     end=`date +%s%N`
     total_time=$(((end-start)/1000000))
     #total_time=`bc <<< "scale = 3; ($end-$start)/1000000000"`
-    # total_images=$(($batch*2000*$NUM_ACCELERATORS))
-    total_images=8759
+    total_images=$(($batch*5000*$NUM_ACCELERATORS))
+    #total_images=8759
     system_performance=$((1000*$total_images/$total_time))
-    approximate_perf=`cat ./results/result_train_${batch}.txt | grep -F 'Training Performance' | awk -F' ' '{print $5}'`
+    approximate_perf=`cat ./results/result_train_${batch}.txt | grep -F 'Throughput Average' | grep -v "with overhead" | grep "run_squad.py" | awk -F' ' '{print $9}'`
     echo "Total sentences is: $total_images" >> ./results/result_train_${batch}.txt
     echo "Total running time in miliseconds is: $total_time" >> ./results/result_train_${batch}.txt
     echo "Approximate training accelerator performance in sentences/second is: $approximate_perf" >> ./results/result_train_${batch}.txt
     echo "System performance in sentences/second is: $system_performance" >> ./results/result_train_${batch}.txt
 done
 
-cd output
+cd results/bert_large_gpu_1_sl_384_prec_fp16_bs_2
 mv model.ckpt-*.data-00000-of-00001 model.ckpt.data-00000-of-00001
 mv model.ckpt-*.index model.ckpt.index
 mv model.ckpt-*.meta model.ckpt.meta
-cd ..
+cd ../..
 
 if [ ! -d checkpoints ]; then
     mkdir checkpoints
 fi
-cp output/* checkpoints
+cp results/bert_large_gpu_1_sl_384_prec_fp16_bs_2/model.ckpt.* checkpoints
 
 python process_results.py --train
 
@@ -61,7 +61,7 @@ do
     #total_images=$(($batch*$MAX_ITER*$NUM_ACCELERATORS))
     total_images=10833
     system_performance=$((1000*$total_images/$total_time))
-    approximate_perf=`cat ./results/result_infer_${batch}.txt | grep -F 'Inference Performance' | awk -F' ' '{print $5}'`
+    approximate_perf=`cat ./results/result_infer_${batch}.txt | grep -F 'Throughput Average' | grep "run_squad.py" | awk -F' ' '{print $9}'`
     echo "Total sentences is: $total_images" >> ./results/result_infer_${batch}.txt
     echo "Total running time in miliseconds is: $total_time" >> ./results/result_infer_${batch}.txt
     echo "Approximate inference accelerator performance in sentences/second is: $approximate_perf" >> ./results/result_infer_${batch}.txt
