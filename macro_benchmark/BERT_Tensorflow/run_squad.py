@@ -959,8 +959,9 @@ def main(_):
     train_examples = read_squad_examples(
         input_file=FLAGS.train_file, is_training=True,
         version_2_with_negative=FLAGS.version_2_with_negative)
-    num_train_steps = int(
-        len(train_examples) / global_batch_size * FLAGS.num_train_epochs)
+    #num_train_steps = int(
+    #    len(train_examples) / global_batch_size * FLAGS.num_train_epochs)
+    num_train_steps = 5000
     num_warmup_steps = int(num_train_steps * FLAGS.warmup_proportion)
 
     # Pre-shuffle the input to avoid having to make a very large shuffle

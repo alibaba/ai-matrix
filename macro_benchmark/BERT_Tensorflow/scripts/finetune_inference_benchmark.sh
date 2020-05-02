@@ -18,7 +18,7 @@ precision=${2:-"fp16"}
 use_xla=${3:-"true"}
 batch_size=${4:-"8"}
 init_checkpoint=${5:-"checkpoints/bert_model.ckpt"}
-bert_model=${1:-"large"}
+bert_model=${6:-"large"}
 
 if [ "$bert_model" = "large" ] ; then
     export BERT_DIR=../dataset/bert/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
@@ -73,7 +73,8 @@ if [ "$task" = "squad" ] ; then
         --doc_stride=128 \
         --output_dir=${RESULTS_DIR} \
         "$use_fp16" \
-        $use_xla_tag --num_eval_iterations=1024 |& tee $tmp_file
+        $use_xla_tag |& tee $tmp_file
+        #$use_xla_tag --num_eval_iterations=4096 |& tee $tmp_file
 
         perf=`cat $tmp_file | grep -F 'Throughput Average (sentences/sec) =' | tail -1 | awk -F'= ' '{print $2}'`
         la=`cat $tmp_file | grep -F 'Latency Average (ms)' | awk -F'= ' '{print $2}'`
