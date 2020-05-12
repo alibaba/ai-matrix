@@ -16,7 +16,7 @@ if [ ! -d output ]; then
 fi
 
 batchs='4 8 16'
-MAX_STEPS=2000
+MAX_STEPS=500
 
 for batch in $batchs
 do
