@@ -8,6 +8,9 @@ from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import variable_scope as vs
 from keras import backend as K
 
+from tensorflow.python.util import nest
+from tensorflow.python.ops import nn_ops
+
 _BIAS_VARIABLE_NAME = "bias"
 _WEIGHTS_VARIABLE_NAME = "kernel"
 
@@ -47,11 +50,18 @@ class _Linear(object):
     for shape in shapes:
       if shape.ndims != 2:
         raise ValueError("linear is expecting 2D arguments: %s" % shapes)
-      if shape[1].value is None:
-        raise ValueError("linear expects shape[1] to be provided for shape %s, "
-                         "but saw %s" % (shape, shape[1]))
-      else:
-        total_arg_size += shape[1].value
+      if tf.__version__[0] == '1':
+        if shape[1].value is None:
+          raise ValueError("linear expects shape[1] to be provided for shape %s, "
+                          "but saw %s" % (shape, shape[1]))
+        else:
+          total_arg_size += shape[1].value
+      elif tf.__version__[0] == '2':
+        if shape[1] is None:
+          raise ValueError("linear expects shape[1] to be provided for shape %s, "
+                          "but saw %s" % (shape, shape[1]))
+        else:
+          total_arg_size += shape[1]
 
     dtype = [a.dtype for a in args][0]
 
@@ -220,8 +230,8 @@ class VecAttGRUCell(RNNCell):
 
 def prelu(_x, scope=''):
     """parametric ReLU activation"""
-    with tf.variable_scope(name_or_scope=scope, default_name="prelu"):
-        _alpha = tf.get_variable("prelu_"+scope, shape=_x.get_shape()[-1],
+    with tf.compat.v1.variable_scope(name_or_scope=scope, default_name="prelu"):
+        _alpha = tf.compat.v1.get_variable("prelu_"+scope, shape=_x.get_shape()[-1],
                                  dtype=_x.dtype, initializer=tf.constant_initializer(0.1))
         return tf.maximum(tf.cast(0.0, _x.dtype), _x) + _alpha * tf.minimum(tf.cast(0.0, _x.dtype), _x)
 
@@ -327,9 +337,9 @@ def din_attention(query, facts, attention_size, mask, stag='null', mode='SUM', s
     queries = tf.tile(query, [1, tf.shape(facts)[1]])
     queries = tf.reshape(queries, tf.shape(facts))
     din_all = tf.concat([queries, facts, queries-facts, queries*facts], axis=-1)
-    d_layer_1_all = tf.layers.dense(din_all, 80, activation=tf.nn.sigmoid, name='f1_att' + stag)
-    d_layer_2_all = tf.layers.dense(d_layer_1_all, 40, activation=tf.nn.sigmoid, name='f2_att' + stag)
-    d_layer_3_all = tf.layers.dense(d_layer_2_all, 1, activation=None, name='f3_att' + stag)
+    d_layer_1_all = tf.compat.v1.layers.dense(din_all, 80, activation=tf.nn.sigmoid, name='f1_att' + stag)
+    d_layer_2_all = tf.compat.v1.layers.dense(d_layer_1_all, 40, activation=tf.nn.sigmoid, name='f2_att' + stag)
+    d_layer_3_all = tf.compat.v1.layers.dense(d_layer_2_all, 1, activation=None, name='f3_att' + stag)
     d_layer_3_all = tf.reshape(d_layer_3_all, [-1, 1, tf.shape(facts)[1]])
     scores = d_layer_3_all
     # Mask
@@ -369,14 +379,14 @@ def din_fcn_attention(query, facts, attention_size, mask, stag='null', mode='SUM
     mask = tf.equal(mask, tf.ones_like(mask))
     facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
     querry_size = query.get_shape().as_list()[-1]
-    query = tf.layers.dense(query, facts_size, activation=None, name='f1' + stag)
+    query = tf.compat.v1.layers.dense(query, facts_size, activation=None, name='f1' + stag)
     query = prelu(query)
     queries = tf.tile(query, [1, tf.shape(facts)[1]])
     queries = tf.reshape(queries, tf.shape(facts))
     din_all = tf.concat([queries, facts, queries-facts, queries*facts], axis=-1)
-    d_layer_1_all = tf.layers.dense(din_all, 80, activation=tf.nn.sigmoid, name='f1_att' + stag)
-    d_layer_2_all = tf.layers.dense(d_layer_1_all, 40, activation=tf.nn.sigmoid, name='f2_att' + stag)
-    d_layer_3_all = tf.layers.dense(d_layer_2_all, 1, activation=None, name='f3_att' + stag)
+    d_layer_1_all = tf.compat.v1.layers.dense(din_all, 80, activation=tf.nn.sigmoid, name='f1_att' + stag)
+    d_layer_2_all = tf.compat.v1.layers.dense(d_layer_1_all, 40, activation=tf.nn.sigmoid, name='f2_att' + stag)
+    d_layer_3_all = tf.compat.v1.layers.dense(d_layer_2_all, 1, activation=None, name='f3_att' + stag)
     d_layer_3_all = tf.reshape(d_layer_3_all, [-1, 1, tf.shape(facts)[1]])
     scores = d_layer_3_all
     # Mask
@@ -465,13 +475,13 @@ def din_fcn_shine(query, facts, attention_size, mask, stag='null', mode='SUM', s
     mask = tf.equal(mask, tf.ones_like(mask))
     facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
     querry_size = query.get_shape().as_list()[-1]
-    query = tf.layers.dense(query, facts_size, activation=None, name='f1_trans_shine' + stag)
+    query = tf.compat.v1.layers.dense(query, facts_size, activation=None, name='f1_trans_shine' + stag)
     query = prelu(query)
     queries = tf.tile(query, [1, tf.shape(facts)[1]])
     queries = tf.reshape(queries, tf.shape(facts))
     din_all = tf.concat([queries, facts, queries-facts, queries*facts], axis=-1)
-    d_layer_1_all = tf.layers.dense(din_all, facts_size, activation=tf.nn.sigmoid, name='f1_shine_att' + stag)
-    d_layer_2_all = tf.layers.dense(d_layer_1_all, facts_size, activation=tf.nn.sigmoid, name='f2_shine_att' + stag)
+    d_layer_1_all = tf.compat.v1.layers.dense(din_all, facts_size, activation=tf.nn.sigmoid, name='f1_shine_att' + stag)
+    d_layer_2_all = tf.compat.v1.layers.dense(d_layer_1_all, facts_size, activation=tf.nn.sigmoid, name='f2_shine_att' + stag)
     d_layer_2_all = tf.reshape(d_layer_2_all, tf.shape(facts))
     output = d_layer_2_all
     return output

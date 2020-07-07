@@ -1,8 +1,8 @@
 import tensorflow as tf
 
 def dice(_x, axis=-1, epsilon=0.000000001, name='', data_type = tf.float32):
-  with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
-    alphas = tf.get_variable('alpha'+name, _x.get_shape()[-1],
+  with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
+    alphas = tf.compat.v1.get_variable('alpha'+name, _x.get_shape()[-1],
                          initializer=tf.constant_initializer(0.0),
                          dtype=data_type)
     input_shape = list(_x.get_shape())
@@ -25,7 +25,7 @@ def dice(_x, axis=-1, epsilon=0.000000001, name='', data_type = tf.float32):
   return alphas * (1.0 - x_p) * _x + x_p * _x
 
 def parametric_relu(_x):
-  alphas = tf.get_variable('alpha', _x.get_shape()[-1],
+  alphas = tf.compat.v1.get_variable('alpha', _x.get_shape()[-1],
                        initializer=tf.constant_initializer(0.0),
                        dtype=tf.float32)
   pos = tf.nn.relu(_x)

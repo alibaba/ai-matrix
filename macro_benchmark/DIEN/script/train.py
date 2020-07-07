@@ -147,10 +147,10 @@ def train_synthetic(
     print("model: ", model_type)
     model_path = "dnn_save_path/ckpt_noshuff" + model_type + str(seed)
     best_model_path = "dnn_best_model/ckpt_noshuff" + model_type + str(seed)
-    gpu_options = tf.GPUOptions(allow_growth=True)
+    gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
     synthetic_input = True
     
-    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options,log_device_placement=False)) as sess:
+    with tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options,log_device_placement=False)) as sess:
         # parameters needs to put in config file
        
         if model_type == 'DNN':
@@ -177,8 +177,8 @@ def train_synthetic(
             print ("Invalid model_type : %s", model_type)
             return
         
-        sess.run(tf.global_variables_initializer())
-        sess.run(tf.local_variables_initializer())
+        sess.run(tf.compat.v1.global_variables_initializer())
+        sess.run(tf.compat.v1.local_variables_initializer())
         sys.stdout.flush()
         
         iter = 0
@@ -222,8 +222,8 @@ def train(
     print("model: ", model_type)
     model_path = "dnn_save_path/ckpt_noshuff" + model_type + str(seed)
     best_model_path = "dnn_best_model/ckpt_noshuff" + model_type + str(seed)
-    gpu_options = tf.GPUOptions(allow_growth=True)
-    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
+    gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
+    with tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options)) as sess:
         train_data = DataIterator(train_file, uid_voc, mid_voc, cat_voc, batch_size, maxlen, shuffle_each_epoch=False)
         test_data = DataIterator(test_file, uid_voc, mid_voc, cat_voc, batch_size, maxlen)
         n_uid, n_mid, n_cat = train_data.get_n()
@@ -256,8 +256,8 @@ def train(
         #     if var.dtype == 'float32_ref':
         #         print("global variable: ", var)
         # model = Model_DNN(n_uid, n_mid, n_cat, EMBEDDING_DIM, HIDDEN_SIZE, ATTENTION_SIZE)
-        sess.run(tf.global_variables_initializer())
-        sess.run(tf.local_variables_initializer())
+        sess.run(tf.compat.v1.global_variables_initializer())
+        sess.run(tf.compat.v1.local_variables_initializer())
         sys.stdout.flush()
         #print('test_auc: %.4f ---- test_loss: %.4f ---- test_accuracy: %.4f ---- test_aux_loss: %.4f ---- eval_time: %.3f ---- num_iters: %d' % eval(sess, test_data, model, best_model_path))
         sys.stdout.flush()
@@ -322,8 +322,8 @@ def test(
     print("batch_size: ", batch_size)
     print("model: ", model_type)
     model_path = "dnn_best_model_trained/ckpt_noshuff" + model_type + str(seed)
-    gpu_options = tf.GPUOptions(allow_growth=True)
-    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
+    gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
+    with tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options)) as sess:
         train_data = DataIterator(train_file, uid_voc, mid_voc, cat_voc, batch_size, maxlen)
         test_data = DataIterator(test_file, uid_voc, mid_voc, cat_voc, batch_size, maxlen)
         n_uid, n_mid, n_cat = train_data.get_n()
@@ -355,8 +355,8 @@ def test(
         if data_type == 'FP16':
             fp32_variables = [var_name for var_name, _ in tf.contrib.framework.list_variables(model_path)]
             #print("fp32_variables: ", fp32_variables)
-            sess.run(tf.global_variables_initializer())
-            sess.run(tf.local_variables_initializer())
+            sess.run(tf.compat.v1.global_variables_initializer())
+            sess.run(tf.compat.v1.local_variables_initializer())
             for variable in tf.global_variables():
                 #print("variable: ", variable)
                 if variable.op.name in fp32_variables:
@@ -396,8 +396,13 @@ def test(
         print("Approximate accelerator performance in recommendations/second is %.3f" % (float(5*num_iters*batch_size)/float(approximate_accelerator_time)))
 
 if __name__ == '__main__':
+    if tf.__version__[0] == '2':
+        tf.compat.v1.disable_v2_behavior()
     SEED = args.seed
-    tf.set_random_seed(SEED)
+    if tf.__version__[0] == '1':
+        tf.compat.v1.set_random_seed(SEED)  
+    elif tf.__version__[0] == '2':
+        tf.random.set_seed(SEED)
     numpy.random.seed(SEED)
     random.seed(SEED)
     if args.mode == 'train':
