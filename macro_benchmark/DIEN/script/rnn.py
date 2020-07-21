@@ -38,7 +38,7 @@ from tensorflow.python.ops import rnn_cell_impl
 from tensorflow.python.ops import tensor_array_ops
 from tensorflow.python.ops import variable_scope as vs
 from tensorflow.python.util import nest
-import tensorflow as tf
+
 
 # pylint: disable=protected-access
 _concat = rnn_cell_impl._concat
@@ -69,16 +69,10 @@ def _transpose_batch_time(x):
   x_t = array_ops.transpose(
       x, array_ops.concat(
           ([1, 0], math_ops.range(2, x_rank)), axis=0))
-  if tf.__version__[0] == '1':
-    x_t.set_shape(
-        tensor_shape.TensorShape([
-            x_static_shape[1].value, x_static_shape[0].value
-        ]).concatenate(x_static_shape[2:]))
-  elif tf.__version__[0] == '2':
-    x_t.set_shape(
-        tensor_shape.TensorShape([
-            x_static_shape[1], x_static_shape[0]
-        ]).concatenate(x_static_shape[2:]))
+  x_t.set_shape(
+      tensor_shape.TensorShape([
+          x_static_shape[1].value, x_static_shape[0].value
+      ]).concatenate(x_static_shape[2:]))
   return x_t
 
 
@@ -102,12 +96,9 @@ def _best_effort_input_batch_size(flat_input):
     if shape.ndims < 2:
       raise ValueError(
           "Expected input tensor %s to have rank at least 2" % input_)
-    if tf.__version__[0] == '1':
-      batch_size = shape[1].value
-    elif tf.__version__[0] == '2':
-      batch_size = shape[1]
-    # if batch_size is not None:
-    #   return batch_size
+    batch_size = shape[1].value
+    if batch_size is not None:
+      return batch_size
   # Fallback to the dynamic batch size of the first input.
   return array_ops.shape(flat_input[0])[1]
 
@@ -565,12 +556,12 @@ def dynamic_rnn(cell, inputs, att_scores=None, sequence_length=None, initial_sta
 
   if not time_major:
     # (B,T,D) => (T,B,D)
-    flat_input = [tf.convert_to_tensor(input_) for input_ in flat_input]
+    flat_input = [ops.convert_to_tensor(input_) for input_ in flat_input]
     flat_input = tuple(_transpose_batch_time(input_) for input_ in flat_input)
 
   parallel_iterations = parallel_iterations or 32
   if sequence_length is not None:
-    sequence_length = tf.cast(sequence_length,tf.int32)
+    sequence_length = math_ops.to_int32(sequence_length)
     if sequence_length.get_shape().ndims not in (None, 1):
       raise ValueError(
           "sequence_length must be a vector of length batch_size, "
@@ -691,12 +682,8 @@ def _dynamic_rnn_loop(cell,
       raise ValueError(
           "Input size (depth of inputs) must be accessible via shape inference,"
           " but saw value None.")
-    if tf.__version__[0] == '1':
-      got_time_steps = shape[0].value
-      got_batch_size = shape[1].value
-    elif tf.__version__[0] == '2':
-      got_time_steps = shape[0]
-      got_batch_size = shape[1]
+    got_time_steps = shape[0].value
+    got_batch_size = shape[1].value
     if const_time_steps != got_time_steps:
       raise ValueError(
           "Time steps is not the same for all the elements in the input in a "
@@ -1253,7 +1240,7 @@ def static_rnn(cell,
       zero_output = nest.pack_sequence_as(
           structure=output_size, flat_sequence=flat_zero_output)
 
-      sequence_length = tf.cast(sequence_length,tf.int32)
+      sequence_length = math_ops.to_int32(sequence_length)
       min_sequence_length = math_ops.reduce_min(sequence_length)
       max_sequence_length = math_ops.reduce_max(sequence_length)
 
