@@ -145,6 +145,9 @@ class Model(object):
             self.noclk_his_eb_sum_1 = tf.reduce_sum(self.noclk_his_eb, 2)
             self.noclk_his_eb_sum = tf.reduce_sum(self.noclk_his_eb_sum_1, 1)
 
+    def _sparse_to_dense_grads(self, grads_and_vars):
+        return [(tf.convert_to_tensor(g), v) for g, v in grads_and_vars]
+
     def build_fcn_net(self, inp, use_dice = False):
         def dtype_getter(getter, name, dtype=None, *args, **kwargs):
             var = getter(name, dtype=self.model_dtype, *args, **kwargs)
@@ -174,7 +177,12 @@ class Model(object):
                 if self.use_negsampling:
                     self.loss += self.aux_loss
                 tf.compat.v1.summary.scalar('loss', self.loss)
-                self.optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr).minimize(self.loss)
+                
+                # convert sparse optimizer to dense optimizer
+                adam_optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr)
+                gradients = adam_optimizer.compute_gradients(self.loss)
+                gradients = self._sparse_to_dense_grads(gradients)
+                self.optimizer = adam_optimizer.apply_gradients(gradients)
 
                 # Accuracy metric
                 self.accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.round(self.y_hat), self.target_ph), self.model_dtype))
