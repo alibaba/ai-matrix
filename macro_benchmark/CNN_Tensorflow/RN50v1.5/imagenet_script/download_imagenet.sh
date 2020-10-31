@@ -123,6 +123,8 @@ fi
 
 # Un-compress the individual tar-files within the train tar-file.
 echo "Uncompressing individual train tar-balls in the training data to ${OUTPUT_PATH}."
+# tar -xvf ILSVRC2012_img_train.tar 
+# find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
 
 SYNSET=${SYNSETS_FILE}
 
